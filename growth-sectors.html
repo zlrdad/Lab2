@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Growth Sectors — the capital-markets lens · Scaling &amp; Retaining Canada's Champions</title>
+<meta name="description" content="Ontario's nine growth sectors read through the capital-markets lens, grounded in the Ontario Economic Accounts: the housing-vs-intellectual-property investment gap, the real economy by industry, and an interactive per-sector explorer.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ============================================================================
+   PAGE-SCOPED COMPONENTS — growth-sectors.html (token-driven only; no literal hex).
+   1. .invtoggle / .invchip — the investment-composition view switcher (Levels / Ratio).
+      Reuses the provpill/chip visual register (mono, hairline, accent-on-active).
+   2. .secswitch / .secchip — the 9-sector explorer switcher.
+   3. .seccard / .secstats / .secstat / .capfact — the per-sector KPI panel (JS re-render).
+   4. .boardmap / .boardcol — the compact "how sectors map to the boards" matrix.
+   These are dashboard-specific (interactive re-render / page-unique) so they stay
+   scoped here per the README "only promote when identical on 3+ pages" rule.
+   ============================================================================ */
+.invtoggle{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 8px;align-items:center}
+.invtoggle .grouplab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-right:4px}
+.invchip,.secchip{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--body);background:transparent;border:1px solid var(--hair-strong);border-radius:7px;padding:8px 15px;cursor:pointer;transition:background .15s,border-color .15s,color .15s;user-select:none}
+.invchip:hover,.secchip:hover{border-color:rgba(var(--accent-rgb),.5);color:var(--ink)}
+.invchip[aria-pressed="true"],.secchip[aria-pressed="true"]{color:var(--accent-txt);border-color:rgba(var(--accent-rgb),.55);background:rgba(var(--accent-rgb),.09)}
+.invchip:focus-visible,.secchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.secswitch{display:flex;flex-wrap:wrap;gap:9px;margin:30px 0 6px;align-items:center}
+.secswitch .grouplab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-right:4px}
+
+.seccard{margin-top:38px;border-top:1px solid var(--hair-strong);padding-top:30px}
+.seccard .sechead{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-txt);margin-bottom:10px}
+.seccard .seclead{font-size:clamp(16px,1.9vw,19px);color:var(--ink);max-width:46ch;line-height:1.5;font-family:var(--disp);font-weight:500;letter-spacing:-.01em}
+.secstats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:30px;border-top:1px solid var(--hair)}
+.secstat{padding:24px 24px 22px 0;border-bottom:1px solid var(--hair);position:relative}
+.secstat + .secstat::before{content:"";position:absolute;left:-1px;top:20px;bottom:20px;width:1px;background:var(--hair)}
+.secstat .kn{font-family:var(--disp);font-weight:700;font-size:clamp(26px,3.6vw,40px);line-height:.94;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--accent);text-shadow:var(--gfx-glow-soft)}
+.secstat:nth-child(n+2) .kn{color:var(--ink);text-shadow:none}
+.secstat .kc{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);margin-top:12px}
+.secstat .kl{font-size:12.5px;color:var(--body);line-height:1.5;margin-top:7px;max-width:30ch}
+.capfact{margin-top:26px;border-left:2px solid rgba(var(--accent-rgb),.55);padding:4px 0 4px 20px;font-size:15.5px;line-height:1.62;color:var(--body);max-width:64ch}
+.capfact strong{color:var(--ink)}.capfact em{color:var(--accent-txt);font-style:normal}
+@media(max-width:760px){.secstats{grid-template-columns:1fr}.secstat + .secstat::before{display:none}}
+
+.legendline{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.06em;margin-top:10px}
+.legendline .sw{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:-1px;margin:0 4px 0 12px}
+.dashcap{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.04em;margin-top:16px;line-height:1.6;max-width:70ch}
+.dashcap b{color:var(--body);font-weight:500}.dashcap em{color:var(--accent-txt);font-style:normal}
+
+.boardmap{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:40px;border-top:1px solid var(--hair-strong)}
+.boardcol{padding:24px 22px 24px 0;border-bottom:1px solid var(--hair);position:relative}
+.boardcol + .boardcol::before{content:"";position:absolute;left:-1px;top:20px;bottom:20px;width:1px;background:var(--hair)}
+.boardcol .bt{font-family:var(--disp);font-weight:700;font-size:20px;color:var(--accent-txt);letter-spacing:-.01em}
+.boardcol .bs{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-top:5px}
+.boardcol .bl{font-size:13px;color:var(--body);line-height:1.55;margin-top:14px}
+.boardcol .bl b{color:var(--ink);font-weight:600}
+.boardcol.flight .bt{color:var(--steel)}
+@media(max-width:760px){.boardmap{grid-template-columns:1fr 1fr}.boardcol:nth-child(3)::before,.boardcol:nth-child(1)::before{display:none}}
+</style>
+</head>
+<body data-accent="cyan">
+<div class="prog" id="prog"></div>
+
+<!-- ====== SHARED SHELL TOPBAR (Mission Control; 10-link grouped nav) ====== -->
+<div class="topbar">
+  <a class="tb-l brand" href="index.html"><span class="dot"></span><b>Canada's Champions</b></a>
+  <span class="tb-r">
+        <span class="links">
+      <a href="index.html">Overview</a>
+      <a href="growth-prize.html">Prize</a>
+      <a href="strengths.html">Strengths</a>
+      <a href="growth-sectors.html" class="on">Sectors</a>
+      <a href="public-markets.html" title="Public Markets">Markets</a>
+      <a href="financing-gap.html" title="The Financing Gap">Gap</a>
+      <a href="what-works.html" title="What Works Abroad">Abroad</a>
+      <a href="comparators.html" title="The Comparators">Compare</a>
+      <a href="champions.html">Champions</a>
+      <a href="recommendations.html" title="Recommendations">Recs</a>
+      <a href="methodology.html" title="Methodology &amp; Sources">Method</a>
+      <span class="tb-div" aria-hidden="true"></span>
+      <span class="tb-grouplab">Data</span>
+      <a href="exchanges.html" title="The Exchanges — interactive">Exchanges</a>
+      <a href="global-exchanges.html" title="Global Exchanges Explorer">Global</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› growth sectors · nine sectors · one capital-markets lens · grounded in the Ontario Economic Accounts"></div>
+    <div class="cat rv">◇ Chapter · the growth sectors</div>
+    <h1 class="rv d1">Nine sectors. One capital-markets lens.</h1>
+    <div class="tag rv d1">Ontario's nine growth sectors are where capital-formation policy is most likely to pay off. But the national accounts show <em>where the money actually goes</em> — and in 2025, for every dollar Ontario businesses invested in intellectual property, they poured <strong>C$2.76</strong> into housing. The productive-capital story starts here.</div>
+    <div class="sigwrap">
+      <div class="signum rv d1"><span class="fig-n" data-count="2.76" data-dec="2" data-suffix="&#215;">2.76&#215;</span></div>
+      <div>
+        <div class="sigpct rv d2">into housing for every C$1 into intellectual property</div>
+        <div class="siglab rv d2">Ontario business investment, 2025: <strong>C$95.0B</strong> in residential structures against <strong>C$34.4B</strong> in intellectual-property products. The ratio has narrowed from a 4.5&#215; peak in 2021 — but the capital mix still tilts hard toward buildings over ideas.</div>
+        <a href="methodology.html#register" class="provpill rv d2" data-prov="oea"><span class="o"></span>data &amp; method</a>
+      </div>
+    </div>
+    <div class="scrollcue rv d3"><span class="arr"></span>the composition problem</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE INVESTMENT-COMPOSITION STORY (the analytical anchor) ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> Buildings over ideas</div>
+    <h2 class="rv d1">Ontario invests in structures, not intangibles.</h2>
+    <p class="lede rv d1">This is the composition problem that sits underneath every sector page. The Ontario Economic Accounts split business fixed investment into four lines; two of them — <strong>intellectual-property products</strong> (software, R&amp;D, mineral exploration, design) and <strong>machinery &amp; equipment</strong> — are the productive capital that scales a Cohere or a Shopify. The largest line by far is <strong>residential structures</strong>. Switch the view below between the raw levels and the housing-to-IP ratio over time. <em>Nominal C$ billions, 1997-onward series; 2000&ndash;2025 shown.</em></p>
+
+    <!-- view toggle -->
+    <div class="invtoggle rv d1" role="group" aria-label="Choose investment-composition view">
+      <span class="grouplab">View</span>
+      <button type="button" class="invchip" id="ivLevels" data-view="levels" aria-pressed="true">Levels (C$B)</button>
+      <button type="button" class="invchip" id="ivRatio" data-view="ratio" aria-pressed="false">Housing &#247; IP ratio</button>
+    </div>
+
+    <div class="chart-head rv d2" style="margin-top:26px">
+      <h3 id="ivTitle">Ontario business investment, by type &mdash; 2000 to 2025</h3>
+      <div class="sub" id="ivSub">Residential structures dwarf intellectual-property products and machinery &amp; equipment</div>
+    </div>
+    <div class="svgwrap rv d2" id="ivWrap" role="img" aria-label="Ontario business fixed investment 2000 to 2025 in nominal C$ billions. Residential structures rose from C$21.6B in 2000 to a peak of C$109B in 2021, easing to C$95.0B in 2025. Intellectual-property products rose from C$8.3B to C$34.4B, and machinery and equipment from C$29B to C$37.4B. Residential investment remains far larger than the two productive-capital lines combined.">
+      <!-- Build-time DEFAULT: Levels view. Rebuilt by JS on toggle. All colours are var() tokens. -->
+      <svg viewBox="0 0 900 470" id="ivChart">
+        <defs>
+          <linearGradient id="gs-ipp-area" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" style="stop-color:var(--accent);stop-opacity:.30"/>
+            <stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/>
+          </linearGradient>
+          <linearGradient id="gs-ipp-line" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" style="stop-color:var(--accent-deep)"/>
+            <stop offset="1" style="stop-color:var(--accent)"/>
+          </linearGradient>
+        </defs>
+        <!-- gridlines: 0->410 25->330.4 50->250.9 75->171.3 100->91.7 -->
+        <g stroke="var(--hair)" stroke-width="1">
+          <line x1="70" y1="410" x2="862" y2="410"/>
+          <line x1="70" y1="330.4" x2="862" y2="330.4"/>
+          <line x1="70" y1="250.9" x2="862" y2="250.9"/>
+          <line x1="70" y1="171.3" x2="862" y2="171.3"/>
+          <line x1="70" y1="91.7" x2="862" y2="91.7"/>
+        </g>
+        <g fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" text-anchor="end">
+          <text x="62" y="414">0</text><text x="62" y="334">25</text><text x="62" y="255">50</text><text x="62" y="175">75</text><text x="62" y="96">100</text>
+        </g>
+        <text x="70" y="34" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">business fixed investment · C$ billions (nominal)</text>
+        <!-- x ticks -->
+        <g fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5" text-anchor="middle">
+          <text x="70" y="430">2000</text><text x="228.4" y="430">2005</text><text x="386.8" y="430">2010</text><text x="545.2" y="430">2015</text><text x="703.6" y="430">2020</text><text x="862" y="430">2025</text>
+        </g>
+        <!-- IPP area + line (subject: productive capital) -->
+        <path fill="url(#gs-ipp-area)" d="M70,383.7 101.7,380.3 133.4,380.7 165,378 196.7,373.4 228.4,371.5 260.1,371.1 291.8,371.8 323.4,367 355.1,370.9 386.8,368.7 418.5,367.8 450.2,368.2 481.8,368.4 513.5,364.2 545.2,362.1 576.9,360.1 608.6,356.4 640.2,348.6 671.9,345.2 703.6,343.8 735.3,333.4 767,321.9 798.6,312.7 830.3,305.2 862,300.6 L862,410 L70,410 Z"/>
+        <!-- Residential line (the dominant misallocation) -->
+        <polyline fill="none" stroke="var(--comp)" stroke-width="2.5" stroke-linejoin="round" points="70,341.2 101.7,331.9 133.4,320.3 165,314.4 196.7,303.3 228.4,297 260.1,291.2 291.8,280.4 323.4,282.2 355.1,288.4 386.8,274.4 418.5,263.7 450.2,250.6 481.8,250.2 513.5,243 545.2,223 576.9,197.5 608.6,182.1 640.2,186.4 671.9,180.4 703.6,146.2 735.3,63.1 767,70.9 798.6,87.3 830.3,94.4 862,107.7"/>
+        <!-- M&E line (companion productive series, dashed) -->
+        <polyline fill="none" stroke="var(--accent)" stroke-width="1.75" stroke-dasharray="5 4" opacity=".7" stroke-linejoin="round" points="70,317.8 101.7,322 133.4,329.3 165,329.4 196.7,327 228.4,321 260.1,317 291.8,320.9 323.4,319.6 355.1,336.9 386.8,337.4 418.5,337.4 450.2,337.6 481.8,345.7 513.5,332.2 545.2,319.4 576.9,329.8 608.6,325.4 640.2,317.7 671.9,308.2 703.6,319.3 735.3,308.6 767,302.9 798.6,295.3 830.3,286.5 862,290.9"/>
+        <!-- IPP line on top of area -->
+        <polyline fill="none" stroke="url(#gs-ipp-line)" stroke-width="3" stroke-linejoin="round" style="filter:drop-shadow(var(--gfx-glow-soft))" points="70,383.7 101.7,380.3 133.4,380.7 165,378 196.7,373.4 228.4,371.5 260.1,371.1 291.8,371.8 323.4,367 355.1,370.9 386.8,368.7 418.5,367.8 450.2,368.2 481.8,368.4 513.5,364.2 545.2,362.1 576.9,360.1 608.6,356.4 640.2,348.6 671.9,345.2 703.6,343.8 735.3,333.4 767,321.9 798.6,312.7 830.3,305.2 862,300.6"/>
+        <!-- endpoint labels -->
+        <circle cx="862" cy="107.7" r="4" fill="var(--comp)"/>
+        <text x="854" y="103" text-anchor="end" fill="var(--gann-cmp)" font-family="var(--disp)" font-weight="700" font-size="15">Residential C$95.0B</text>
+        <circle cx="862" cy="300.6" r="4.5" fill="var(--accent)"/>
+        <text x="854" y="296" text-anchor="end" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">IP products C$34.4B</text>
+        <!-- 2021 peak callout -->
+        <circle cx="735.3" cy="63.1" r="4" fill="var(--comp)"/>
+        <text x="735.3" y="55" text-anchor="middle" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10">2021 peak C$109B</text>
+      </svg>
+    </div>
+    <div class="legendline rv d2"><span class="sw" style="background:var(--comp)"></span>residential structures<span class="sw" style="background:var(--accent)"></span>intellectual-property products<span class="sw" style="background:var(--accent);opacity:.7"></span>machinery &amp; equipment</div>
+    <div class="dashcap rv d2" id="ivCap"><b>The read:</b> In 2025 Ontario businesses invested <em>C$95.0B</em> in residential structures against just <em>C$34.4B</em> in intellectual property and <em>C$37.4B</em> in machinery &amp; equipment. Even taking IP and M&amp;E together (C$71.8B), housing alone is larger. The 4.5&#215; housing-to-IP peak of 2021 has narrowed to 2.76&#215; — progress, but the capital mix still favours buildings over the intangibles that scale the growth sectors.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="oea"><span class="o"></span>data &amp; method</a>
+  </div>
+</section>
+
+<!-- ============ 02 · THE REAL ECONOMY BY INDUSTRY ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> The real economy</div>
+    <h2 class="rv d1">Where Ontario's output actually sits.</h2>
+    <p class="lede rv d1">Before mapping the growth sectors, ground them in the macro data. Here is Ontario's real GDP by industry in 2025 (chained 2017 dollars), with the change since 2019 beside each bar. The pattern is stark: the <strong>services and knowledge industries are growing</strong> — Finance &amp; Insurance is up 28%, Professional services up 20%, Information &amp; Culture (tech and telecom) up 16% — while the <strong>goods-producing base is shrinking</strong>, with Manufacturing down 7% and auto output down 12%. Total production: <strong>C$899B</strong>.</p>
+    <div class="chart-head rv d2" style="margin-top:44px">
+      <h3>Ontario real GDP by industry, 2025</h3>
+      <div class="sub">Bar length = real GDP (chained 2017 C$B) · label = change since 2019</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="Ontario real GDP by industry, 2025, chained 2017 C$ billions with change since 2019: Professional and administrative services C$104.2B up 20%, Finance and insurance C$96.6B up 28%, Manufacturing C$88.1B down 7%, Health care C$65.7B up 18%, Construction C$56.7B roughly flat, Information and culture C$38.7B up 16%, Utilities C$16.4B up 13%, Agriculture C$10.1B up 29%, Mining C$8.0B up 8%. Services and knowledge industries grew while goods production shrank.">
+      <svg viewBox="0 0 900 540" id="indChart">
+        <defs>
+          <linearGradient id="gs-ind-subj" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" style="stop-color:var(--accent-deep)"/>
+            <stop offset="1" style="stop-color:var(--accent)"/>
+          </linearGradient>
+        </defs>
+        <!-- rows: label(right@238) · bar(x0=250,max 560px @104.2) · value+delta(right@892). rowH=50 top=30 barH=26 -->
+        <!-- Professional & Admin 104.2 -->
+        <g>
+          <text x="238" y="49" text-anchor="end" class="hbar-lab">Professional &amp; Admin</text>
+          <rect class="bfill ramp-1" x="250" y="33" width="560" height="26" rx="4"/>
+          <text x="892" y="50" text-anchor="end" class="hbar-val">C$104.2B <tspan fill="var(--gann-val)">&#9650;20%</tspan></text>
+        </g>
+        <!-- Finance & Insurance 96.6 (subject: fastest-growing giant, capital-markets tie) -->
+        <g>
+          <text x="238" y="99" text-anchor="end" class="hbar-lab subj">Finance &amp; Insurance</text>
+          <rect class="bfill subj-glow" x="250" y="83" width="519.2" height="26" rx="4" fill="url(#gs-ind-subj)"/>
+          <text x="892" y="100" text-anchor="end" class="hbar-val subj">C$96.6B <tspan fill="var(--gann-val)">&#9650;28%</tspan></text>
+        </g>
+        <!-- Manufacturing 88.1 -->
+        <g>
+          <text x="238" y="149" text-anchor="end" class="hbar-lab">Manufacturing</text>
+          <rect class="bfill ramp-2" x="250" y="133" width="473.5" height="26" rx="4"/>
+          <text x="892" y="150" text-anchor="end" class="hbar-val">C$88.1B <tspan fill="var(--gann-cmp)">&#9660;7%</tspan></text>
+        </g>
+        <!-- Health Care 65.7 (services delivery, de-emphasised) -->
+        <g>
+          <text x="238" y="199" text-anchor="end" class="hbar-lab">Health Care &amp; Social</text>
+          <rect class="bfill" x="250" y="183" width="353.1" height="26" rx="4" fill="var(--steel)" opacity=".55"/>
+          <text x="892" y="200" text-anchor="end" class="hbar-val">C$65.7B <tspan fill="var(--gann-val)">&#9650;18%</tspan></text>
+        </g>
+        <!-- Construction 56.7 -->
+        <g>
+          <text x="238" y="249" text-anchor="end" class="hbar-lab">Construction</text>
+          <rect class="bfill ramp-3" x="250" y="233" width="304.7" height="26" rx="4"/>
+          <text x="892" y="250" text-anchor="end" class="hbar-val">C$56.7B <tspan fill="var(--gann-cmp)">&#8776;flat</tspan></text>
+        </g>
+        <!-- Information & Culture 38.7 (Technology / Telecom) -->
+        <g>
+          <text x="238" y="299" text-anchor="end" class="hbar-lab">Information &amp; Culture</text>
+          <rect class="bfill ramp-4" x="250" y="283" width="208" height="26" rx="4"/>
+          <text x="892" y="300" text-anchor="end" class="hbar-val">C$38.7B <tspan fill="var(--gann-val)">&#9650;16%</tspan></text>
+        </g>
+        <!-- Utilities 16.4 -->
+        <g>
+          <text x="238" y="349" text-anchor="end" class="hbar-lab">Utilities</text>
+          <rect class="bfill ramp-5" x="250" y="333" width="88.1" height="26" rx="4"/>
+          <text x="892" y="350" text-anchor="end" class="hbar-val">C$16.4B <tspan fill="var(--gann-val)">&#9650;13%</tspan></text>
+        </g>
+        <!-- Agriculture 10.1 -->
+        <g>
+          <text x="238" y="399" text-anchor="end" class="hbar-lab">Agriculture &amp; Food&#42;</text>
+          <rect class="bfill ramp-6" x="250" y="383" width="54.3" height="26" rx="4"/>
+          <text x="892" y="400" text-anchor="end" class="hbar-val">C$10.1B <tspan fill="var(--gann-val)">&#9650;29%</tspan></text>
+        </g>
+        <!-- Mining 8.0 -->
+        <g>
+          <text x="238" y="449" text-anchor="end" class="hbar-lab">Mining</text>
+          <rect class="bfill ramp-6" x="250" y="433" width="43" height="26" rx="4"/>
+          <text x="892" y="450" text-anchor="end" class="hbar-val">C$8.0B <tspan fill="var(--gann-val)">&#9650;8%</tspan></text>
+        </g>
+        <line x1="250" y1="475" x2="810" y2="475" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="250" y="490" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">0</text>
+        <text x="810" y="490" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">real GDP, chained 2017 C$B</text>
+      </svg>
+    </div>
+    <div class="dashcap rv d2"><b>The divergence.</b> The knowledge and finance industries that lean on Ontario's capital markets are growing fastest, while the FDI-and-grant-financed goods base contracts. <em>&#42; Agriculture line is primary agriculture, forestry &amp; fishing; food/beverage manufacturing adds a further C$13.8B inside the Manufacturing bar.</em> Figures are the OEA's chained-2017-dollar industry accounts; Mining here is the value-added GDP line, not the far larger listed-market capital-formation footprint on the TSX/TSXV.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="oea"><span class="o"></span>data &amp; method</a>
+  </div>
+</section>
+
+<!-- ============ 03 · THE NINE SECTORS — INTERACTIVE EXPLORER ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> The nine sectors</div>
+    <h2 class="rv d1">Nine sectors, each with a capital story.</h2>
+    <p class="lede rv d1">The nine core sectors are <strong>not a map of the whole economy</strong> &mdash; they are the segments where capital-formation policy is most likely to produce outsized returns in growth, selected on growth potential plus the strength of federal and provincial policy priority. Pick a sector to read its scale, its place in the Ontario Economic Accounts, and the <em>one capital-markets fact</em> that defines how it raises money. <em>Default: Technology, the report's spine sector.</em></p>
+
+    <div class="secswitch rv d1" role="group" aria-label="Choose a growth sector">
+      <span class="grouplab">Sector</span>
+      <button type="button" class="secchip" data-sec="technology" aria-pressed="true">Technology</button>
+      <button type="button" class="secchip" data-sec="lifesci" aria-pressed="false">Life Sciences</button>
+      <button type="button" class="secchip" data-sec="cleantech" aria-pressed="false">Cleantech</button>
+      <button type="button" class="secchip" data-sec="advmfg" aria-pressed="false">Advanced Mfg</button>
+      <button type="button" class="secchip" data-sec="mining" aria-pressed="false">Mining</button>
+      <button type="button" class="secchip" data-sec="defense" aria-pressed="false">Defence</button>
+      <button type="button" class="secchip" data-sec="finserv" aria-pressed="false">Financial Services</button>
+      <button type="button" class="secchip" data-sec="agrifood" aria-pressed="false">Agri-Food</button>
+      <button type="button" class="secchip" data-sec="infra" aria-pressed="false">Infrastructure</button>
+    </div>
+
+    <!-- LIVE SECTOR CARD (build-time = Technology; re-rendered by JS) -->
+    <div class="seccard rv d2" id="secCard" aria-live="polite">
+      <div class="sechead" id="secHead">Technology &middot; the spine sector</div>
+      <div class="seclead" id="secLead">Ontario's AI, quantum, semiconductor and photonics cluster &mdash; deep research strength, thin domestic scale-up capital.</div>
+      <div class="secstats" id="secStats">
+        <div class="secstat"><div class="kn">$42&ndash;52B</div><div class="kc">AI GDP</div><div class="kl">Plus a projected $139B quantum opportunity by 2045.</div></div>
+        <div class="secstat"><div class="kn">C$38.7B</div><div class="kc">Info &amp; Culture real GDP</div><div class="kl">Ontario's tech &amp; telecom output &mdash; up 16.5% since 2019 (OEA, 2025).</div></div>
+        <div class="secstat"><div class="kn">185</div><div class="kc">listed tech issuers</div><div class="kl">52 on the TSX (C$385B) and 133 on the TSXV (C$21B).</div></div>
+      </div>
+      <div class="capfact" id="secCap">ICT drew <strong>C$5.1B &mdash; 64% of all Canadian VC</strong> in 2025, yet <strong>Shopify (C$202B) is the lone technology name in the TSX's top 10</strong>. Only 10 TSXV tech firms have cleared the C$100M graduation mark, against 212 miners &mdash; the scale-up and liquidity gap in a single statistic.</div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="sectors" style="margin-top:18px"><span class="o"></span>sector pages</a>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="framework" style="margin-top:18px;margin-left:10px"><span class="o"></span>selection logic</a>
+  </div>
+</section>
+
+<!-- ============ 04 · HOW THE SECTORS MAP TO THE BOARDS ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04</span> Sectors &rarr; boards</div>
+    <h2 class="rv d1">Where each sector lists &mdash; and where it flees.</h2>
+    <p class="lede rv d1">The capital-markets lens sharpens when you ask <em>which board each sector actually lists on</em>. The answer sorts the nine sectors into four very different venues: the senior TSX carries the banks and the one tech giant; the junior boards run on mining; and Ontario's scaled deep-tech increasingly skips all three for Nasdaq.</p>
+    <div class="boardmap rv d1">
+      <div class="boardcol">
+        <div class="bt">TSX</div>
+        <div class="bs">senior · scale &amp; capital</div>
+        <div class="bl"><b>Financial Services</b> leads by value (~C$1.9T, 63 issuers). <b>Mining</b> leads by count (181). The lone scaled tech name is <b>Shopify</b>. This is where a champion <em>should</em> list &mdash; and rarely does.</div>
+      </div>
+      <div class="boardcol">
+        <div class="bt">TSXV</div>
+        <div class="bs">venture · juniors</div>
+        <div class="bl"><b>Mining</b> is the board &mdash; 899 of 1,347 issuers (67%). The two biggest tech names, <b>Topicus</b> and <b>Lumine</b>, are Constellation spin-offs. Median issuer: nano-cap C$17M.</div>
+      </div>
+      <div class="boardcol">
+        <div class="bt">CSE</div>
+        <div class="bs">lighter regime</div>
+        <div class="bl"><b>Mining</b> again (340 of 601, 57%). Its largest <b>Life Sciences</b> names are US cannabis operators listing here for the regime, not for Ontario capital. 89% of equities are under C$50M.</div>
+      </div>
+      <div class="boardcol flight">
+        <div class="bt">Nasdaq &amp; US</div>
+        <div class="bs">the flight destination</div>
+        <div class="bl">Scaled deep tech skips Canada's boards: <b>Xanadu</b> (quantum) went public via US SPAC; <b>Tenstorrent</b> re-domiciled its HQ to the US. Where the mid-cap champion tier should be, there is a gap.</div>
+      </div>
+    </div>
+    <div class="dashcap rv d2" style="margin-top:26px"><b>The mismatch.</b> Ontario's fastest-growing industries &mdash; finance, technology, professional services &mdash; have almost no representation on the venture boards, while mining dominates all three domestic venues. The sectors the growth agenda cares most about are the ones with the weakest public-market home.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="boards"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 05 · THE READ / OUTRO ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">05</span> The read</div>
+    <h2 class="rv d1">Great sectors, mis-wired capital.</h2>
+    <p class="lede rv d1">Read across the nine sectors and one pattern repeats: Ontario has world-class research and genuine sectoral strength, but the capital that scales it is either <strong>going into buildings instead of intangibles</strong>, <strong>arriving from foreign investors</strong>, or <strong>routing through FDI and grants rather than domestic equity markets</strong>. The productive-capital mix (2.76&#215; housing over IP), the industry divergence (knowledge up, goods down), and the board mismatch (champions with no domestic home) are three views of the same problem. The next chapters diagnose it.</p>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="public-markets.html"><div class="n">CONTINUE · DIAGNOSIS</div><div><div class="t">Public Markets</div><div class="d">The three-board divergence, turnover velocity as the binding constraint, the IPO drought, and the missing mid-cap middle where champions belong.</div></div></a>
+      <a class="nextrow rv d1" href="financing-gap.html"><div class="n">CONTINUE · THE GAP</div><div><div class="t">The Financing Gap</div><div class="d">The VC/GDP gap and the scale-up stage &mdash; why productive capital is scarce exactly where these sectors need it most.</div></div></a>
+      <a class="nextrow rv d2" href="exchanges.html"><div class="n">EXPLORE · DATA</div><div><div class="t">The Exchanges</div><div class="d">Switch between the TSX, TSXV and CSE and read the sector distribution behind each board interactively.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">Chapter · Growth Sectors</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">GROWTH SECTORS · CHAPTER · static-first · opens from file:// · default views render with JS off · full sources on the Methodology page</p>
+</footer>
+</div>
+
+<!-- Provenance drawer + scrim (shared shell markup; upgraded by app.js). -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">&#10005;</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- Per-page provenance data + baked chart/sector data. Defined BEFORE app.js. -->
+<script>
+window.PROV = {
+  oea:{
+    t:"Ontario Economic Accounts — Tables 9 &amp; 16",
+    meta:'<b>Ontario Ministry of Finance — Ontario Economic Accounts Data Tables (to 2025 Q4)</b>, released 2026. Two tables drive this page:<ul>'
+      +'<li><b>Table 9</b> (annual, nominal C$M) — business gross fixed capital formation by type. 2025: residential structures <b>C$94,980M</b>, intellectual-property products <b>C$34,362M</b> (ratio <b>2.76&#215;</b>), machinery &amp; equipment <b>C$37,437M</b>. The housing-to-IP ratio peaked at 4.53&#215; in 2021 and has narrowed since.</li>'
+      +'<li><b>Table 16</b> (annual, chained 2017 C$M) — production by industry. 2025 total production <b>C$898,965M</b>. Professional &amp; Admin services C$104,228M; Finance &amp; Insurance C$96,638M (+28.3% vs 2019); Manufacturing C$88,089M (&minus;6.9%); Health Care C$65,695M; Construction C$56,702M; Information &amp; Culture C$38,746M (+16.5%); Utilities C$16,445M (+13.4%); Agriculture/forestry/fishing C$10,120M (+29.3%); Mining C$7,971M (+7.6%).</li>'
+      +'</ul>All chart values are computed from this workbook with openpyxl and match it exactly. Series run from 2000 (Table 9) / 1997 (Table 16); 2000&ndash;2025 is shown.',
+    conf:"high"
+  },
+  sectors:{
+    t:"The nine core-sector research pages",
+    meta:'Per-sector scale figures and the single capital-markets fact on each explorer card are drawn from the vault\'s nine core-sector pages, each of which carries its own inline citations: <b>Technology</b> (ICT VC C$5.1B / 64% of Canadian VC 2025, CVCA; 185 listed issuers, TMX Feb 2026), <b>Life Sciences</b> (VC C$837M / 129 deals 2025, CVCA), <b>Cleantech</b> (green-bond and project-finance structure; C$4B sovereign green bond incl. nuclear), <b>Advanced Manufacturing</b> ($28B EV/battery FDI announced 2022&ndash;24, much paused), <b>Mining &amp; Critical Minerals</b> (~1,073 TSX/TSXV miners; 11% critical-minerals capital, RBC), <b>Defense</b> ($180B procurement; BDC C$4B platform), <b>Financial Services</b> (~C$1.9T TSX cap; fintech VC C$1.7B/82 deals, KPMG), <b>Agri-Food</b> (AgTech VC ~C$270M; FCC C$7B coalition), <b>Infrastructure &amp; Construction</b> (C$51B Build Communities Strong Fund; OMERS C$30B+ infra). OEA industry ties are cross-referenced to Table 16.',
+    conf:"high"
+  },
+  framework:{
+    t:"Sector selection logic",
+    meta:'<b>Ontario Growth Sectors — Analytical Framework</b>. The nine core sectors are a <em>prioritization exercise</em>, not an exhaustive map of the economy: they are "the segments where capital formation policy is most likely to produce outsized returns in economic growth," selected on greatest growth potential plus the strongest signals of federal and provincial policy priority. The framework deliberately excludes growth from asset-price appreciation and rent-seeking, defining growth through productivity, innovation/IP, quality employment, base expansion and domestic-capability building.',
+    conf:"high"
+  },
+  boards:{
+    t:"How the sectors map to the boards",
+    meta:'<b>TMX Issuers List (May 31 2026)</b> + <b>CSE Listed Companies analysis (end-2025)</b>, the same canonical operating-issuer data behind the interactive Exchanges dashboard. <b>TSX</b>: Financial Services leads by capital (~C$1.9T, 63 issuers), Mining by count (181); Shopify is the lone scaled tech name. <b>TSXV</b>: 899 mining of 1,347 operating issuers (67%); Topicus &amp; Lumine (Constellation spin-offs) the largest tech; median issuer ~C$17M. <b>CSE</b>: 340 mining of 601 (57%); its largest "life-sciences" names are US cannabis multi-state operators; 89% of equities under C$50M. <b>US flight</b>: Xanadu listed via US SPAC; Tenstorrent re-domiciled its HQ to the US &mdash; the mid-cap champion tier is missing on all three domestic boards.',
+    conf:"high"
+  }
+};
+
+/* ---- BAKED CHART DATA (computed with openpyxl from the OEA Tables 9 & 16;
+   see PROV.oea). Every value matches the workbook exactly. ---- */
+window.OEA = {
+  years:[2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],
+  // nominal C$B (Table 9)
+  res:[21.6,24.5,28.2,30.0,33.5,35.5,37.3,40.7,40.2,38.2,42.6,46.0,50.1,50.2,52.5,58.8,66.8,71.6,70.3,72.1,82.9,109.0,106.6,101.4,99.2,95.0],
+  ipp:[8.3,9.3,9.2,10.0,11.5,12.1,12.2,12.0,13.5,12.3,13.0,13.3,13.1,13.1,14.4,15.1,15.7,16.9,19.3,20.3,20.8,24.1,27.7,30.6,32.9,34.4],
+  me:[29.0,27.7,25.4,25.3,26.1,28.0,29.2,28.0,28.4,23.0,22.8,22.8,22.8,20.2,24.4,28.5,25.2,26.6,29.0,32.0,28.5,31.9,33.7,36.0,38.8,37.4],
+  ratio:[2.61,2.62,3.06,2.99,2.92,2.93,3.05,3.39,2.97,3.11,3.29,3.46,3.82,3.84,3.65,3.90,4.26,4.25,3.64,3.55,3.98,4.53,3.85,3.32,3.01,2.76]
+};
+</script>
+<script>
+/* ============================================================================
+   growth-sectors.html — interactivity (vanilla, enhancement-only).
+   Two independent features, each in its own try/catch. With JS off, the
+   build-time SVGs and the Technology sector card remain fully legible.
+   ============================================================================ */
+"use strict";
+
+/* ---------- 1. Investment-composition view toggle (Levels / Ratio) ---------- */
+(function(){
+  try{
+    var O = window.OEA; if(!O) return;
+    var chart=document.getElementById("ivChart"), wrap=document.getElementById("ivWrap"),
+        title=document.getElementById("ivTitle"), sub=document.getElementById("ivSub"),
+        cap=document.getElementById("ivCap"),
+        bL=document.getElementById("ivLevels"), bR=document.getElementById("ivRatio");
+    if(!chart) return;
+    var SVGNS="http://www.w3.org/2000/svg";
+    function el(t,a){var e=document.createElementNS(SVGNS,t);if(a)for(var k in a)e.setAttribute(k,a[k]);return e;}
+    var X0=70,X1=862,W=X1-X0,N=O.years.length;
+    function X(k){return X0+W*k/(N-1);}
+    function pts(series,yfn){var s="";for(var k=0;k<N;k++){s+=X(k).toFixed(1)+","+yfn(series[k]).toFixed(1)+" ";}return s.trim();}
+    function grid(vals,yfn,fmt){
+      var g=el("g");
+      vals.forEach(function(v){
+        var y=yfn(v);
+        var ln=el("line",{x1:X0,y1:y,x2:X1,y2:y,stroke:"var(--hair)","stroke-width":1}); g.appendChild(ln);
+        var tx=el("text",{x:X0-8,y:y+4,"text-anchor":"end",fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":11}); tx.textContent=fmt(v); g.appendChild(tx);
+      });
+      return g;
+    }
+    function xaxis(){
+      var g=el("g");
+      [0,5,10,15,20,25].forEach(function(k){
+        var tx=el("text",{x:X(k),y:430,"text-anchor":"middle",fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":10.5});
+        tx.textContent=O.years[k]; g.appendChild(tx);
+      });
+      return g;
+    }
+    function defs(){
+      var d=el("defs");
+      var ga=el("linearGradient",{id:"gs-ipp-area",x1:0,y1:0,x2:0,y2:1});
+      ga.appendChild(el("stop",{offset:0,style:"stop-color:var(--accent);stop-opacity:.30"}));
+      ga.appendChild(el("stop",{offset:1,style:"stop-color:var(--accent);stop-opacity:0"}));
+      var gl=el("linearGradient",{id:"gs-ipp-line",x1:0,y1:0,x2:1,y2:0});
+      gl.appendChild(el("stop",{offset:0,style:"stop-color:var(--accent-deep)"}));
+      gl.appendChild(el("stop",{offset:1,style:"stop-color:var(--accent)"}));
+      d.appendChild(ga); d.appendChild(gl); return d;
+    }
+    function clear(){while(chart.firstChild)chart.removeChild(chart.firstChild);}
+
+    function renderLevels(){
+      clear(); chart.setAttribute("viewBox","0 0 900 470"); chart.appendChild(defs());
+      function Yl(v){return 410-(v/115)*366;}
+      chart.appendChild(grid([0,25,50,75,100],Yl,function(v){return v;}));
+      var yl=el("text",{x:X0,y:34,fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":11}); yl.textContent="business fixed investment · C$ billions (nominal)"; chart.appendChild(yl);
+      chart.appendChild(xaxis());
+      // IPP area
+      chart.appendChild(el("path",{fill:"url(#gs-ipp-area)",d:"M"+pts(O.ipp,Yl).replace(/ /g," L")+" L"+X1+",410 L"+X0+",410 Z"}));
+      // Residential
+      chart.appendChild(el("polyline",{fill:"none",stroke:"var(--comp)","stroke-width":2.5,"stroke-linejoin":"round",points:pts(O.res,Yl)}));
+      // M&E
+      chart.appendChild(el("polyline",{fill:"none",stroke:"var(--accent)","stroke-width":1.75,"stroke-dasharray":"5 4",opacity:.7,"stroke-linejoin":"round",points:pts(O.me,Yl)}));
+      // IPP line
+      chart.appendChild(el("polyline",{fill:"none",stroke:"url(#gs-ipp-line)","stroke-width":3,"stroke-linejoin":"round",style:"filter:drop-shadow(var(--gfx-glow-soft))",points:pts(O.ipp,Yl)}));
+      // endpoints
+      var last=N-1;
+      chart.appendChild(el("circle",{cx:X1,cy:Yl(O.res[last]).toFixed(1),r:4,fill:"var(--comp)"}));
+      var t1=el("text",{x:X1-8,y:(Yl(O.res[last])-4.6).toFixed(1),"text-anchor":"end",fill:"var(--gann-cmp)","font-family":"var(--disp)","font-weight":700,"font-size":15}); t1.textContent="Residential C$95.0B"; chart.appendChild(t1);
+      chart.appendChild(el("circle",{cx:X1,cy:Yl(O.ipp[last]).toFixed(1),r:4.5,fill:"var(--accent)"}));
+      var t2=el("text",{x:X1-8,y:(Yl(O.ipp[last])-4.6).toFixed(1),"text-anchor":"end",fill:"var(--gann-val)","font-family":"var(--disp)","font-weight":700,"font-size":15}); t2.textContent="IP products C$34.4B"; chart.appendChild(t2);
+      var pk=O.years.indexOf(2021);
+      chart.appendChild(el("circle",{cx:X(pk).toFixed(1),cy:Yl(O.res[pk]).toFixed(1),r:4,fill:"var(--comp)"}));
+      var t3=el("text",{x:X(pk).toFixed(1),y:(Yl(O.res[pk])-8).toFixed(1),"text-anchor":"middle",fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":10}); t3.textContent="2021 peak C$109B"; chart.appendChild(t3);
+      title.textContent="Ontario business investment, by type — 2000 to 2025";
+      sub.textContent="Residential structures dwarf intellectual-property products and machinery & equipment";
+      cap.innerHTML='<b>The read:</b> In 2025 Ontario businesses invested <em>C$95.0B</em> in residential structures against just <em>C$34.4B</em> in intellectual property and <em>C$37.4B</em> in machinery &amp; equipment. Even taking IP and M&amp;E together (C$71.8B), housing alone is larger. The 4.5&#215; housing-to-IP peak of 2021 has narrowed to 2.76&#215; — progress, but the capital mix still favours buildings over the intangibles that scale the growth sectors.';
+    }
+    function renderRatio(){
+      clear(); chart.setAttribute("viewBox","0 0 900 470"); chart.appendChild(defs());
+      function Yr(v){return 410-(v/5)*366;}
+      chart.appendChild(grid([0,1,2,3,4,5],Yr,function(v){return v+"×";}));
+      var yl=el("text",{x:X0,y:34,fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":11}); yl.textContent="residential ÷ intellectual-property investment (times)"; chart.appendChild(yl);
+      chart.appendChild(xaxis());
+      // area under ratio
+      chart.appendChild(el("path",{fill:"url(#gs-ipp-area)",d:"M"+pts(O.ratio,Yr).replace(/ /g," L")+" L"+X1+",410 L"+X0+",410 Z"}));
+      chart.appendChild(el("polyline",{fill:"none",stroke:"url(#gs-ipp-line)","stroke-width":3,"stroke-linejoin":"round",style:"filter:drop-shadow(var(--gfx-glow-soft))",points:pts(O.ratio,Yr)}));
+      // reference at 1x (parity)
+      chart.appendChild(el("line",{x1:X0,y1:Yr(1),x2:X1,y2:Yr(1),stroke:"var(--accent)","stroke-width":1,"stroke-dasharray":"3 4",opacity:.5}));
+      var pk=O.years.indexOf(2021), last=N-1;
+      chart.appendChild(el("circle",{cx:X(pk).toFixed(1),cy:Yr(O.ratio[pk]).toFixed(1),r:5,fill:"var(--accent)"}));
+      var tp=el("text",{x:X(pk).toFixed(1),y:(Yr(O.ratio[pk])-9).toFixed(1),"text-anchor":"middle",fill:"var(--gann-val)","font-family":"var(--disp)","font-weight":700,"font-size":16}); tp.textContent="4.53× (2021)"; chart.appendChild(tp);
+      chart.appendChild(el("circle",{cx:X1,cy:Yr(O.ratio[last]).toFixed(1),r:5,fill:"var(--accent)"}));
+      var tn=el("text",{x:X1-8,y:(Yr(O.ratio[last])+18).toFixed(1),"text-anchor":"end",fill:"var(--gann-val)","font-family":"var(--disp)","font-weight":700,"font-size":16}); tn.textContent="2.76× (2025)"; chart.appendChild(tn);
+      title.textContent="Housing ÷ intellectual-property investment ratio — 2000 to 2025";
+      sub.textContent="How many dollars into residential structures for each dollar into IP products";
+      cap.innerHTML='<b>The read:</b> The ratio of residential-structures investment to intellectual-property investment climbed from ~2.6&#215; in 2000 to a <em>4.53&#215; peak in 2021</em>, then narrowed to <em>2.76&#215; in 2025</em> as IP investment grew and housing eased. Parity (1&#215;) — a dollar of intangibles for every dollar of housing — remains far below.';
+    }
+    function setView(v){
+      bL.setAttribute("aria-pressed", v==="levels"?"true":"false");
+      bR.setAttribute("aria-pressed", v==="ratio"?"true":"false");
+      if(v==="ratio") renderRatio(); else renderLevels();
+    }
+    bL.addEventListener("click",function(){setView("levels");});
+    bR.addEventListener("click",function(){setView("ratio");});
+    // re-render the default once to normalise to the JS layout
+    renderLevels();
+  }catch(e){}
+})();
+
+/* ---------- 2. Sector explorer (9-sector switcher) ---------- */
+(function(){
+  try{
+    var S = {
+      technology:{ name:"Technology", tier:"the spine sector",
+        lead:"Ontario's AI, quantum, semiconductor and photonics cluster — deep research strength, thin domestic scale-up capital.",
+        stats:[["$42–52B","AI GDP","Plus a projected $139B quantum opportunity by 2045."],
+               ["C$38.7B","Info & Culture real GDP","Ontario's tech & telecom output — up 16.5% since 2019 (OEA, 2025)."],
+               ["185","listed tech issuers","52 on the TSX (C$385B) and 133 on the TSXV (C$21B)."]],
+        cap:"ICT drew <strong>C$5.1B — 64% of all Canadian VC</strong> in 2025, yet <strong>Shopify (C$202B) is the lone technology name in the TSX's top 10</strong>. Only 10 TSXV tech firms have cleared the C$100M graduation mark, against 212 miners — the scale-up and liquidity gap in a single statistic.",
+        src:"Technology.md · CVCA 2025 · TMX (Feb 2026)", conf:"high" },
+      lifesci:{ name:"Life Sciences", tier:"biotech · medtech · health AI",
+        lead:"1,900 Ontario firms across biotech, medtech and health AI — strong science, cyclical and shrinking venture capital.",
+        stats:[["1,900","Ontario firms","C$65.2B revenues; a US$206.8B market projected by 2030."],
+               ["C$837M","life-sciences VC (2025)","Down 47% year-on-year — the lowest since 2018; 10% of Canadian VC."],
+               ["53 of 129","deals in Ontario","Ontario's share of national life-sciences venture deals in 2025."]],
+        cap:"Life-sciences venture funding <strong>fell 47% to C$837M across 129 deals</strong> in 2025 — its lowest since 2018 and just 10% of all Canadian VC. Public-market presence is thin (~40 TSX issuers, ~C$24B); on the CSE the largest 'life-sciences' names are US cannabis operators whose value reflects US, not Ontario, operations.",
+        src:"Life Sciences.md · CVCA 2025", conf:"high" },
+      cleantech:{ name:"Cleantech", tier:"clean energy · climate tech",
+        lead:"C$27.5B in Ontario revenue and a projected 731,600 clean-energy jobs — capital-intensive, financed off balance sheets and bonds.",
+        stats:[["C$27.5B","Ontario cleantech revenue","731,600 clean-energy jobs projected."],
+               ["C$16.4B","Utilities real GDP","Up 13.4% since 2019 — electricity the fastest-growing utility line (OEA, 2025)."],
+               ["28","cleantech TSX issuers","~C$56.5B combined market cap."]],
+        cap:"Cleantech is financed through <strong>project finance and green bonds</strong> rather than venture equity: Canada was the <strong>first sovereign to include nuclear in a green bond</strong> (C$4B, February 2024), and the Canada Infrastructure Bank and Canada Growth Fund have each committed C$1B+ to the Darlington SMR.",
+        src:"Cleantech.md · Canada.ca (2024)", conf:"high" },
+      advmfg:{ name:"Advanced Manufacturing", tier:"auto · batteries · industrial",
+        lead:"12% of Ontario's GDP and ~800,000 jobs — the sector most exposed to foreign capital and tariff risk.",
+        stats:[["12%","of Ontario GDP","~800,000 jobs; the province's industrial core."],
+               ["C$88.1B","Manufacturing real GDP","Down 6.9% since 2019; auto output down 12.1% (OEA, 2025)."],
+               ["$28B","EV/battery FDI announced","2022–24 — much of it paused, suspended or restructured by mid-2026."]],
+        cap:"Capital here is <strong>foreign direct investment and government grants, not equity markets</strong>: of the $28B in EV/battery FDI announced in 2022–24, most is paused (Honda, Umicore) or restructured (Stellantis/NextStar) by mid-2026, with almost no domestic public-market presence to anchor the value chain.",
+        src:"Advanced Manufacturing.md · OEA (2025)", conf:"high" },
+      mining:{ name:"Mining & Critical Minerals", tier:"where our markets lead",
+        lead:"The one sector where Ontario's public markets lead the world — but the capital flows to gold, not critical minerals.",
+        stats:[["$10B+","Ontario mineral production","Against a C$72.4B national project pipeline."],
+               ["~1,073","TSX/TSXV mining issuers","About 40% of the world's public mining companies."],
+               ["48 of 50","2026 TSX Venture 50","Miners — combined C$19.9B market cap, +443% average share price."]],
+        cap:"The TSX and TSXV are the <strong>world's leading mining-capital-formation venue</strong>, yet RBC finds Canada has channelled <strong>only 11% of mining capital into critical minerals over 25 years</strong> — Australia more than twice as much. Redirecting that listed-market capital is a direct capital-markets policy lever.",
+        src:"Mining & Critical Minerals.md · TMX (2026) · RBC", conf:"high" },
+      defense:{ name:"Defence", tier:"the new demand engine",
+        lead:"Transformed from peripheral to the cornerstone of federal economic strategy — a demand-side pull across every other sector.",
+        stats:[["$180B","procurement pipeline","Plus $290B in defence-related capital investment over 10 years."],
+               ["5% of GDP","NATO target by 2035","~$150B/year, up from ~$30B — 250+ defence/dual-use entities mapped."],
+               ["C$4B","BDC defence platform","The largest new sector-specific capital initiative (incl. C$500M investment)."]],
+        cap:"Defence is where <strong>value leakage is structurally prevented</strong> — security clearances and HQ requirements anchor firms domestically — but <strong>classified work complicates VC diligence and public listing</strong>, and Canada still lacks a dedicated defence-tech VC or accelerator on the scale of the US SBIR/STTR (~US$1.7–3B/year).",
+        src:"Defense.md · PMO (2026) · BDC (2025)", conf:"high" },
+      finserv:{ name:"Financial Services", tier:"the deepest markets sector",
+        lead:"Ontario's deepest capital-markets sector — and the one that dominates the TSX by value.",
+        stats:[["~C$1.9T","TSX market cap","Across 63 issuers — six of the TSX top 10, plus Brookfield."],
+               ["C$96.6B","Finance & Insurance real GDP","Up 28.3% since 2019 — the standout growth industry (OEA, 2025)."],
+               ["C$1.7B","fintech VC (2025)","Across 82 deals; Wealthsimple (~C$10B) the marquee scale-up."]],
+        cap:"Financial Services <strong>leads the TSX by capital</strong> — ~C$1.9T across just 63 issuers — and Finance & Insurance is Ontario's fastest-growing large industry (+28.3% since 2019). But fintech venture is <strong>concentrated in a handful of mega-rounds</strong> (Wealthsimple ~C$750M in 2025), while early-stage formation slumps.",
+        src:"Financial Services.md · OEA (2025) · KPMG (2026)", conf:"high" },
+      agrifood:{ name:"Agri-Food & Agri-Processing", tier:"under-capitalised scale",
+        lead:"A C$140B+ national sector with 49,000+ Ontario farms — under-capitalised relative to its scale.",
+        stats:[["C$140B+","national sector","49,000+ Ontario farms; the Leamington–Essex greenhouse cluster."],
+               ["C$13.8B","food & beverage mfg GDP","Plus C$10.1B in agriculture — up 29.3% since 2019 (OEA, 2025)."],
+               ["C$7B","FCC-led coalition","A C$2B Farm Credit Canada commitment scaled to a 20-org C$7B coalition."]],
+        cap:"AgTech venture capital is only <strong>~C$270M — about 2% of global deal value</strong> — so Canadian firms raise smaller rounds than peers. Capital is <strong>institution-led, not equity-market-led</strong>: Farm Credit Canada's C$2B commitment (now a C$7B coalition) is the sector's principal scaling vehicle.",
+        src:"Agri-Food & Agri-Processing.md · PitchBook · FCC", conf:"high" },
+      infra:{ name:"Infrastructure & Construction", tier:"pension-grade, mostly abroad",
+        lead:"The physical backbone of the 'Build Canada Strong' agenda — pension-grade capital that mostly flows abroad.",
+        stats:[["C$51B","Build Communities Strong Fund","Over 10 years + C$3B/year ongoing — the largest federal infra commitment in decades."],
+               ["C$56.7B","Construction real GDP","6.3% of Ontario GDP, roughly flat since 2019 (OEA, 2025)."],
+               ["C$30B+","OMERS infrastructure","CPP holds C$714B in total assets — deep institutional capacity."]],
+        cap:"Infrastructure is financed through <strong>P3s, green bonds and pension capital</strong> — Ontario has been a global P3 leader — but the <strong>'domestic allocation paradox'</strong> means most Canadian pension infrastructure capital funds foreign, not domestic, assets. The C$51B fund is a chance to close that gap.",
+        src:"Infrastructure & Construction.md · OEA (2025) · OMERS/CPP", conf:"high" }
+    };
+    var head=document.getElementById("secHead"), lead=document.getElementById("secLead"),
+        stats=document.getElementById("secStats"), cap=document.getElementById("secCap");
+    var chips=document.querySelectorAll(".secchip");
+    if(!head||!chips.length) return;
+    function render(key){
+      var d=S[key]; if(!d) return;
+      head.textContent = d.name+" · "+d.tier;
+      lead.textContent = d.lead;
+      var h="";
+      d.stats.forEach(function(s){ h+='<div class="secstat"><div class="kn">'+s[0]+'</div><div class="kc">'+s[1]+'</div><div class="kl">'+s[2]+'</div></div>'; });
+      stats.innerHTML=h;
+      cap.innerHTML=d.cap;
+      src.innerHTML='Source: '+d.src+'.<span class="conf '+d.conf+'">'+d.conf+'</span>';
+    }
+    chips.forEach(function(c){
+      c.addEventListener("click",function(){
+        chips.forEach(function(x){x.setAttribute("aria-pressed","false");});
+        c.setAttribute("aria-pressed","true");
+        render(c.getAttribute("data-sec"));
+      });
+    });
+    // build-time default (Technology) already in the DOM; no initial re-render needed.
+  }catch(e){}
+})();
+</script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magnet Forensics — Case Study · Canada's Champions</title>
+<meta name="description" content="Magnet Forensics case study: a healthy, profitable Waterloo software company that ended a 15-year Waterloo IPO drought on the TSX in 2021 — then was taken private by US private equity Thoma Bravo barely two years later. The public-market exit and the durability problem for the TSX.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+/* ============================================================================
+   CASE-STUDY REGISTER — scoped, shared across cases/*.html (duplicated verbatim; see
+   cases/README-cases.md §7). Descends from the Waabi / Xanadu POCs. Tokens only —
+   no literal hex except the four reserved semantic status colours below.
+   Page accent = ORANGE (the leakage/loss zone) — thematically apt for the take-private case.
+   ============================================================================ */
+body{--st-stay:#2fe6cd;--st-left:#ffb454;--st-acq:#9d8bff;--st-fail:#ff5d6c}
+html[data-theme="light"] body{--st-stay:#0e8a79;--st-left:#8f5400;--st-acq:#5b3fd0;--st-fail:#c62839}
+body.v-stay{--sc:var(--st-stay)}body.v-left{--sc:var(--st-left)}body.v-acq{--sc:var(--st-acq)}body.v-fail{--sc:var(--st-fail)}
+.topbar .back{color:var(--dim);text-decoration:none}
+.topbar .back:hover{color:var(--accent-txt)}
+.statusbadge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sc);border:1px solid var(--sc);border-radius:22px;padding:6px 15px;line-height:1;margin:6px 0 0}
+.statusbadge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sc);box-shadow:0 0 10px var(--sc);flex:0 0 auto}
+.hero-verdict{font-size:clamp(17px,2.3vw,22px);color:var(--body);max-width:60ch;line-height:1.5;margin-top:22px}
+.hero-verdict b{color:var(--ink)}
+.casefig{margin-top:48px;display:flex;flex-direction:column;gap:8px}
+.casefig .n{font-family:var(--disp);font-weight:700;color:var(--accent);font-size:clamp(52px,10vw,116px);line-height:.9;letter-spacing:-.035em;font-variant-numeric:tabular-nums;text-shadow:var(--numeral-glow)}
+.casefig .cap{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.casefig .l{font-size:14.5px;color:var(--body);max-width:54ch;line-height:1.55;margin-top:4px}
+html[data-theme="light"] .casefig .n{text-shadow:none}
+.captl{margin-top:34px;position:relative;padding-left:30px}
+.captl::before{content:"";position:absolute;left:6px;top:10px;bottom:10px;width:2px;background:linear-gradient(var(--accent),rgba(var(--accent-rgb),.12))}
+.capitem{position:relative;padding:0 0 30px}
+.capitem:last-child{padding-bottom:2px}
+.capitem::before{content:"";position:absolute;left:-30px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);box-shadow:0 0 10px rgba(var(--accent-rgb),.5)}
+.capitem.term::before{background:var(--sc);border-color:var(--sc);box-shadow:0 0 12px var(--sc)}
+.capitem .d{font-family:var(--mono);font-size:12px;color:var(--accent-txt);letter-spacing:.06em}
+.capitem .r{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:16.5px;margin:3px 0;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.capitem .a{font-family:var(--disp);font-weight:700;color:var(--accent);font-size:19px;font-variant-numeric:tabular-nums}
+.capitem.term .a{color:var(--sc)}
+.capitem .v{font-family:var(--mono);font-size:11.5px;color:var(--dim);margin-top:2px}
+.capitem .i{font-size:13.5px;color:var(--body);margin-top:8px;line-height:1.55;max-width:62ch}
+.capitem .i b{color:var(--ink)}
+.reported{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--left);border:1px solid var(--conf-soft-bd);border-radius:20px;padding:1px 7px}
+.moment{border-left:3px solid var(--accent);padding:6px 0 6px 26px;margin-top:16px;max-width:68ch}
+.moment .mt{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(20px,2.8vw,30px);line-height:1.22;letter-spacing:-.015em}
+.moment .mw{font-size:15.5px;color:var(--body);margin-top:16px;line-height:1.7}
+.moment .mw b{color:var(--ink)}
+.moment .ms{font-size:14.5px;color:var(--body);margin-top:14px;line-height:1.65}
+.moment .ms b{color:var(--accent-txt)}
+.vbox{border:1px solid var(--hair-strong);border-left:3px solid var(--sc);border-radius:14px;padding:26px 30px;margin-top:22px;background:linear-gradient(180deg,var(--band),transparent);max-width:72ch}
+.vbox .vb{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sc);border:1px solid var(--sc);border-radius:22px;padding:5px 14px;line-height:1;margin-bottom:16px}
+.vbox .vb::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sc);flex:0 0 auto}
+.vbox .vh{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(18px,2.3vw,24px);line-height:1.32;margin-bottom:12px}
+.vbox .vd{font-size:14.5px;color:var(--body);line-height:1.7}
+.vbox .vd b{color:var(--ink)}
+</style>
+</head>
+<body data-accent="orange" class="v-acq">
+<div class="prog" id="prog"></div>
+
+<div class="topbar">
+  <span class="tb-l brand"><span class="dot"></span><a class="back" href="../champions.html">← The Champions</a> · <b>Magnet Forensics</b></span>
+  <span class="tb-r">
+    <span class="links">
+      <a href="../index.html">Overview</a>
+      <a href="../champions.html">The Champions</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› case file · magnet forensics · won the listing, lost the issuer · sources verified"></div>
+    <div class="cat rv">◇ Case study · Acquired · Digital forensics SaaS · 2011–2023</div>
+    <h1 class="rv d1">Magnet Forensics</h1>
+    <div class="statusbadge rv d1">Acquired · take-private</div>
+    <div class="hero-verdict rv d1">A healthy, profitable Waterloo software company that ended a <b>15-year Waterloo IPO drought</b> on the TSX in 2021 — then was taken private by US private equity <b>Thoma Bravo</b> barely two years later. The public-market exit, and the durability problem for the TSX.</div>
+    <div class="casefig rv d2">
+      <div class="n">~C$1.8B</div>
+      <div class="cap">Thoma Bravo take-private (~US$1.3B) · Jan 2023 · barely two years after its TSX IPO</div>
+      <div class="l">TSX IPO Apr 2021 (priced C$17; ~C$115M raised) → delisted Apr 2023 · C$44.25/share cash to public holders · healthy when it left (C$92M ARR, profitable) · Waterloo ops stayed, the listing left.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="scale"><span class="o"></span>source</a>
+    <div class="scrollcue rv d3"><span class="arr"></span>the capital markets journey</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE CAPITAL JOURNEY ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> The capital-markets journey</div>
+    <h2 class="rv d1">Revenue-funded to the TSX — then off it in under two years.</h2>
+    <p class="lede rv d1">Magnet was unusually lightly venture-funded for its scale: largely revenue-funded, no pre-IPO mega-rounds. It reached the public markets, performed well, and then left them for US private ownership.</p>
+    <div class="captl rv d2">
+      <div class="capitem">
+        <div class="d">2011 · Founded · Waterloo</div>
+        <div class="r">Revenue-funded</div>
+        <div class="i">Founded by <b>Jad Saliba</b> (ex-Waterloo Regional Police, high-tech crimes unit) and <b>Adam Belsher</b> (ex-RIM/BlackBerry, CEO). Built digital-forensics software (Magnet AXIOM); grew largely on revenue, not venture mega-rounds.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Apr 28 2021 · TSX IPO (MAGT)</div>
+        <div class="r">Raise <span class="a">~C$115M</span></div>
+        <div class="v">priced C$17.00 (~C$100.1M base); opened C$22.50 (+32%); ~C$115M gross after upsizing</div>
+        <div class="i">The <b>first Waterloo-based IPO in 15 years</b> (since Sandvine, 2006). Led by ex-BlackBerry alumni; chairman Jim Balsillie.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">FY2022 · Public-company performance</div>
+        <div class="r">ARR <span class="a">C$92.0M</span></div>
+        <div class="v">+50% YoY (from C$61.3M); ~41% revenue growth; ~C$9.5M Adj. EBITDA; C$146.8M cash</div>
+        <div class="i">Healthy and profitable — <b>not a distressed seller</b>. A clean test of whether the TSX can <em>retain</em> a growth-tech issuer.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Jan 20 2023 · Take-private announced</div>
+        <div class="r">Deal <span class="a">~C$1.8B</span></div>
+        <div class="v">~US$1.3B; C$44.25 cash/share (public); ~15.4% premium to prior close, ~41% to 90-day VWAP</div>
+        <div class="i">Definitive agreement with <b>Thoma Bravo</b> — the US software-PE firm's first Canadian take-private. Rolling insiders took C$39.00/share and rolled equity into the private vehicle.</div>
+      </div>
+      <div class="capitem term">
+        <div class="d">Apr 2023 · Delisted · Grayshift merger</div>
+        <div class="r">MAGT <span class="a">delisted</span></div>
+        <div class="i">Shareholder vote Mar 15 2023 approved (a Nellore Capital-led ~11% dissident campaign fell short); plan of arrangement closed ~Apr 5 2023; MAGT delisted. Post-close, combined with US-based <b>Grayshift</b> into a private, US-owned digital-investigations group.</div>
+      </div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="journey"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 02 · THE DEFINING MOMENT ============ -->
+<section class="band alt tight" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> The defining moment</div>
+    <div class="moment rv d1">
+      <div class="mt">The public-market exit — healthy, and gone in under two years.</div>
+      <div class="mw">Magnet was <b>not a distressed seller</b>: at its last full year public (FY2022) it had ~C$92M ARR growing ~50%, positive Adjusted EBITDA and ~C$147M of cash. A company that ended a 15-year Waterloo IPO drought spent <b>under 24 months</b> as a public company before being absorbed into foreign private ownership — a US PE consolidator, not a Canadian acquirer or the public market itself. This is the <b>governance inversion</b> of Shopify: Magnet's insiders (Belsher, Saliba and chairman Balsillie held all multiple voting shares and &gt;95% of the voting power) used the same dual-class control not to resist a sale but to <b>deliver the company</b> to Thoma Bravo — taking C$39.00/share and rolling equity, while public holders received C$44.25 in cash.</div>
+      <div class="ms"><b>Why it mattered:</b> even when a Canadian company <em>succeeds</em> in reaching the public markets, the listing can prove short-lived. For the TSX the issue is <b>durability</b>: winning listings but losing them to take-privates within a couple of years does not build the deep roster of seasoned domestic issuers that anchors index inclusion, coverage and a self-reinforcing pipeline. And dual-class control is a retention mechanism <b>only if the controllers want to retain</b>.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="moment"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 03 · THE POLICY LENS ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> The policy lens</div>
+    <h2 class="rv d1">Making the TSX a more durable home.</h2>
+    <p class="lede rv d1">A premium take-private of a profitable company is a legitimate value-realisation event — the goal is not to block such deals but to ensure the public-market alternative is attractive enough that strong companies aren't structurally pushed off the exchange.</p>
+    <div class="evlist">
+      <div class="evrow rv d1"><div class="et">The public-company cost/benefit gap <span class="es">durability lever</span></div><div class="ed">Take-privates are partly driven by compliance burden, thin coverage and limited liquidity on a small-cap listing. Proportionate continuous-disclosure relief and scaled reporting change the calculus — <b>Lever ④ · listing &amp; disclosure</b>.</div></div>
+      <div class="evrow rv d1"><div class="et">Thin domestic institutional demand <span class="es">the discount problem</span></div><div class="ed">Many TSX tech small-caps trade at a discount with limited coverage, which makes a PE premium hard to refuse. Mobilizing Canadian pension/institutional capital into growth-stage public equities tightens that discount — <b>Lever ① Supply</b>.</div></div>
+      <div class="evrow rv d2"><div class="et">Secondary-market liquidity &amp; coverage <span class="es">the STAR-segment fix</span></div><div class="ed">Designated market-makers and mandated analyst coverage for qualifying mid-caps (Italy's STAR) make public valuations competitive with private bids — the cleanest causal liquidity fix, <b>Lever ④</b>.</div></div>
+      <div class="evrow rv d2"><div class="et">Dual-class cuts both ways <span class="es">the nuance</span></div><div class="ed">The same founder-control structure that kept Shopify independent delivered Magnet into foreign ownership. Governance design is a retention lever only alongside aligned incentives to stay listed.</div></div>
+    </div>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="../recommendations.html"><div class="n">LEVER ① + ④ · SUPPLY &amp; LIQUIDITY</div><div><div class="t">A public listing worth keeping</div><div class="d">Lower the cost of being a small public company, deepen the domestic bid, and add coverage/market-making so a strong issuer isn't structurally pushed off the TSX.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · REPLICABILITY VERDICT ============ -->
+<section class="band" data-rev>
+  <div class="wrap narrow">
+    <div class="kicker rv"><span class="l">04</span> Replicability verdict</div>
+    <h2 class="rv d1">The TSX can win a listing and still lose the issuer.</h2>
+    <div class="vbox rv d1">
+      <span class="vb">Acquired</span>
+      <div class="vh">A healthy TSX issuer, absorbed into US private ownership within two years.</div>
+      <div class="vd">Magnet is a clean public-market-shrinkage case: not a failure, but a profitable, fast-growing issuer that left the exchange for a US-PE consolidator barely two years after listing — the export-of-ownership pattern arriving at the <b>public-company</b> stage rather than the venture stage. Operations stayed in Waterloo; ownership, control, IP and the listing left. The levers are about <b>durability</b> — lowering the cost of being a small public company, deepening the domestic bid, and adding coverage and liquidity so the public-market alternative can compete with a private premium.</div>
+    </div>
+    <div class="pull rv d2" style="margin-top:34px">
+      <div class="q">Magnet ended a 15-year IPO drought — and left the exchange in under two years.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="verdict"><span class="o"></span>source</a>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="../champions.html"><div class="n">← BACK</div><div><div class="t">The roster</div><div class="d">All ~34 champions, sorted by outcome.</div></div></a>
+      <a class="nextrow rv d1" href="1password.html"><div class="n">SIBLING · STAYED PRIVATE</div><div><div class="t">1Password</div><div class="d">The other side of IPO decline — a company that <em>could</em> be public and chose not to be.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">Case study · Magnet Forensics</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="../methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">MAGNET FORENSICS · CASE STUDY · ACQUIRED · static-first · opens from file:// · fully readable offline</p>
+</footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<script>
+window.PROV = {
+  scale:{
+    t:"Scale — the public-market exit",
+    meta:'<b>Magnet case study</b> (Overview; Capital Markets Journey).<ul>'
+      +'<li>TSX IPO (MAGT, Apr 28 2021): priced <b>C$17.00</b>, opened C$22.50 (+32%), ~<b>C$115M</b> gross after upsizing — the first Waterloo IPO in 15 years.</li>'
+      +'<li>Taken private by <b>Thoma Bravo</b> (announced Jan 20 2023; closed ~Apr 5 2023) for <b>~C$1.8B (~US$1.3B)</b>; C$44.25/share cash to public holders, C$39.00 to rolling insiders.</li>'
+      +'<li>Healthy at exit: FY2022 ARR C$92.0M (+50% YoY), ~C$9.5M Adj. EBITDA, C$146.8M cash. Public tenure under two years.</li>'
+      +'</ul>Sources cited: Newswire; Globe and Mail; Magnet results; Thoma Bravo; Bloomberg.',
+    conf:"high"
+  },
+  journey:{
+    t:"The capital-markets journey",
+    meta:'<b>Magnet case study</b> — Capital Markets Journey.<ul>'
+      +'<li><b>Founded 2011</b> in Waterloo (Saliba, ex-police; Belsher, ex-RIM); largely revenue-funded, no pre-IPO mega-rounds.</li>'
+      +'<li><b>IPO Apr 2021:</b> TSX MAGT; C$17 price, C$22.50 open, ~C$115M gross.</li>'
+      +'<li><b>FY2022:</b> C$92.0M ARR (+50%), positive Adj. EBITDA, C$146.8M cash.</li>'
+      +'<li><b>Jan–Apr 2023:</b> Thoma Bravo take-private at ~C$1.8B; Mar 15 vote approved (Nellore ~11% dissident fell short); delisted; merged with Grayshift.</li>'
+      +'</ul>Sources cited: Newswire; BetaKit; Globe and Mail; Magnet 2022 results; Thoma Bravo; Bloomberg; GovTech.',
+    conf:"high"
+  },
+  moment:{
+    t:"The public-market exit (2023)",
+    meta:'<b>Magnet case study</b> — The Public-Market Exit (Why It Matters).<ul>'
+      +'<li>Healthy when it left (profitable, ~C$92M ARR, C$147M cash); public tenure under two years; exit to a US PE consolidator, not a Canadian acquirer or the public market.</li>'
+      +'<li>The governance inversion of Shopify: insiders (Belsher, Saliba, Balsillie; &gt;95% of voting power via MVS) used dual-class control to <em>sell</em> — rolling holders took C$39.00 and rolled equity, public holders C$44.25 cash.</li>'
+      +'<li>For the TSX the problem is durability: winning listings but losing them to take-privates within two years does not build a deep domestic issuer roster.</li>'
+      +'</ul>Sources cited: Globe and Mail (dissident/vote coverage); BetaKit; Thoma Bravo.',
+    conf:"medium"
+  },
+  verdict:{
+    t:"Replicability verdict",
+    meta:'<b>Magnet case study</b> — Retention vs. Leakage Assessment / OSC policy levers, cross-referenced to <b>IPO Decline &amp; Private Markets</b>, <b>Growth &amp; Venture Exchanges</b>, <b>Value Capture &amp; IP Loss</b> and <b>Corporate Governance &amp; Innovation Retention</b> (vault). A clean public-market-shrinkage case: a healthy TSX issuer absorbed into US private ownership within two years. Durability levers: lower the cost of a small public listing (Lever ④), deepen domestic institutional demand (Lever ①), add coverage/market-making (STAR-style). A premium take-private is legitimate; the aim is a competitive public alternative. An analytic assessment.',
+    conf:"medium"
+  }
+};
+</script>
+<script src="../app.js"></script>
+</body>
+</html>

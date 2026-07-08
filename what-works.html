@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Works Abroad — Scaling & Retaining Canada's Champions</title>
+<meta name="description" content="The comparator layer of Ontario's capital-markets research report: the comparator field shaded by venture intensity, the eight-mechanism program toolkit, public-to-private leverage ratios, and the Asian retail-liquidity model read honestly.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Page-scoped components (token-driven only).
+   MAP DECISION: the old shell shipped a D3 + topojson world choropleth (two external
+   CDN scripts). Per the zero-external-scripts rule and §5.2, a world map does NOT earn
+   its place here — the geography carries no analytic weight the labels don't, and the
+   crowded European field needed an inset just to be clickable. It is REPLACED by a
+   build-time inline-SVG comparator TILE GRID (a regional cartogram-style arrangement),
+   choropleth-shaded by VC/GDP via accent-opacity buckets, with CSS-only hover/focus
+   emphasis. ALL per-jurisdiction data (VC/GDP, program, velocity, lesson) is preserved
+   as static-legible content in the tile grid + the full detail list below it — nothing
+   is lost, and it reads with JS off.
+   1. .cmpgrid .tile — the comparator tiles; fill = page-accent (violet) at bucketed
+      opacity; .subj = Canada (accent + soft glow); .prog = grey (no VC/GDP figure).
+   2. .jurlist / .jurrow — the full per-jurisdiction detail rows (name+VC → program+lesson).
+   3. .evlist / .evrow — the toolkit + read rows. The base pattern lives in styles.css; this
+      page overrides just the row's column width, below.
+   4. .hbar-lab / .hbar-val are promoted to styles.css — no local definition needed. */
+.cmpgrid .tile rect{stroke:var(--hair-strong);stroke-width:1;transition:filter .18s,stroke .15s}
+.cmpgrid .tile.p0 rect{fill:rgba(var(--accent-rgb),.14)}
+.cmpgrid .tile.p1 rect{fill:rgba(var(--accent-rgb),.30)}
+.cmpgrid .tile.p2 rect{fill:rgba(var(--accent-rgb),.55)}
+.cmpgrid .tile.p3 rect{fill:rgba(var(--accent-rgb),.85)}
+.cmpgrid .tile.prog rect{fill:var(--band);stroke:var(--hair)}
+.cmpgrid .tile.subj rect{fill:var(--accent);filter:drop-shadow(var(--gfx-glow-soft))}
+.cmpgrid .tile .tn{font-family:var(--disp);font-weight:600;font-size:16px;fill:var(--ink)}
+.cmpgrid .tile .tv{font-family:var(--mono);font-size:11.5px;fill:var(--body);letter-spacing:.02em}
+.cmpgrid .tile.p2 .tn,.cmpgrid .tile.p3 .tn,.cmpgrid .tile.subj .tn{fill:var(--bg)}
+.cmpgrid .tile.p2 .tv,.cmpgrid .tile.p3 .tv,.cmpgrid .tile.subj .tv{fill:var(--bg);opacity:.85}
+.cmpgrid .tile:hover rect,.cmpgrid .tile:focus-visible rect{filter:drop-shadow(var(--gfx-glow-soft));stroke:var(--accent);stroke-width:1.4;outline:none}
+.cmpgrid .tile{cursor:default}
+.jurlist{margin-top:40px;border-top:1px solid var(--hair)}
+.jurrow{display:grid;grid-template-columns:minmax(170px,1fr) 2.6fr;gap:26px;padding:22px 0;border-bottom:1px solid var(--hair);border-left:3px solid var(--jc,var(--slate));padding-left:20px;align-items:baseline}
+.jurrow.subj{--jc:var(--accent)}
+.jurrow .jn{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(16px,1.9vw,20px);letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.jurrow .jv{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--accent-txt)}
+.jurrow .jvel{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--dim);margin-top:7px}
+.jurrow .jp{font-size:14px;color:var(--body);line-height:1.58;max-width:60ch}
+.jurrow .jp b{color:var(--ink)}
+.jurrow .jl{font-size:13.5px;color:var(--ink);line-height:1.5;margin-top:8px;max-width:60ch;font-style:italic}
+/* .evlist/.evrow base promoted to styles.css; this page's rows are one size narrower. */
+.evrow{grid-template-columns:minmax(190px,1fr) 2.6fr;padding:24px 0}
+.evrow .et{font-size:clamp(16px,1.9vw,20px)}
+.gridkey{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--dim);margin-top:20px;letter-spacing:.03em;align-items:center}
+.gridkey i{width:26px;height:11px;border-radius:3px;display:inline-block;vertical-align:middle}
+.gridkey .ramp{display:inline-block;width:120px;height:11px;border-radius:3px;background:linear-gradient(90deg,rgba(var(--accent-rgb),.14),rgba(var(--accent-rgb),.85))}
+/* NEW-for-review chip (scoped) — a small mono flag Carlo can spot on the added section header. */
+.tag-new{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--accent);border-radius:5px;padding:3px 8px;vertical-align:middle;margin-left:12px;box-shadow:var(--gfx-glow-soft)}
+html[data-theme="light"] .tag-new{color:var(--bg);background:var(--accent-deep)}
+/* .wwcase — light "case study →" affordance linking a jurisdiction's comparator case page (cases/). */
+.wwcase{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-txt);text-decoration:none;border-bottom:1px solid rgba(var(--accent-rgb),.4);margin-left:9px;white-space:nowrap;transition:border-color .15s,color .15s}
+.wwcase:hover{color:var(--ink);border-bottom-color:var(--accent-txt)}
+/* Compendium-highlights compact two-column figure grid (§ new section only). */
+.chgrid{display:grid;grid-template-columns:1fr 1fr;gap:52px 56px;margin-top:44px}
+.chgrid .cell{min-width:0}
+.chgrid .cell h3{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(17px,2vw,21px);letter-spacing:-.01em;margin:0}
+.chgrid .cell .csub{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;margin-top:7px}
+.chgrid .cell .cstory{font-size:14px;color:var(--body);line-height:1.6;margin:14px 0 0;max-width:52ch}
+.chgrid .cell .cstory b{color:var(--ink)}
+.chgrid .cell .svgwrap{margin-top:20px}
+.chgrid .cell .provpill{margin-top:12px}
+/* CGT relief chips: a compact yes/no lattice, family palette not greys. */
+.cgtlat{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.cgtchip{font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;border-radius:7px;padding:7px 11px;border:1px solid var(--hair-strong);color:var(--body);line-height:1.35}
+.cgtchip b{color:var(--ink);font-weight:700}
+.cgtchip.has{border-color:rgba(var(--accent-rgb),.55);background:rgba(var(--accent-rgb),.10);color:var(--accent-txt)}
+.cgtchip.has b{color:var(--accent-txt)}
+.cgtchip.none{border-left:3px solid var(--leak)}
+.cgtchip.subj{border-color:var(--accent);background:var(--accent);color:var(--bg);box-shadow:var(--gfx-glow-soft)}
+.cgtchip.subj b{color:var(--bg)}
+@media(max-width:860px){.chgrid{grid-template-columns:1fr;gap:46px}}
+@media(max-width:640px){.jurrow,.evrow{grid-template-columns:1fr;gap:8px}}
+</style>
+</head>
+<body data-accent="violet">
+<div class="prog" id="prog"></div>
+
+<!-- ====== SHARED SHELL TOPBAR (Mission Control; what-works active) ====== -->
+<div class="topbar">
+  <a class="tb-l brand" href="index.html"><span class="dot"></span><b>Canada's Champions</b></a>
+  <span class="tb-r">
+        <span class="links">
+      <a href="index.html">Overview</a>
+      <a href="growth-prize.html">Prize</a>
+      <a href="strengths.html">Strengths</a>
+      <a href="growth-sectors.html">Sectors</a>
+      <a href="public-markets.html" title="Public Markets">Markets</a>
+      <a href="financing-gap.html" title="The Financing Gap">Gap</a>
+      <a href="what-works.html" class="on" title="What Works Abroad">Abroad</a>
+      <a href="comparators.html" title="The Comparators">Compare</a>
+      <a href="champions.html">Champions</a>
+      <a href="recommendations.html" title="Recommendations">Recs</a>
+      <a href="methodology.html" title="Methodology &amp; Sources">Method</a>
+      <span class="tb-div" aria-hidden="true"></span>
+      <span class="tb-grouplab">Data</span>
+      <a href="exchanges.html" title="The Exchanges — interactive">Exchanges</a>
+      <a href="global-exchanges.html" title="Global Exchanges Explorer">Global</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› comparators · the program toolkit · the asian liquidity model"></div>
+    <div class="cat rv">◇ Comparators · what works abroad</div>
+    <h1 class="rv d1">What the jurisdictions that kept their champions did.</h1>
+    <div class="tag rv d1">Canada's problem — under-invested venture, under-traded public markets, champions sold or scaled abroad — is not unique. Other middle powers faced the same gravity and built mechanisms to resist it: permanent fund-of-funds, contractual domestic reinvestment, retail tax wrappers, designated market-makers, mandatory savings pools. This is the comparator field, the working program toolkit, and the one model — Asian retail liquidity — that looks like magic but comes with an honest caveat.</div>
+    <div class="sigwrap">
+      <div class="signum rv d1">8</div>
+      <div>
+        <div class="sigpct rv d2">mechanisms that actually moved capital</div>
+        <div class="siglab rv d2">Across 14 comparator jurisdictions, the working toolkit reduces to eight mechanisms in two families — supply-side leverage and demand-side anchoring — plus one clean liquidity fix.</div>
+        <a href="methodology.html#register" class="provpill rv d2" data-prov="toolkit"><span class="o"></span>source</a>
+      </div>
+    </div>
+    <div class="scrollcue rv d3"><span class="arr"></span>scroll the comparators</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE COMPARATOR FIELD — inline-SVG tile grid (replaces the D3 map) ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> The comparator field</div>
+    <h2 class="rv d1">Where the capital flows — and where it stays.</h2>
+    <p class="lede rv d1">Each <em>tile</em> is a comparator jurisdiction, grouped by region and shaded by venture-capital intensity (% of GDP) where known. Grey tiles appear for a program or liquidity model only and carry no VC/GDP figure. Canada is the subject — the vivid accent tile, not a model. The full program, turnover-velocity and one-line lesson for every jurisdiction is in the detail list below.</p>
+    <div class="chart-head rv d2" style="margin-top:44px">
+      <h3>14 comparator jurisdictions, by venture intensity</h3>
+      <div class="sub">VC / GDP shading · grey = program-only · violet = the subject</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="A comparator grid of fourteen jurisdictions, grouped Americas, Europe-plus-Israel, and Asia-Pacific, shaded by venture capital as a share of GDP. Israel is highest at 1.81 percent, then the United States at 0.53 percent; Canada, the subject, sits at 0.20 percent alongside France and South Korea at 0.25, the UK at 0.18, and Sweden at 0.11. Germany, Italy, Japan, Taiwan, Hong Kong, Singapore and Australia appear for their program or liquidity model only and carry no VC/GDP figure.">
+      <svg viewBox="0 0 900 560" class="cmpgrid" role="list">
+        <defs>
+          <linearGradient id="ww-tile-subj" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" style="stop-color:var(--accent-deep)"/>
+            <stop offset="1" style="stop-color:var(--accent)"/>
+          </linearGradient>
+        </defs>
+        <text x="34" y="34" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" letter-spacing=".12em">AMERICAS</text>
+        <g class="tile subj" role="listitem" aria-label="Canada, the subject: VC/GDP 0.20%">
+          <rect x="30" y="56" width="250" height="70" rx="8" style="fill:url(#ww-tile-subj)"/>
+          <text class="tn" x="46" y="86">Canada · subject</text>
+          <text class="tv" x="46" y="108">VC/GDP 0.20%</text>
+        </g>
+        <g class="tile p2" role="listitem" aria-label="United States: VC/GDP 0.53%">
+          <rect x="30" y="138" width="250" height="70" rx="8"/>
+          <text class="tn" x="46" y="168">United States</text>
+          <text class="tv" x="46" y="190">VC/GDP 0.53%</text>
+        </g>
+
+        <text x="302" y="34" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" letter-spacing=".12em">EUROPE + ISRAEL</text>
+        <g class="tile p1" role="listitem" aria-label="United Kingdom: VC/GDP 0.18%">
+          <rect x="298" y="56" width="250" height="70" rx="8"/>
+          <text class="tn" x="314" y="86">United Kingdom</text>
+          <text class="tv" x="314" y="108">VC/GDP 0.18%</text>
+        </g>
+        <g class="tile p1" role="listitem" aria-label="France: VC/GDP 0.25%">
+          <rect x="298" y="138" width="250" height="70" rx="8"/>
+          <text class="tn" x="314" y="168">France</text>
+          <text class="tv" x="314" y="190">VC/GDP 0.25%</text>
+        </g>
+        <g class="tile prog" role="listitem" aria-label="Germany: program / liquidity model only">
+          <rect x="298" y="220" width="250" height="70" rx="8"/>
+          <text class="tn" x="314" y="250">Germany</text>
+          <text class="tv" x="314" y="272">program / liquidity model</text>
+        </g>
+        <g class="tile p0" role="listitem" aria-label="Sweden: VC/GDP 0.11%">
+          <rect x="298" y="302" width="250" height="70" rx="8"/>
+          <text class="tn" x="314" y="332">Sweden</text>
+          <text class="tv" x="314" y="354">VC/GDP 0.11%</text>
+        </g>
+        <g class="tile prog" role="listitem" aria-label="Italy: program / liquidity model only">
+          <rect x="298" y="384" width="250" height="70" rx="8"/>
+          <text class="tn" x="314" y="414">Italy</text>
+          <text class="tv" x="314" y="436">program / liquidity model</text>
+        </g>
+        <g class="tile p3" role="listitem" aria-label="Israel: VC/GDP 1.81%">
+          <rect x="298" y="466" width="250" height="70" rx="8"/>
+          <text class="tn" x="314" y="496">Israel</text>
+          <text class="tv" x="314" y="518">VC/GDP 1.81%</text>
+        </g>
+
+        <text x="570" y="34" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" letter-spacing=".12em">ASIA-PACIFIC</text>
+        <g class="tile p1" role="listitem" aria-label="South Korea: VC/GDP 0.25%">
+          <rect x="566" y="56" width="250" height="70" rx="8"/>
+          <text class="tn" x="582" y="86">South Korea</text>
+          <text class="tv" x="582" y="108">VC/GDP 0.25%</text>
+        </g>
+        <g class="tile prog" role="listitem" aria-label="Japan: program / liquidity model only">
+          <rect x="566" y="138" width="250" height="70" rx="8"/>
+          <text class="tn" x="582" y="168">Japan</text>
+          <text class="tv" x="582" y="190">program / liquidity model</text>
+        </g>
+        <g class="tile prog" role="listitem" aria-label="Taiwan: program / liquidity model only">
+          <rect x="566" y="220" width="250" height="70" rx="8"/>
+          <text class="tn" x="582" y="250">Taiwan</text>
+          <text class="tv" x="582" y="272">program / liquidity model</text>
+        </g>
+        <g class="tile prog" role="listitem" aria-label="Hong Kong: program / liquidity model only">
+          <rect x="566" y="302" width="250" height="70" rx="8"/>
+          <text class="tn" x="582" y="332">Hong Kong</text>
+          <text class="tv" x="582" y="354">program / liquidity model</text>
+        </g>
+        <g class="tile prog" role="listitem" aria-label="Singapore: program / liquidity model only">
+          <rect x="566" y="384" width="250" height="70" rx="8"/>
+          <text class="tn" x="582" y="414">Singapore</text>
+          <text class="tv" x="582" y="436">program / liquidity model</text>
+        </g>
+        <g class="tile prog" role="listitem" aria-label="Australia: program / liquidity model only">
+          <rect x="566" y="466" width="250" height="70" rx="8"/>
+          <text class="tn" x="582" y="496">Australia</text>
+          <text class="tv" x="582" y="518">program / liquidity model</text>
+        </g>
+      </svg>
+    </div>
+    <div class="gridkey rv d2" aria-hidden="true">
+      <span>VC / GDP</span><span class="ramp"></span><span>low → high</span>
+      <span><i style="background:var(--accent)"></i>Canada (subject)</span>
+      <span><i style="background:var(--band);border:1px solid var(--hair)"></i>program-only (no VC/GDP)</span>
+    </div>
+    <div class="mininote rv d2">VC/GDP from the OECD Entrepreneurship Financing DB / national-source compilation in the vault comparator compendium. Velocity figures (in the detail list) are annualised turnover (value traded ÷ market cap). Several jurisdictions appear for their program or liquidity model only and carry no VC/GDP shading.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="field"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 01b · THE FULL PER-JURISDICTION DETAIL (nothing lost from the old hover panel) ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">—</span> The comparator field, in full</div>
+    <h2 class="rv d1">Every jurisdiction — program, velocity, lesson.</h2>
+    <p class="lede rv d1">The detail the old map surfaced on hover, now permanently legible: each comparator's signature program, turnover velocity, and the one-line lesson.</p>
+    <div class="jurlist">
+      <div class="jurrow subj rv d1">
+        <div><div class="jn">Canada <span class="jv">VC 0.20%</span></div><div class="jvel">velocity TSX ~64% / TSXV ~45%</div></div>
+        <div><div class="jp"><b>The subject</b> — under-invested and under-traded.</div><div class="jl">The subject, not a model.</div></div>
+      </div>
+      <div class="jurrow rv d1">
+        <div><div class="jn">Israel <span class="jv">VC 1.81%</span></div><div class="jvel">velocity n/a</div></div>
+        <div><div class="jp"><b>Yozma</b> (1993 — 40% government equity + a cheap buyout option; fully privatised by 1998).</div><div class="jl">Seeded a VC industry, built in the exit, then got out.</div></div>
+      </div>
+      <div class="jurrow rv d1">
+        <div><div class="jn">United States <span class="jv">VC 0.53%</span></div><div class="jvel">velocity ~96% (NYSE) / ~95% (Nasdaq)</div></div>
+        <div><div class="jp"><b>SBIC</b> — SBA debenture leverage at 2:1 over private capital; decades-old plumbing under US venture debt.</div><div class="jl">Deep private capital — the benchmark.</div></div>
+      </div>
+      <div class="jurrow rv d2">
+        <div><div class="jn">South Korea <span class="jv">VC 0.25%</span></div><div class="jvel">velocity ~201%</div></div>
+        <div><div class="jp"><b>KVIC Mother Fund</b> (₩10.9T, ~3:1 leverage; the Global Fund tranche requires ≥1× reinvestment back into Korea).</div><div class="jl">A permanent FoF + contractual domestic reinvestment + deep retail liquidity.</div></div>
+      </div>
+      <div class="jurrow rv d2">
+        <div><div class="jn">France <span class="jv">VC 0.25%</span></div><div class="jvel">velocity n/a</div></div>
+        <div><div class="jp"><b>Initiative Tibi</b> — a voluntary charter mobilising insurer and institutional capital; €15B+ committed across two waves.</div><div class="jl">A charter can mobilise insurer capital — but soft pledges leak.</div></div>
+      </div>
+      <div class="jurrow rv d2">
+        <div><div class="jn">United Kingdom <span class="jv">VC 0.18%</span></div><div class="jvel">velocity n/a</div></div>
+        <div><div class="jp"><b>Mansion House Accord</b> — a voluntary DC-pension pledge to domestic assets, backed by a statutory reserve power to mandate.</div><div class="jl">Voluntary pledges underdeliver — ~0.6% achieved against a 5% goal.</div></div>
+      </div>
+      <div class="jurrow rv d3">
+        <div><div class="jn">Sweden <span class="jv">VC 0.11%</span></div><div class="jvel">velocity n/a</div></div>
+        <div><div class="jp"><b>ISK Account</b> — a retail flat-tax investment wrapper now held by ~40% of the population.</div><div class="jl">A simple retail tax wrapper builds a deep domestic equity base.</div></div>
+      </div>
+      <div class="jurrow rv d3">
+        <div><div class="jn">Italy <span class="jv">program-only</span></div><div class="jvel">velocity n/a</div></div>
+        <div><div class="jp"><b>STAR Segment</b> — designated market-makers + mandated analyst coverage for qualifying mid-caps.</div><div class="jl">Coverage + market-making is the cleanest causal liquidity fix — spreads down 15–40%.</div></div>
+      </div>
+      <div class="jurrow rv d3">
+        <div><div class="jn">Germany <span class="jv">program-only</span></div><div class="jvel">velocity n/a</div></div>
+        <div><div class="jp"><b>WIN</b> (€12B voluntary) + <b>Wachstumsfonds</b> (~€1B FoF).</div><div class="jl">Voluntary institutional commitment to domestic VC.</div></div>
+      </div>
+      <div class="jurrow rv d4">
+        <div><div class="jn">Taiwan <span class="jv">program-only</span></div><div class="jvel">velocity ~124%</div></div>
+        <div><div class="jp"><b>Retail-driven turnover</b> — ~54% of all turnover is retail order flow.</div><div class="jl">Retail-driven turnover, paired with a high-growth board.</div></div>
+      </div>
+      <div class="jurrow rv d4">
+        <div><div class="jn">Japan <span class="jv">program-only</span></div><div class="jvel">velocity ~117%</div></div>
+        <div><div class="jp"><b>NISA</b> (cautionary) — the retail wrapper's flows skewed to foreign index funds; TSE Growth Market for graduation.</div><div class="jl">A retail wrapper can fail if it funds foreign funds.</div></div>
+      </div>
+      <div class="jurrow rv d4">
+        <div><div class="jn">Hong Kong <span class="jv">program-only</span></div><div class="jvel">velocity ~67%</div></div>
+        <div><div class="jp"><b>Deep retail / secondary liquidity.</b></div><div class="jl">Deep retail / secondary liquidity.</div></div>
+      </div>
+      <div class="jurrow rv d5">
+        <div><div class="jn">Singapore <span class="jv">program-only</span></div><div class="jvel">velocity n/a</div></div>
+        <div><div class="jp"><b>EQDP</b> — a state equity demand floor, S$5B+.</div><div class="jl">State-anchored demand for listings.</div></div>
+      </div>
+      <div class="jurrow rv d5">
+        <div><div class="jn">Australia <span class="jv">program-only</span></div><div class="jvel">velocity ~52%</div></div>
+        <div><div class="jp"><b>Superannuation</b> — A$4.2T of mandatory retirement savings; a standing institutional bid that finances domestic markets.</div><div class="jl">Mandatory savings create a permanent domestic institutional demand base.</div></div>
+      </div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="field"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 02 · THE PROGRAM TOOLKIT — evidence rows ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> The program toolkit</div>
+    <h2 class="rv d1">Eight mechanisms that actually moved capital.</h2>
+    <p class="lede rv d1">Strip away the labels and the toolkit is small. Two families dominate: <em>supply-side leverage</em> (state co-investment that pulls in private capital, then exits) and <em>demand-side anchoring</em> (a standing domestic bid — pensions, retail, insurers). The cleanest causal liquidity fix is neither — it is market-making plus mandated coverage.</p>
+    <div class="evlist">
+      <div class="evrow rv d1">
+        <div><div class="et">KVIC Mother Fund</div><div class="es">Korea · supply-side</div></div>
+        <div><div class="ed">A permanent ₩10.9T state fund-of-funds (~3:1 private leverage). The Global Fund tranche <b>requires ≥1× reinvestment back into Korea</b>.</div><div class="el">A permanent FoF plus contractual domestic reinvestment keeps the value at home.</div></div>
+      </div>
+      <div class="evrow rv d1">
+        <div><div class="et">Yozma</div><div class="es">Israel · supply-side</div></div>
+        <div><div class="ed">1993 government VC: <b>40% public equity + a cheap buyout option</b> for the private side. Fully privatised by 1998.</div><div class="el">Seed a VC industry, build in the exit, then get out.</div></div>
+      </div>
+      <div class="evrow rv d1">
+        <div><div class="et">SBIC</div><div class="es">United States · supply-side</div></div>
+        <div><div class="ed">SBA debenture leverage at <b>2:1</b> over private capital — decades-old plumbing under US venture debt.</div><div class="el">Cheap public leverage scales private deployment — but needs deep private capital first.</div></div>
+      </div>
+      <div class="evrow rv d2">
+        <div><div class="et">Initiative Tibi</div><div class="es">France · demand-side <a class="wwcase" href="cases/mistral.html">Mistral · case study →</a></div></div>
+        <div><div class="ed">A <b>voluntary charter</b> mobilising insurer and institutional capital — €15B+ committed across two waves.</div><div class="el">A charter can mobilise insurer capital — but soft pledges leak.</div></div>
+      </div>
+      <div class="evrow rv d2">
+        <div><div class="et">Mansion House Accord</div><div class="es">UK · demand-side</div></div>
+        <div><div class="ed">Voluntary DC-pension pledge to domestic assets, backed by a statutory <b>reserve power</b> to mandate.</div><div class="el">Voluntary pledges underdeliver — ~0.6% achieved against a 5% goal.</div></div>
+      </div>
+      <div class="evrow rv d2">
+        <div><div class="et">ISK Account</div><div class="es">Sweden · demand-side <a class="wwcase" href="cases/spotify.html">Spotify · case study →</a></div></div>
+        <div><div class="ed">A retail <b>flat-tax investment wrapper</b> now held by ~40% of the population.</div><div class="el">A simple retail tax wrapper builds a deep domestic equity base.</div></div>
+      </div>
+      <div class="evrow rv d3">
+        <div><div class="et">Superannuation</div><div class="es">Australia · demand-side <a class="wwcase" href="cases/canva.html">Canva · case study →</a></div></div>
+        <div><div class="ed"><b>A$4.2T of mandatory retirement savings</b> — a standing institutional bid that finances domestic markets.</div><div class="el">Mandatory savings create a permanent domestic institutional demand base.</div></div>
+      </div>
+      <div class="evrow rv d3">
+        <div><div class="et">STAR Segment</div><div class="es">Italy · liquidity</div></div>
+        <div><div class="ed"><b>Designated market-makers + mandated analyst coverage</b> for qualifying mid-caps.</div><div class="el">Coverage + market-making is the cleanest causal liquidity fix — spreads down 15–40%.</div></div>
+      </div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="toolkit"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 03 · LEVERAGE RATIOS — inline-SVG ranked bars ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> Public : private leverage</div>
+    <h2 class="rv d1">Leverage ratios — and the voluntary outliers.</h2>
+    <p class="lede rv d1">The state-co-investment programs differ mainly in how much private capital each public dollar pulls in. The charter programs (Tibi, Mansion House) commit <em>no public money at all</em> — they rely on persuasion, which is exactly why they underdeliver.</p>
+    <div class="chart-head rv d2" style="margin-top:44px">
+      <h3>Private capital pulled in, per public dollar</h3>
+      <div class="sub">State co-investment programs · KVIC / NZGCP / SBA / IIA</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="Ranked bars of public-to-private leverage. NZ Elevate and KVIC (Korea) each pull about 3 dollars of private capital per public dollar; SBIC (US) 2 to 1; Yozma (Israel) about 1.5 to 1. Tibi (France) and Mansion House (UK) deploy no public capital — voluntary charters, shown at a nominal length.">
+      <svg viewBox="0 0 900 300">
+        <defs>
+          <linearGradient id="ww-lev-subj" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" style="stop-color:var(--accent-deep)"/>
+            <stop offset="1" style="stop-color:var(--accent)"/>
+          </linearGradient>
+        </defs>
+        <line x1="210" y1="20" x2="210" y2="256" stroke="var(--hair)" stroke-width="1"/>
+        <!-- NZ Elevate ~3:1 (560) -->
+        <text x="200" y="42" text-anchor="end" class="hbar-lab">NZ Elevate</text>
+        <rect class="ramp-2" x="210" y="24" width="560" height="28" rx="4"/>
+        <text x="778" y="43" class="hbar-val">~3:1</text>
+        <!-- KVIC ~3:1 (560) — SUBJECT: gradient + glow (a keeper program) -->
+        <text x="200" y="80" text-anchor="end" class="hbar-lab subj">KVIC (Korea)</text>
+        <rect class="subj-glow" x="210" y="62" width="560" height="28" rx="4" fill="url(#ww-lev-subj)"/>
+        <text x="778" y="81" class="hbar-val subj">~3:1</text>
+        <!-- SBIC 2:1 (373) -->
+        <text x="200" y="118" text-anchor="end" class="hbar-lab">SBIC (US)</text>
+        <rect class="ramp-3" x="210" y="100" width="373" height="28" rx="4"/>
+        <text x="591" y="119" class="hbar-val">2:1</text>
+        <!-- Yozma ~1.5:1 (280) -->
+        <text x="200" y="156" text-anchor="end" class="hbar-lab">Yozma (Israel)</text>
+        <rect class="ramp-4" x="210" y="138" width="280" height="28" rx="4"/>
+        <text x="498" y="157" class="hbar-val">~1.5:1</text>
+        <!-- Tibi voluntary (28, nominal) -->
+        <text x="200" y="194" text-anchor="end" class="hbar-lab">Tibi (France)</text>
+        <rect class="ramp-6" x="210" y="176" width="28" height="28" rx="4"/>
+        <text x="246" y="195" class="hbar-val" style="fill:var(--dim)">voluntary — no public capital</text>
+        <!-- Mansion House voluntary (28, nominal) -->
+        <text x="200" y="232" text-anchor="end" class="hbar-lab">Mansion House (UK)</text>
+        <rect class="ramp-6" x="210" y="214" width="28" height="28" rx="4"/>
+        <text x="246" y="233" class="hbar-val" style="fill:var(--dim)">voluntary — no public capital</text>
+        <!-- baseline -->
+        <line x1="210" y1="256" x2="770" y2="256" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="210" y="278" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">0</text>
+        <text x="770" y="278" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">~3× private capital per public $</text>
+      </svg>
+    </div>
+    <div class="mininote rv d2">Private capital pulled in per public dollar. <b>NZ Elevate</b> and <b>KVIC</b> pull ~C$3 of private money per public dollar; <b>SBIC</b> 2:1; <b>Yozma</b> ~1.5:1. <b>Tibi</b> and <b>Mansion House</b> deploy no public capital — bars shown nominally.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="leverage"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 04 · THE ASIAN LIQUIDITY MODEL — velocity bars + the honest caveat ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04</span> The Asian liquidity model</div>
+    <h2 class="rv d1">Retail turnover drives the velocity outliers — but read it carefully.</h2>
+    <p class="lede rv d1">The exchanges with the highest turnover velocity run on retail order flow: <em>Korea ~64% and Taiwan ~54% of all turnover is retail</em>. They pair that demand base with a dedicated high-growth board and a graduation pipeline — KOSDAQ in Korea, the TSE Growth Market in Japan — so scaling companies have a venue with depth before they reach the senior board.</p>
+    <div class="chart-head rv d2" style="margin-top:44px">
+      <h3>Turnover velocity, annualised</h3>
+      <div class="sub">Value traded ÷ market cap · OECD Asia Capital Markets Report</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="Ranked turnover-velocity bars on one consistent WFE 2024 basis (value traded EOB ÷ market cap). South Korea about 201 percent, Taiwan about 124, Japan about 117, United States NYSE about 96, United States Nasdaq about 95, Hong Kong about 67; Canada's TSX about 64 (the subject); Australia about 52; Canada's TSXV about 45 on a separate vault issuer-level basis. The Asian retail-driven exchanges are the outliers; the US markets sit above Canada.">
+      <svg viewBox="0 0 900 400">
+        <defs>
+          <linearGradient id="ww-vel-subj" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" style="stop-color:var(--accent-deep)"/>
+            <stop offset="1" style="stop-color:var(--accent)"/>
+          </linearGradient>
+        </defs>
+        <line x1="210" y1="20" x2="210" y2="352" stroke="var(--hair)" stroke-width="1"/>
+        <!-- South Korea ~201 (560) — the outlier -->
+        <text x="200" y="42" text-anchor="end" class="hbar-lab">South Korea</text>
+        <rect class="ramp-1" x="210" y="24" width="560" height="26" rx="4"/>
+        <text x="778" y="42" class="hbar-val">~201%</text>
+        <!-- Taiwan ~124 (345.5) -->
+        <text x="200" y="78" text-anchor="end" class="hbar-lab">Taiwan</text>
+        <rect class="ramp-2" x="210" y="60" width="345.5" height="26" rx="4"/>
+        <text x="778" y="78" text-anchor="end" class="hbar-val">~124%</text>
+        <!-- Japan ~117 (326.0) -->
+        <text x="200" y="114" text-anchor="end" class="hbar-lab">Japan</text>
+        <rect class="ramp-2" x="210" y="96" width="326.0" height="26" rx="4"/>
+        <text x="778" y="114" text-anchor="end" class="hbar-val">~117%</text>
+        <!-- United States — NYSE ~96 (267.5) -->
+        <text x="200" y="150" text-anchor="end" class="hbar-lab">United States — NYSE</text>
+        <rect class="ramp-3" x="210" y="132" width="267.5" height="26" rx="4"/>
+        <text x="778" y="150" text-anchor="end" class="hbar-val">~96%</text>
+        <!-- United States — Nasdaq ~95 (264.7) -->
+        <text x="200" y="186" text-anchor="end" class="hbar-lab">United States — Nasdaq</text>
+        <rect class="ramp-3" x="210" y="168" width="264.7" height="26" rx="4"/>
+        <text x="778" y="186" text-anchor="end" class="hbar-val">~95%</text>
+        <!-- Hong Kong ~67 (186.7) -->
+        <text x="200" y="222" text-anchor="end" class="hbar-lab">Hong Kong</text>
+        <rect class="ramp-4" x="210" y="204" width="186.7" height="26" rx="4"/>
+        <text x="778" y="222" text-anchor="end" class="hbar-val">~67%</text>
+        <!-- Canada TSX ~64 (178.3) — SUBJECT: gradient + glow -->
+        <text x="200" y="258" text-anchor="end" class="hbar-lab subj">Canada — TSX</text>
+        <rect class="subj-glow" x="210" y="240" width="178.3" height="26" rx="4" fill="url(#ww-vel-subj)"/>
+        <text x="778" y="258" text-anchor="end" class="hbar-val subj">~64%</text>
+        <!-- Australia ~52 (144.9) -->
+        <text x="200" y="294" text-anchor="end" class="hbar-lab">Australia</text>
+        <rect class="ramp-5" x="210" y="276" width="144.9" height="26" rx="4"/>
+        <text x="778" y="294" text-anchor="end" class="hbar-val">~52%</text>
+        <!-- Canada TSXV ~45 (125.4) — subject family, separate vault issuer-level basis -->
+        <text x="200" y="330" text-anchor="end" class="hbar-lab subj">Canada — TSXV</text>
+        <rect class="ramp-6" x="210" y="312" width="125.4" height="26" rx="4"/>
+        <text x="778" y="330" text-anchor="end" class="hbar-val subj">~45%</text>
+        <!-- baseline -->
+        <line x1="210" y1="352" x2="770" y2="352" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="210" y="374" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">0%</text>
+        <text x="770" y="374" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">turnover velocity (annualised, WFE 2024) · ~201%</text>
+      </svg>
+    </div>
+    <div class="mininote rv d2">Turnover velocity, annualised, on one consistent <b>WFE 2024</b> basis (value traded EOB ÷ market cap). The US markets (NYSE ~96% / Nasdaq ~95%) sit above Canada's TSX (~64%); the Asian retail-driven exchanges lead. <b>TSXV ~45%</b> is a separate vault issuer-level computation — WFE does not report the junior board.</div>
+    <div class="pull rv d2" style="margin-top:34px">
+      <div class="q">The retail→liquidity link is correlational, not proven causation. The cleanest causal lever is Italy's STAR — market-making plus mandated coverage. And Japan's NISA shows a retail wrapper can misfire: much of its flow went into foreign index funds, financing other countries' markets, not Japan's.</div>
+    </div>
+    <p class="body rv d2">The lesson is not "import day-trading." It is: build a domestic demand base (a retail wrapper <em>or</em> mandatory savings), give scaling companies a real growth board, and guarantee liquidity at the security level through market-making and coverage. A wrapper that funds foreign funds (NISA) buys you nothing at home.</p>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="asian"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 04b · COMPARATOR HIGHLIGHTS (NEW — from the vault Compendium) ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04b</span> Comparator highlights <span class="tag-new" title="Newly added section — for Carlo's review">NEW — for review</span></div>
+    <h2 class="rv d1">Four numbers behind the gap.</h2>
+    <p class="lede rv d1">The mechanisms above are the <em>supply</em> side of the story. Four data points from the vault's <em>International Comparator Data Compendium</em> show the underlying position they are meant to correct: Canada builds few $1B companies per head, starves its angel stage, keeps its pension giants out of domestic venture, and offers investors no innovation-specific exit relief. Each is a lever the recommendations pull.</p>
+
+    <div class="chgrid">
+
+      <!-- (i) UNICORNS PER CAPITA — ranked bars -->
+      <div class="cell rv d1">
+        <h3>Unicorns per million people</h3>
+        <div class="csub">Current-HQ basis · ~2026 · Compendium §6.1</div>
+        <div class="svgwrap" role="img" aria-label="Ranked bars of $1B companies per million people, current-HQ basis. Singapore about 5.8, Sweden 4.6, Finland 2.7, Israel 2.6, United States 2.4, Australia 1.1; Canada, the subject, 0.8. Canada builds roughly one unicorn per million people — a fraction of the small-economy leaders.">
+          <svg viewBox="0 0 560 300">
+            <defs>
+              <linearGradient id="ww-uni-subj" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" style="stop-color:var(--accent-deep)"/>
+                <stop offset="1" style="stop-color:var(--accent)"/>
+              </linearGradient>
+            </defs>
+            <line x1="150" y1="12" x2="150" y2="266" stroke="var(--hair)" stroke-width="1"/>
+            <!-- Singapore 5.8 → 470 -->
+            <text x="140" y="32" text-anchor="end" class="hbar-lab">Singapore</text>
+            <rect class="ramp-2" x="150" y="16" width="470" height="22" rx="4"/>
+            <text x="626" y="32" class="hbar-val" text-anchor="end">5.8</text>
+            <!-- Sweden 4.6 → 373 -->
+            <text x="140" y="66" text-anchor="end" class="hbar-lab">Sweden</text>
+            <rect class="ramp-3" x="150" y="50" width="373" height="22" rx="4"/>
+            <text x="533" y="66" class="hbar-val">4.6</text>
+            <!-- Finland 2.7 → 219 -->
+            <text x="140" y="100" text-anchor="end" class="hbar-lab">Finland</text>
+            <rect class="ramp-4" x="150" y="84" width="219" height="22" rx="4"/>
+            <text x="379" y="100" class="hbar-val">2.7</text>
+            <!-- Israel 2.6 → 211 -->
+            <text x="140" y="134" text-anchor="end" class="hbar-lab">Israel</text>
+            <rect class="ramp-4" x="150" y="118" width="211" height="22" rx="4"/>
+            <text x="371" y="134" class="hbar-val">~2.6</text>
+            <!-- US 2.4 → 194 -->
+            <text x="140" y="168" text-anchor="end" class="hbar-lab">United States</text>
+            <rect class="ramp-5" x="150" y="152" width="194" height="22" rx="4"/>
+            <text x="354" y="168" class="hbar-val">2.4</text>
+            <!-- Australia 1.1 → 89 -->
+            <text x="140" y="202" text-anchor="end" class="hbar-lab">Australia</text>
+            <rect class="ramp-6" x="150" y="186" width="89" height="22" rx="4"/>
+            <text x="249" y="202" class="hbar-val">~1.1</text>
+            <!-- Canada 0.8 → 65 — SUBJECT -->
+            <text x="140" y="236" text-anchor="end" class="hbar-lab subj">Canada</text>
+            <rect class="subj-glow" x="150" y="220" width="65" height="22" rx="4" fill="url(#ww-uni-subj)"/>
+            <text x="225" y="236" class="hbar-val subj">0.8</text>
+            <!-- baseline -->
+            <line x1="150" y1="266" x2="620" y2="266" stroke="var(--hair-strong)" stroke-width="1"/>
+            <text x="150" y="286" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10">0</text>
+            <text x="620" y="286" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10">per million · 5.8</text>
+          </svg>
+        </div>
+        <div class="cstory">Canada produces roughly <b>0.8 unicorns per million people</b> — below Israel (~2.6), the US (2.4), and the small-economy leaders Singapore (5.8) and Sweden (4.6). It builds world-class companies; it builds few of them <em>per head</em>, and keeps fewer still (see the Champions page). Core-set rows are on the committed current-HQ basis; expansion comparators (Estonia ~7.1 ⚠️, etc.) are held out as not-yet-reconciled.</div>
+        <a href="methodology.html#register" class="provpill" data-prov="unicorns"><span class="o"></span>source</a>
+      </div>
+
+      <!-- (ii) ANGEL CAPITAL / TAX INCENTIVE — ranked bars + the 56:1 line -->
+      <div class="cell rv d1">
+        <h3>Tax-incentivised angel capital, per year</h3>
+        <div class="csub">Log-scale gap · Compendium §7.1</div>
+        <div class="svgwrap" role="img" aria-label="Annual angel capital, converted to Canadian dollars. The United States runs roughly 26 billion dollars a year; the United Kingdom about 3.3 billion in EIS/SEIS across all channels; Canada, the subject, about 146 million from angel groups. Canada is the only G7 country with no angel-specific tax incentive; the UK deploys about 56 times more tax-incentivised angel capital per year.">
+          <svg viewBox="0 0 560 250">
+            <defs>
+              <linearGradient id="ww-ang-subj" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" style="stop-color:var(--accent-deep)"/>
+                <stop offset="1" style="stop-color:var(--accent)"/>
+              </linearGradient>
+            </defs>
+            <line x1="150" y1="12" x2="150" y2="196" stroke="var(--hair)" stroke-width="1"/>
+            <!-- US ~C$26B → 470 (log-scaled visual) -->
+            <text x="140" y="34" text-anchor="end" class="hbar-lab">United States</text>
+            <rect class="ramp-3" x="150" y="16" width="470" height="26" rx="4"/>
+            <text x="626" y="34" class="hbar-val" text-anchor="end">~C$26B</text>
+            <!-- UK ~C$3.3B → 320 (log) -->
+            <text x="140" y="88" text-anchor="end" class="hbar-lab">United Kingdom</text>
+            <rect class="ramp-4" x="150" y="70" width="320" height="26" rx="4"/>
+            <text x="478" y="88" class="hbar-val">~C$3.3B</text>
+            <!-- Canada C$146M → 60 (log) — SUBJECT -->
+            <text x="140" y="142" text-anchor="end" class="hbar-lab subj">Canada</text>
+            <rect class="subj-glow" x="150" y="124" width="60" height="26" rx="4" fill="url(#ww-ang-subj)"/>
+            <text x="220" y="142" class="hbar-val subj">C$146M</text>
+            <!-- baseline -->
+            <line x1="150" y1="176" x2="620" y2="176" stroke="var(--hair-strong)" stroke-width="1"/>
+            <text x="150" y="196" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10">annual angel capital · log scale (bars not to linear scale)</text>
+          </svg>
+        </div>
+        <div class="cstory">Canada is the <b>only G7 country with no angel-specific tax incentive</b>. Its formal angel-group capital (~C$146M) sits against the UK's ~£1.8B EIS/SEIS across all channels and the US's ~US$18B — the UK deploys about <b>56× more tax-incentivised angel capital per year</b>, or ~33× per capita. Bars are drawn on a log scale so all three are visible; the true gap is far wider than the pixels. The UK's 30–50% front-end relief and the US's QSBS exit relief are the mechanisms Canada lacks.</div>
+        <a href="methodology.html#register" class="provpill" data-prov="angel"><span class="o"></span>source</a>
+      </div>
+
+      <!-- (iii) PENSION VC ALLOCATION — the 100x gap -->
+      <div class="cell rv d2">
+        <h3>Pension allocation to venture / PE</h3>
+        <div class="csub">Share of pension assets · Compendium §8.1</div>
+        <div class="svgwrap" role="img" aria-label="Pension allocation to venture and private equity as a share of assets. US public pensions about 10.4 percent to PE including VC; the UK Mansion House target is 5 percent of DC assets to UK assets, with unlisted equity at 0.6 percent achieved; European pension funds about 0.12 percent to VC. Canada holds over 1.6 trillion Canadian dollars across its big funds but deploys minimal domestic early and growth-stage venture relative to that scale.">
+          <svg viewBox="0 0 560 250">
+            <defs>
+              <linearGradient id="ww-pen-subj" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" style="stop-color:var(--accent-deep)"/>
+                <stop offset="1" style="stop-color:var(--accent)"/>
+              </linearGradient>
+            </defs>
+            <line x1="150" y1="12" x2="150" y2="196" stroke="var(--hair)" stroke-width="1"/>
+            <!-- US 10.4% PE incl VC → 470 -->
+            <text x="140" y="34" text-anchor="end" class="hbar-lab">US public pensions</text>
+            <rect class="ramp-2" x="150" y="16" width="470" height="24" rx="4"/>
+            <text x="626" y="34" class="hbar-val" text-anchor="end">~10.4% (PE incl. VC)</text>
+            <!-- UK target 5% (achieved 0.6% unlisted) → 226 -->
+            <text x="140" y="72" text-anchor="end" class="hbar-lab">UK (Mansion House)</text>
+            <rect class="ramp-4" x="150" y="54" width="226" height="24" rx="4"/>
+            <text x="384" y="72" class="hbar-val">5% target · 0.6% now</text>
+            <!-- EU 0.12% VC → 8 (nominal) -->
+            <text x="140" y="110" text-anchor="end" class="hbar-lab">EU pension funds</text>
+            <rect class="ramp-5" x="150" y="92" width="8" height="24" rx="4"/>
+            <text x="166" y="110" class="hbar-val" style="fill:var(--dim)">~0.12% to VC</text>
+            <!-- Canada — subject: big AUM, minimal domestic VC (nominal + annotation) -->
+            <text x="140" y="148" text-anchor="end" class="hbar-lab subj">Canada</text>
+            <rect class="subj-glow" x="150" y="130" width="8" height="24" rx="4" fill="url(#ww-pen-subj)"/>
+            <text x="166" y="148" class="hbar-val subj" style="font-weight:700">C$1.6T+ AUM · minimal domestic VC</text>
+            <!-- baseline -->
+            <line x1="150" y1="176" x2="620" y2="176" stroke="var(--hair-strong)" stroke-width="1"/>
+            <text x="150" y="196" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10">% of pension assets in PE/VC · US 10.4% ≈ 87× EU's 0.12%</text>
+          </svg>
+        </div>
+        <div class="cstory">US public pensions put <b>~10.4% into PE incl. VC</b>; European funds ~0.12% into VC — an <b>~87× gap</b>. Canada's paradox is different: CPP (C$714B), CDPQ (~C$517B) and OTPP (~C$279B) are world-class <em>global</em> PE investors, yet deploy minimal <em>domestic</em> early- and growth-stage venture relative to that AUM. The standing domestic bid the toolkit's demand-side anchors create (Australia's super, Korea's NPS) is the thing Canada's giants don't yet provide at home.</div>
+        <a href="methodology.html#register" class="provpill" data-prov="pension"><span class="o"></span>source</a>
+      </div>
+
+      <!-- (iv) CGT INNOVATION RELIEF — the yes/no lattice -->
+      <div class="cell rv d2">
+        <h3>Innovation-specific exit relief</h3>
+        <div class="csub">Who rewards holding the winner · Compendium §10.2</div>
+        <div class="cgtlat" role="list" aria-label="Innovation-specific capital-gains relief by country. The US has QSBS 100 percent exclusion; the UK EIS/SEIS 100 percent CGT exemption; Australia ESIC 10-year exemption; Sweden the ISK wrapper; Singapore and Taiwan zero CGT outright; Canada, the subject, has none — the LCGE is general and the Entrepreneurs' Incentive was eliminated.">
+          <span class="cgtchip has" role="listitem"><b>US</b> · QSBS 100% exclusion (5-yr)</span>
+          <span class="cgtchip has" role="listitem"><b>UK</b> · EIS/SEIS 100% CGT exemption</span>
+          <span class="cgtchip has" role="listitem"><b>Australia</b> · ESIC 10-yr exemption</span>
+          <span class="cgtchip has" role="listitem"><b>Sweden</b> · ISK wrapper (~0.9%/yr)</span>
+          <span class="cgtchip has" role="listitem"><b>Singapore / Taiwan</b> · 0% CGT</span>
+          <span class="cgtchip subj" role="listitem"><b>Canada</b> · none — LCGE is general; Entrepreneurs' Incentive eliminated</span>
+        </div>
+        <div class="cstory">Headline rates barely tell the story. Canada's effective CGT (~13–27%) is competitive in isolation — but every retention leader pairs a <em>targeted</em> zero-CGT for backing and holding innovation: <b>QSBS</b> (US), <b>EIS/SEIS</b> (UK), <b>ESIC</b> (Australia), the <b>ISK</b> wrapper (Sweden). Canada has <b>no innovation-specific exit relief</b>: the LCGE is general, the 2024 inclusion-rate hike was cancelled (Mar 21, 2025), and the Canadian Entrepreneurs' Incentive was eliminated. Nothing rewards an investor for holding the winner to scale at home.</div>
+        <a href="methodology.html#register" class="provpill" data-prov="cgt"><span class="o"></span>source</a>
+      </div>
+
+    </div>
+
+    <p class="body rv d2" style="margin-top:44px">Read together, the four are one position: too few champions per head, an under-funded angel stage, pension giants pointed abroad, and no tax reason to hold the winner. Every recommendation that follows targets one of these — which is why the comparator mechanisms above matter. <b>These four are a preview:</b> the full fourteen-economy comparator set — VC/GDP, market-cap share, R&amp;D intensity, innovation rank, tax and market size — is laid out on <a href="comparators.html">The Comparators →</a>.</p>
+  </div>
+</section>
+
+<!-- ============ 05 · THE READ — outro + next ============ -->
+<section class="band alt tight" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">05</span> The read</div>
+    <h2 class="rv d1">The fixes exist. None is a single switch.</h2>
+    <p class="lede rv d1">No comparator solved retention with one instrument. The ones that worked stacked a supply-side leverage program, a domestic demand anchor, and security-level liquidity support — and, where the value mattered most, made domestic reinvestment <em>contractual</em> rather than voluntary. That stack is the raw material for the recommendations.</p>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="comparators.html"><div class="n">NEXT · THE COMPARATORS</div><div><div class="t">Canada vs the field, in full</div><div class="d">The four numbers above, expanded to fourteen economies across VC/GDP, market-cap share, R&amp;D intensity, innovation rank, tax and market size — Canada highlighted throughout.</div></div></a>
+      <a class="nextrow rv d1" href="recommendations.html"><div class="n">THEN · PRESCRIPTION</div><div><div class="t">The Recommendations</div><div class="d">From comparator mechanisms to an Ontario program design — what to copy, what to adapt, and what to make mandatory.</div></div></a>
+      <a class="nextrow rv d2" href="champions.html"><div class="n">BACK · EVIDENCE</div><div><div class="t">The Champions</div><div class="d">The companies these mechanisms are meant to keep — who stays, who's bought, who lists abroad.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">What Works Abroad</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">WHAT WORKS ABROAD · COMPARATORS · static-first · opens from file:// · fully readable offline · full sources on the Methodology page</p>
+</footer>
+</div>
+
+<!-- Provenance drawer + scrim (shared shell markup; upgraded by app.js). Static-first:
+     every .provpill is a real <a href="methodology.html#register"> that jumps to the footer with JS off. -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- Per-page provenance data. Defined BEFORE app.js so the drawer machinery can read it.
+     window.PROV maps data-prov key → {t:title, meta:HTML, conf:high|medium|soft}. -->
+<script>
+window.PROV = {
+  field:{
+    t:"The comparator field",
+    meta:'14 comparator jurisdictions, shaded by <b>VC/GDP</b> (OECD Entrepreneurship Financing DB / national-source compilation, vault <b>International Comparator Data Compendium</b>):<ul>'
+      +'<li><b>Israel 1.81%</b> · <b>US 0.53%</b> · France 0.25% · South Korea 0.25% · <b>Canada 0.20% (subject)</b> · UK 0.18% · Sweden 0.11%.</li>'
+      +'<li>Germany, Italy, Japan, Taiwan, Hong Kong, Singapore, Australia appear for their <b>program / liquidity model only</b> (no VC/GDP figure).</li>'
+      +'</ul><b>Chart note:</b> the old shell used a D3 + topojson world map (external scripts). It is replaced by a build-time inline-SVG tile grid — zero external scripts — with every per-jurisdiction figure preserved as static content. Velocity figures (in the detail list) are annualised turnover.',
+    conf:"medium"
+  },
+  toolkit:{
+    t:"The program toolkit — eight mechanisms",
+    meta:'Two families plus one clean liquidity fix:<ul>'
+      +'<li><b>Supply-side leverage:</b> KVIC (Korea, ₩10.9T FoF, ~3:1, ≥1× reinvest-in-Korea); Yozma (Israel, 40% gov equity + cheap buyout, privatised 1998); SBIC (US, 2:1 SBA debenture leverage).</li>'
+      +'<li><b>Demand-side anchoring:</b> Initiative Tibi (France, voluntary insurer charter, €15B+); Mansion House Accord (UK, voluntary DC-pension pledge + reserve power); ISK (Sweden, retail flat-tax wrapper, ~40% of population); Superannuation (Australia, A$4.2T mandatory savings).</li>'
+      +'<li><b>Liquidity:</b> STAR Segment (Italy, designated market-makers + mandated coverage; spreads −15 to −40%) — the cleanest causal liquidity fix.</li>'
+      +'</ul>Source: KVIC / NZGCP / SBA / IIA / DG Trésor / ABI program materials + vault comparator compendium.',
+    conf:"medium"
+  },
+  leverage:{
+    t:"Public : private leverage ratios",
+    meta:'Private capital pulled in per public dollar, state-co-investment programs:<ul>'
+      +'<li><b>NZ Elevate</b> ~3:1 · <b>KVIC (Korea)</b> ~3:1 · <b>SBIC (US)</b> 2:1 · <b>Yozma (Israel)</b> ~1.5:1.</li>'
+      +'<li><b>Tibi (France)</b> and <b>Mansion House (UK)</b> deploy <b>no public capital</b> — voluntary charters, shown at a nominal bar length; this is exactly why they underdeliver.</li>'
+      +'</ul>Source: KVIC / NZGCP / SBA program materials; IIA (Yozma). Confidence medium — program-reported leverage.',
+    conf:"medium"
+  },
+  asian:{
+    t:"The Asian liquidity model",
+    meta:'Turnover velocity, annualised, on one consistent <b>WFE 2024</b> basis (value traded EOB ÷ market cap):<ul>'
+      +'<li><b>South Korea ~201%</b> · Taiwan ~124% · Japan ~117% · <b>United States NYSE ~96% · Nasdaq ~95%</b> · Hong Kong ~67% · <b>Canada TSX ~64%</b> · Australia ~52%.</li>'
+      +'<li><b>Basis note:</b> WFE value traded (EOB) ÷ market cap, 2024; single consistent basis. US NYSE ~96% / Nasdaq ~95% added. <b>TSXV ~45%</b> is a separate vault issuer-level computation (WFE doesn\'t report the junior board).</li>'
+      +'<li>The outliers run on retail order flow — <b>Korea ~64%, Taiwan ~54% retail</b> — paired with a dedicated high-growth board (KOSDAQ, TSE Growth Market).</li>'
+      +'</ul><b>Honest caveat:</b> the retail→liquidity link is <b>correlational, not proven causation</b>. The cleanest <em>causal</em> lever is Italy\'s STAR (market-making + coverage). Japan\'s NISA shows a retail wrapper can misfire — much of its flow went into foreign index funds, buying nothing at home.<br><br>Source: vault WFE USD annual extract; OECD Asia Capital Markets Report.',
+    conf:"medium"
+  },
+  unicorns:{
+    t:"Unicorns per million people",
+    meta:'$1B companies per million people, <b>current-HQ basis</b> (~2026), vault <b>International Comparator Data Compendium §6.1</b>:<ul>'
+      +'<li><b>Singapore ~5.8</b> · Sweden 4.6 · Finland 2.7 · Israel ~2.6 · <b>United States 2.4</b> · Australia ~1.1 · <b>Canada 0.8 (subject)</b>.</li>'
+      +'<li>Core-set rows are on the committed current-HQ, currently-$1B+ basis (aligned to the Middle Powers scoreboard). Expansion comparators (Estonia ~7.1, Switzerland ~1.7, Ireland ~1.9, Norway ~0.9) are <b>⚠️ held out</b> — their Tracxn counts are cumulative/founder-basis, not yet reconciled line-for-line.</li>'
+      +'<li>Canada\'s 33 unicorns (Tracxn) → 0.8/M; broader founder-basis trackers cite higher figures (e.g. 4.2/M) — not used here.</li>'
+      +'</ul>Source: Compendium §6.1 (Tracxn · CB Insights/WIPO · Beauhurst). Tier-8 trackers reconciled to a committed basis; graded medium.',
+    conf:"medium"
+  },
+  angel:{
+    t:"Tax-incentivised angel capital, per year",
+    meta:'Annual angel capital (CAD; ~US$1 = C$1.44, ~£1 = C$1.80), vault <b>International Comparator Data Compendium §7.1</b>:<ul>'
+      +'<li><b>US ~US$18B</b> (~C$26B; UNH CVR) · <b>UK ~£1.8B</b> EIS/SEIS all channels (~C$3.3B; HMRC May 2025) · <b>Canada C$146M</b> angel groups (NACO 2024).</li>'
+      +'<li><b>~56× UK:Canada</b> in annual tax-incentivised capital; ~33× per capita.</li>'
+      +'<li>Bars are drawn on a <b>log scale</b> so all three are visible — the true gap is wider than the pixels. Canada is the <b>only G7 country with no angel-specific tax incentive</b> (UK: 30% EIS / 50% SEIS; US: QSBS exit-side).</li>'
+      +'</ul>Note: NACO tracks completed angel-group investments only; informal/untracked angel activity is a multiple higher. Source: Compendium §7.1 (HMRC · NACO · UNH). Graded medium.',
+    conf:"medium"
+  },
+  pension:{
+    t:"Pension allocation to venture / PE",
+    meta:'Share of pension assets in PE/VC, vault <b>International Comparator Data Compendium §8.1–8.2</b>:<ul>'
+      +'<li><b>US public pensions ~10.4%</b> to PE incl. VC (early 2024) · <b>EU pension funds ~0.12%</b> to VC (>€3tn AUM ≈ €500M) — an <b>~87× gap</b>.</li>'
+      +'<li><b>UK:</b> Mansion House target 5% of DC to UK assets; unlisted equity doubled 0.36% → 0.60% (Oct 2025).</li>'
+      +'<li><b>Canada\'s paradox:</b> CPP C$714B, CDPQ ~C$517B, OTPP ~C$279B (C$1.6T+ across the big three) are world-class <em>global</em> PE investors, but deploy <b>minimal domestic early/growth-stage VC</b> relative to AUM.</li>'
+      +'</ul>Source: Compendium §8.1–8.2 (Pensions for Purpose 2025 · ABI Mansion House Oct 2025 · CPP/CDPQ/OTPP FY2025 reports). Graded medium.',
+    conf:"medium"
+  },
+  cgt:{
+    t:"Innovation-specific exit relief",
+    meta:'Targeted capital-gains relief for backing/holding innovation, vault <b>International Comparator Data Compendium §10.2</b>:<ul>'
+      +'<li><b>US</b> QSBS 100% exclusion after 5-yr hold · <b>UK</b> EIS/SEIS 100% CGT exemption · <b>Australia</b> ESIC 10-yr CGT exemption · <b>Sweden</b> ISK wrapper (~0.9%/yr flat) · <b>Singapore / Taiwan</b> 0% CGT on securities.</li>'
+      +'<li><b>Canada — none.</b> Effective CGT ~13–27% is competitive in isolation, but there is <b>no innovation-specific relief</b>: the LCGE (C$1.25M) is general; the 2024 Budget 66.7% inclusion hike was <b>cancelled Mar 21, 2025</b> (never received Royal Assent); the Canadian Entrepreneurs\' Incentive was <b>eliminated</b>.</li>'
+      +'</ul>Source: Compendium §10.2 (PwC CGT Rates 2025 · Tax Foundation Europe 2026 · vault Investor-Side Tax Incentives Comparison). Graded medium.',
+    conf:"medium"
+  }
+};
+</script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Ontario Already Has — Scaling & Retaining Canada's Champions</title>
+<meta name="description" content="Why the fight is winnable. Ontario's genuine assets — world-class research talent, a mid-sized-OECD economy, firm clean power, one of the deepest institutional-capital pools on earth, and real champions — framed honestly: the raw materials are here, which is exactly why the financing and retention failure is so costly and the prize so attainable.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Page-scoped components (token-driven only — no literal hex; every colour a var()).
+   1. .evrow column override for the champions roster + sector-anchor rows (matches the
+      financing-gap tuning; the base .evlist/.evrow pattern lives in styles.css).
+   2. .stcap — a small caption line under an in-band bracket annotation. */
+.evlist{margin-top:40px}
+.evrow{grid-template-columns:minmax(150px,1fr) 3fr;gap:26px}
+.stcap{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--dim);margin-top:14px}
+</style>
+</head>
+<body data-accent="azure">
+<div class="prog" id="prog"></div>
+
+<!-- ====== SHARED SHELL TOPBAR (Mission Control 10-link; strengths is not yet in the nav —
+     a later pass integrates it site-wide, so no link carries .on here) ====== -->
+<div class="topbar">
+  <a class="tb-l brand" href="index.html"><span class="dot"></span><b>Canada's Champions</b></a>
+  <span class="tb-r">
+        <span class="links">
+      <a href="index.html">Overview</a>
+      <a href="growth-prize.html">Prize</a>
+      <a href="strengths.html" class="on">Strengths</a>
+      <a href="growth-sectors.html">Sectors</a>
+      <a href="public-markets.html" title="Public Markets">Markets</a>
+      <a href="financing-gap.html" title="The Financing Gap">Gap</a>
+      <a href="what-works.html" title="What Works Abroad">Abroad</a>
+      <a href="comparators.html" title="The Comparators">Compare</a>
+      <a href="champions.html">Champions</a>
+      <a href="recommendations.html" title="Recommendations">Recs</a>
+      <a href="methodology.html" title="Methodology &amp; Sources">Method</a>
+      <span class="tb-div" aria-hidden="true"></span>
+      <span class="tb-grouplab">Data</span>
+      <a href="exchanges.html" title="The Exchanges — interactive">Exchanges</a>
+      <a href="global-exchanges.html" title="Global Exchanges Explorer">Global</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› why the fight is winnable · talent · scale · power · capital · champions"></div>
+    <div class="cat rv">◇ Chapter 2 · what Ontario already has</div>
+    <h1 class="rv d1">The raw materials are already here.</h1>
+    <div class="tag rv d1">The last chapter set the stakes. This one answers the obvious next question — is the fight even winnable? It is, and the reason is that Ontario is not starting from nothing. It has world-class talent, a real economy, firm clean power, one of the deepest pools of institutional capital on earth, and champions that already work. Which is precisely why the failure to finance and retain its growth companies is so expensive: the endowment is strong; the conversion is broken. Every strength below is also a measure of what's being left on the table.</div>
+    <div class="sigwrap">
+      <div class="signum rv d1" data-count="10" data-prefix="~" data-suffix="%">~10%</div>
+      <div>
+        <div class="sigpct rv d2">of the world's top-tier AI researchers · 2nd per capita on Earth</div>
+        <div class="siglab rv d2">Canada hosts roughly a tenth of the planet's elite AI research talent — yet captures under 2% of global AI venture capital. The talent is world-class; the capital that should follow it is not. The gap between those two numbers is the whole report in miniature.</div>
+        <a href="methodology.html#register" class="provpill rv d2" data-prov="research"><span class="o"></span>source</a>
+      </div>
+    </div>
+    <div class="scrollcue rv d3"><span class="arr"></span>the assets, one by one</div>
+  </div>
+</section>
+
+<!-- ============ 01 · TALENT & RESEARCH DENSITY ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> Talent &amp; research density</div>
+    <h2 class="rv d1">A research base that punches far above the country's size.</h2>
+    <p class="lede rv d1">Ontario's single deepest asset is people. The Toronto–Waterloo corridor is the highest-ranked startup ecosystem in Canada and a genuine global node — anchored by foundational AI research (Hinton at U&nbsp;of&nbsp;T), a world-leading quantum cluster (IQC, Perimeter), and the University of Waterloo's engineering-and-co-op machine. The talent is not the problem. What happens to it downstream is.</p>
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-count="140" data-suffix="K+">140K+</div><div class="fig-cap">AI professionals</div><div class="fig-q">+29% year over year</div><div class="fig-l">Actively engaged AI professionals in Canada; leads the G7 in AI talent growth and papers per capita since 2019 (OECD, Feb 2025).</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="1292">1,292</div><div class="fig-cap">UWaterloo-founded companies</div><div class="fig-q">14 unicorns</div><div class="fig-l">Companies founded by University of Waterloo alumni — a single institution's output (Tracxn).</div></div>
+      <div class="fig grey rv d2"><div class="fig-n">#20</div><div class="fig-cap">Toronto–Waterloo, global rank</div><div class="fig-q">#10 in North America</div><div class="fig-l">Highest-ranked Canadian startup ecosystem (Startup Genome GSER 2025).</div></div>
+    </div>
+
+    <div class="chart-head rv d2" style="margin-top:56px">
+      <h3>Share of the world's AI talent vs. share of its AI capital</h3>
+      <div class="sub">Top-tier AI researchers vs. global AI venture capital</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="Two horizontal bars. Canada holds about 10 percent of the world's top-tier AI researchers but captures under 2 percent of global AI venture capital — roughly a fivefold mismatch between the talent it produces and the capital that follows it.">
+      <svg viewBox="0 0 900 220">
+        <defs>
+          <linearGradient id="st-scissor-subj" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--accent-deep)"/><stop offset="1" style="stop-color:var(--accent)"/></linearGradient>
+        </defs>
+        <rect x="250" y="40" width="560" height="46" rx="5" fill="url(#st-scissor-subj)" opacity=".95" class="subj-glow"/>
+        <text x="238" y="68" text-anchor="end" class="hbar-lab subj">top-tier AI researchers</text>
+        <text x="820" y="68" class="hbar-val subj">~10%</text>
+
+        <rect x="250" y="118" width="112" height="46" rx="5" class="ramp-3"/>
+        <text x="238" y="146" text-anchor="end" class="hbar-lab">global AI venture capital</text>
+        <text x="374" y="146" class="hbar-val">&lt;2%</text>
+        <text x="560" y="146" fill="var(--gann-lab)" font-family="var(--mono)" font-size="12">◂ the ~5× of capital that should follow the talent, but doesn't</text>
+
+        <line x1="250" y1="182" x2="810" y2="182" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="250" y="198" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">0%</text>
+        <text x="810" y="198" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">10% of the world</text>
+      </svg>
+    </div>
+    <div class="mininote rv d2"><b>Read it as the thesis in one picture.</b> Matching Canada's talent share would mean lifting AI venture funding roughly <b>5×</b> — from ~C$2B to ~C$10B a year (Mila / Bain). The strength (talent) and the failure (capital) are the same chart. That is why the endowment makes the gap <em>more</em> costly, not less.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="research"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 02 · INSTITUTIONAL & MARKET SCALE ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> Institutional &amp; market scale</div>
+    <h2 class="rv d1">This is a real economy — not a minnow.</h2>
+    <p class="lede rv d1">Ontario's output is on the order of a mid-sized OECD member state, with a mature financial sector that has quietly become its largest. The scale is genuine — which is what makes the under-capitalisation of its <em>growth</em> companies a policy failure rather than an inevitability of size.</p>
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-count="1.197" data-dec="3" data-prefix="C$" data-suffix="T">C$1.197T</div><div class="fig-cap">Ontario GDP (2024)</div><div class="fig-q">~39% of Canada</div><div class="fig-l">Comparable to a mid-sized OECD economy; Canada's national GDP is ~C$3.06T.</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="16.14" data-dec="2" data-suffix="M">16.14M</div><div class="fig-cap">Ontario population</div><div class="fig-q">Canada 41.47M</div><div class="fig-l">The largest province by far — a real domestic base, if a small one next to the US.</div></div>
+      <div class="fig rv d2"><div class="fig-n" data-count="10.5" data-dec="1" data-suffix="%">10.5%</div><div class="fig-cap">finance &amp; insurance, share of GDP</div><div class="fig-q">now larger than manufacturing</div><div class="fig-l">C$93B and rising — finance surpassed manufacturing's share (10.1%) for the first time in the modern record.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n" data-count="865" data-prefix="C$" data-suffix="B">C$865B</div><div class="fig-cap">Canadian retail sales (2024)</div><div class="fig-q">Ontario ~C$326B</div><div class="fig-l">A sizeable consumer base — though, as §06 shows, small against the US.</div></div>
+    </div>
+    <div class="mininote rv d2"><b>The honest edge in the number.</b> A C$1.2-trillion economy with a deep financial sector has every ingredient to finance its own champions. It largely doesn't — the capital flows out through the public and private markets diagnosed in the next chapters, not because the base is too small to matter.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="scale"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 03 · FIRM, CLEAN, COMPETITIVELY-PRICED POWER ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> Firm, clean, competitively-priced power</div>
+    <h2 class="rv d1">The most underweighted advantage of the AI era.</h2>
+    <p class="lede rv d1">The 21st century's most capital-intensive sectors — AI data centres, EV and battery plants, electrified manufacturing — compete for one scarce thing: firm, clean electricity. Ontario has it. A large nuclear fleet plus abundant hydro give it roughly three-quarters of generation as low-emitting, dispatchable baseload — <em>firm</em> clean power, not just intermittent renewables. The IMF singled this out as a competitive advantage for Canada in 2026.</p>
+
+    <div class="chart-head rv d2" style="margin-top:48px">
+      <h3>Ontario's 2024 electricity supply mix</h3>
+      <div class="sub">Nuclear + hydro = the firm clean baseload · IESO 2024 Year in Review</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="A 100 percent stacked bar of Ontario's 2024 electricity generation: nuclear 48.5 percent, hydro 23.4 percent, wind 16.6 percent, solar 9.0 percent, bioenergy 2.2 percent, and natural gas or oil about 0.4 percent. Nuclear and hydro together — about 72 percent — form firm, dispatchable clean baseload. The grid was 84 percent emissions-free.">
+      <svg viewBox="0 0 900 210">
+        <defs>
+          <linearGradient id="st-grid-subj" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--accent-deep)"/><stop offset="1" style="stop-color:var(--accent)"/></linearGradient>
+        </defs>
+        <!-- firm-baseload bracket over nuclear + hydro -->
+        <line x1="70" y1="46" x2="616.4" y2="46" stroke="var(--accent)" stroke-width="1.5"/>
+        <line x1="70" y1="46" x2="70" y2="56" stroke="var(--accent)" stroke-width="1.5"/>
+        <line x1="616.4" y1="46" x2="616.4" y2="56" stroke="var(--accent)" stroke-width="1.5"/>
+        <text x="343" y="38" text-anchor="middle" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="14">~72% firm clean baseload (nuclear + hydro)</text>
+
+        <!-- stacked segments, y=64 h=60 -->
+        <rect x="70" y="64" width="368.6" height="60" fill="url(#st-grid-subj)" opacity=".95"/>
+        <rect x="438.6" y="64" width="177.8" height="60" class="ramp-2"/>
+        <rect x="616.4" y="64" width="126.2" height="60" class="ramp-3"/>
+        <rect x="742.6" y="64" width="68.4" height="60" class="ramp-4"/>
+        <rect x="811.0" y="64" width="16.7" height="60" class="ramp-5"/>
+        <rect x="827.7" y="64" width="2.3" height="60" fill="var(--steel)" opacity=".5"/>
+
+        <!-- in-bar labels where wide enough -->
+        <text x="254.3" y="90" text-anchor="middle" fill="var(--bg)" font-family="var(--disp)" font-weight="700" font-size="20">Nuclear</text>
+        <text x="254.3" y="110" text-anchor="middle" fill="var(--bg)" font-family="var(--mono)" font-size="13">48.5%</text>
+        <text x="527.5" y="90" text-anchor="middle" fill="var(--ink)" font-family="var(--disp)" font-weight="700" font-size="16">Hydro</text>
+        <text x="527.5" y="110" text-anchor="middle" fill="var(--ink)" font-family="var(--mono)" font-size="12">23.4%</text>
+        <text x="679.5" y="92" text-anchor="middle" fill="var(--ink)" font-family="var(--mono)" font-size="12">Wind 16.6%</text>
+        <text x="776.8" y="92" text-anchor="middle" fill="var(--ink)" font-family="var(--mono)" font-size="11">9.0%</text>
+
+        <line x1="70" y1="150" x2="830" y2="150" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="70" y="172" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11.5">Solar 9.0% · Bioenergy 2.2% · Natural gas / oil ~0.4% — the grid was <tspan fill="var(--gann-val)" font-weight="700">84% emissions-free</tspan> in 2024.</text>
+      </svg>
+    </div>
+
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-count="84" data-suffix="%">84%</div><div class="fig-cap">emissions-free grid (2024)</div><div class="fig-q">structural, not incidental</div><div class="fig-l">Anchored by nuclear + hydro — the firm, 24/7 carbon-free capability hyperscalers now demand (IESO).</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="5.3" data-dec="1" data-prefix="~" data-suffix="¢">~5.3¢</div><div class="fig-cap">/kWh Ontario wholesale</div><div class="fig-q">vs US industrial ~7.3¢</div><div class="fig-l">IESO forecast average, Nov 2025–Oct 2026 — competitive, plus a cold-climate cooling advantage.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n">IMF</div><div class="fig-cap">external validation (2026)</div><div class="fig-q">named a competitive advantage</div><div class="fig-l">The IMF cited Canada's clean-energy infrastructure as an edge for AI-data-centre and capital-intensive investment.</div></div>
+    </div>
+    <div class="mininote rv d2"><b>Stated honestly.</b> Ontario's power is competitive, <em>not the cheapest</em> in North America — Quebec (~4¢/kWh), Manitoba and BC undercut it on headline industrial price. And the advantage is contingent: IESO projects demand rising ~75% by 2050, and data-centre load is straining grids everywhere. The edge is the <em>combination</em> — firm clean power + competitive price + US-market proximity — and it holds only if generation is built ahead of the curve.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="power"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 04 · DEEP INSTITUTIONAL CAPITAL — LATENT ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04</span> Deep capital — sitting latent</div>
+    <h2 class="rv d1">One of the deepest capital pools on Earth — pointed almost anywhere but home.</h2>
+    <p class="lede rv d1">Canada's eight largest pension managers — the "Maple&nbsp;8" — run roughly <strong>C$2.63&nbsp;trillion</strong> combined and are among the most operationally sophisticated institutional investors in the world. The Big Six banks hold C$7T+ in assets on top of that. This is not a shortage of capital. It is a shortage of capital pointed at Ontario's own growth companies: under half a percent of Maple-8 assets reaches domestic early-stage venture. That is what makes it a <em>latent</em> strength — the single largest underleveraged asset in the whole diagnosis.</p>
+
+    <div class="chart-head rv d2" style="margin-top:48px">
+      <h3>Maple-8 assets vs. what reaches domestic early-stage VC</h3>
+      <div class="sub">C$2.63T combined AUM · the highlighted sliver is what comes home</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="A single bar representing the C$2.63 trillion combined assets of Canada's Maple-8 pension managers. Only a bright sliver at the far left — under 0.5 percent — reaches domestic early-stage venture capital. A marker shows that lifting that allocation from under 0.5 percent to just 1 percent would add roughly C$26 billion, more than the entire annual venture-capital gap.">
+      <svg viewBox="0 0 900 230">
+        <defs>
+          <linearGradient id="st-cap-subj" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:var(--accent-deep)"/></linearGradient>
+        </defs>
+        <!-- the pool -->
+        <rect x="70" y="74" width="760" height="64" rx="6" fill="var(--band)" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="450" y="112" text-anchor="middle" fill="var(--ink)" font-family="var(--disp)" font-weight="700" font-size="26">C$2.63T</text>
+        <text x="450" y="60" text-anchor="middle" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11.5" letter-spacing=".14em">MAPLE-8 COMBINED AUM</text>
+
+        <!-- the sliver that reaches domestic early-stage VC (<0.5%) -->
+        <rect x="70" y="74" width="7" height="64" rx="2" fill="url(#st-cap-subj)" class="subj-glow-strong"/>
+        <!-- 1% target tick -->
+        <line x1="77.6" y1="66" x2="77.6" y2="146" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+        <!-- leader from sliver to callout -->
+        <line x1="73" y1="150" x2="73" y2="184" stroke="var(--dim)" stroke-width="1"/>
+        <line x1="73" y1="184" x2="150" y2="184" stroke="var(--dim)" stroke-width="1"/>
+        <text x="158" y="181" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">&lt;0.5% reaches domestic early-stage VC</text>
+        <text x="158" y="199" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11.5">move it to 1% (the dashed mark) → <tspan fill="var(--gann-val)" font-weight="700">+~C$26B/yr</tspan> — more than the entire annual gap</text>
+
+        <text x="830" y="60" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">the whole bar = C$2.63T</text>
+      </svg>
+    </div>
+
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-count="2.63" data-dec="2" data-prefix="C$" data-suffix="T">C$2.63T</div><div class="fig-cap">Maple-8 combined AUM</div><div class="fig-q">8 pension managers</div><div class="fig-l">CPP Investments, CDPQ, OTPP, OMERS, PSP, BCI, AIMCo, HOOPP — world-class institutional investors.</div></div>
+      <div class="fig rv d1"><div class="fig-n">&lt;0.5%</div><div class="fig-cap">reaches domestic early-stage VC</div><div class="fig-q">4–40× below UK / US peers</div><div class="fig-l">The strength of the financial system has not translated into domestic innovation financing.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n" data-count="26" data-prefix="+~C$" data-suffix="B">+~C$26B</div><div class="fig-cap">from a half-point shift</div><div class="fig-q">&lt;0.5% → 1%</div><div class="fig-l">A single-percentage-point reallocation dwarfs the entire annual VC gap of ~C$5–11B.</div></div>
+    </div>
+    <div class="mininote rv d2"><b>Why this is the hinge.</b> Every other strength is an endowment; this one is a <em>choice</em>. The capital exists, domestically, at world-class scale. Redirecting a sliver of it — crowded in, not compelled — is the single highest-leverage move available, and it is the throughline into the Recommendations.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="capital"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 05 · SECTOR BREADTH & REAL CHAMPIONS ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">05</span> Sector breadth &amp; proven champions</div>
+    <h2 class="rv d1">The bench is broad — and some of it already scaled and stayed.</h2>
+    <p class="lede rv d1">Ontario is not a one-sector bet. It anchors Canada's AI and quantum economy, keeps a large advanced-manufacturing base, and hosts a growing fintech and life-sciences cluster. And the retention thesis is not hypothetical: companies have been built here, scaled, and kept — proof the model can work when the capital and listing conditions line up.</p>
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-prefix="$">$42–52B</div><div class="fig-cap">AI's Ontario GDP contribution</div><div class="fig-q">2019–2024, cumulative</div><div class="fig-l">Nearly half the $82–100B national total — Ontario is the engine of Canada's AI economy (Vector / Deloitte).</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="12" data-prefix="~" data-suffix="%">~12%</div><div class="fig-cap">advanced manufacturing, share of GDP</div><div class="fig-q">~800,000 jobs</div><div class="fig-l">A large industrial base alongside the knowledge economy.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n" data-count="4">4</div><div class="fig-cap">quantum champions (CQCP)</div><div class="fig-q">an early global lead</div><div class="fig-l">Anyon, Nord Quantique, Photonic, Xanadu — anchored by IQC and Perimeter.</div></div>
+    </div>
+
+    <div class="chart-head rv d2" style="margin-top:52px">
+      <h3>Champions that were built here</h3>
+      <div class="sub">Retained public compounders + the private frontier · valuations last-priced / press-reported</div>
+    </div>
+    <div class="evlist">
+      <div class="evrow rv d1">
+        <div><div class="et">Shopify</div><div class="es">Ottawa · ~C$202B · public</div></div>
+        <div class="ed">The retention proof at scale — a global commerce champion whose CEO chose to keep it Canadian, compounding on the public market.</div>
+      </div>
+      <div class="evrow rv d1">
+        <div><div class="et">Constellation Software</div><div class="es">Toronto · ~C$90B · TSX</div></div>
+        <div class="ed">A permanent-capital compounder <b>built and kept on the domestic senior board</b> — proof the TSX can host a world-class name.</div>
+      </div>
+      <div class="evrow rv d2">
+        <div><div class="et">Cohere</div><div class="es">Toronto · US$7B (~C$10B)</div></div>
+        <div class="ed">The frontier-model national champion, explicitly retained — it would be a <b>top-3 TSX technology name</b> the day it listed.</div>
+      </div>
+      <div class="evrow rv d2">
+        <div><div class="et">Tenstorrent · Waabi · Xanadu</div><div class="es">deep tech · ~US$1–3B each</div></div>
+        <div class="ed">AI-silicon, physical-AI and photonic-quantum scale-ups — exactly the "missing middle" the exchange lacks. Xanadu even cross-listed on the TSX.</div>
+      </div>
+    </div>
+    <div class="mininote rv d2"><b>The turn hiding in the roster.</b> These names prove retention is possible — and the pattern behind the strongest of the private ones (US-led growth rounds, US acquisition offers) is exactly the leakage the report exists to stop. Strength and risk sit in the same list.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="champions"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 06 · THE LIMITS — strengths don't close the gap ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">06</span> Where the strengths stop</div>
+    <h2 class="rv d1">None of this closes the gap on its own.</h2>
+    <p class="lede rv d1">Honesty is the point of this page. The same ecosystem that scores 10 out of 10 on STEM talent scores 2 out of 10 on funding and 2 out of 10 on scaling experience — in the <em>same</em> benchmarking report. The assets are real; they run into a small home market, a slow adoption culture, and a missing layer of scale-up capital. The strengths get companies started. They do not get them scaled or kept. That handoff is the rest of the report.</p>
+
+    <div class="chart-head rv d2" style="margin-top:48px">
+      <h3>Toronto–Waterloo's ecosystem profile — the barbell</h3>
+      <div class="sub">Startup Genome GSER 2025 sub-scores (1–10) · world-class inputs, missing middle</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="Startup Genome 2025 sub-scores for the Toronto-Waterloo ecosystem, on a scale of 1 to 10. STEM Access scores 10, talent quality and access 9, AI-native transition 8, and knowledge 7 — all world-class inputs. But funding scores 2 and scaling experience scores 2 — the missing middle. The same ecosystem, the same report.">
+      <svg viewBox="0 0 900 340">
+        <!-- strength bars -->
+        <text x="250" y="24" text-anchor="end" fill="var(--gann-val)" font-family="var(--mono)" font-size="10.5" letter-spacing=".1em">WORLD-CLASS INPUTS ▾</text>
+        <rect x="250" y="34" width="540" height="30" rx="4" class="ramp-1"/>
+        <text x="238" y="54" text-anchor="end" class="hbar-lab subj">STEM Access</text>
+        <text x="800" y="54" class="hbar-val subj">10</text>
+
+        <rect x="250" y="82" width="486" height="30" rx="4" class="ramp-2"/>
+        <text x="238" y="102" text-anchor="end" class="hbar-lab">Talent quality &amp; access</text>
+        <text x="746" y="102" class="hbar-val">9</text>
+
+        <rect x="250" y="130" width="432" height="30" rx="4" class="ramp-3"/>
+        <text x="238" y="150" text-anchor="end" class="hbar-lab">AI-native transition</text>
+        <text x="692" y="150" class="hbar-val">8</text>
+
+        <rect x="250" y="178" width="378" height="30" rx="4" class="ramp-4"/>
+        <text x="238" y="198" text-anchor="end" class="hbar-lab">Knowledge</text>
+        <text x="638" y="198" class="hbar-val">7</text>
+
+        <!-- divider -->
+        <line x1="250" y1="226" x2="790" y2="226" stroke="var(--hair)" stroke-width="1" stroke-dasharray="3 4"/>
+        <text x="250" y="242" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5" letter-spacing=".1em">…SAME ECOSYSTEM, SAME REPORT — THE MISSING MIDDLE ▾</text>
+
+        <!-- limit bars (de-emphasised) -->
+        <rect x="250" y="252" width="108" height="30" rx="4" fill="var(--steel)" opacity=".5"/>
+        <text x="238" y="272" text-anchor="end" class="hbar-lab">Funding</text>
+        <text x="370" y="272" class="hbar-val">2</text>
+
+        <rect x="250" y="300" width="108" height="30" rx="4" fill="var(--steel)" opacity=".5"/>
+        <text x="238" y="320" text-anchor="end" class="hbar-lab">Scaling experience</text>
+        <text x="370" y="320" class="hbar-val">2</text>
+
+        <!-- axis -->
+        <text x="250" y="336" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">0</text>
+        <text x="790" y="336" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">10 / 10</text>
+      </svg>
+    </div>
+
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-count="6" data-suffix="%">~6%</div><div class="fig-cap">of the US consumer market</div><div class="fig-q">enterprise IT just ~1.2%</div><div class="fig-l">Canada's home market is small — many companies must chase US customers from day one.</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="12.2" data-dec="1" data-suffix="%">12.2%</div><div class="fig-cap">business AI adoption</div><div class="fig-q">less than half US rates</div><div class="fig-l">Canada builds AI but is slow to buy it — a demand gap that compounds the capital gap (Q2 2025).</div></div>
+      <div class="fig grey rv d2"><div class="fig-n">13th</div><div class="fig-cap">robotics, global rank</div><div class="fig-q">business R&amp;D just 1% of GDP</div><div class="fig-l">Adoption and business R&amp;D both lag peers — the strengths don't automatically diffuse.</div></div>
+    </div>
+    <div class="mininote rv d2"><b>The turn.</b> World-class talent, real scale, clean power, deep capital — and still a 2/10 on funding and scaling. The endowment is not the constraint. The <em>architecture</em> that turns it into scaled, retained companies is. That architecture is the financing gap, the public-market on-ramp, and the retention levers the next chapters diagnose and cost.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="limits"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 07 · OUTRO / WHAT'S NEXT ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">07</span> From the endowment to the failure</div>
+    <h2 class="rv d1">Strong ingredients, broken conversion.</h2>
+    <p class="lede rv d1">This chapter answered the winnability question: the raw materials are here, at world-class quality. Which reframes the whole problem — Ontario is not poor in talent, capital, energy or companies. It is poor at <em>converting</em> them into scaled, retained, publicly-listed champions. The chapters that follow are the conversion failure in detail — and then what to do about it.</p>
+    <div class="pull rv d1" style="margin-top:36px">
+      <div class="q">The endowment is strong; the machine that turns it into champions is what's broken.</div>
+    </div>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="growth-sectors.html"><div class="n">NEXT · THE SECTORS</div><div><div class="t">Where the growth actually is</div><div class="d">Nine sectors and the productive-capital mix — 2.76× into buildings over intangibles — that decides whether this endowment converts into scaled firms.</div></div></a>
+      <a class="nextrow rv d1" href="public-markets.html"><div class="n">THEN · THE DIAGNOSIS</div><div><div class="t">Public markets — three boards, three worlds</div><div class="d">Where the exit engine stalled: the TSX / TSXV / CSE divergence, turnover velocity, and the IPO drought.</div></div></a>
+      <a class="nextrow rv d2" href="financing-gap.html"><div class="n">THEN · THE GAP</div><div><div class="t">The financing gap, sized</div><div class="d">The ~C$5–11B/yr scale-up gap — and the latent Maple-8 capital that could close it, from §04.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">Sources &amp; fine print</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">WHAT ONTARIO ALREADY HAS · CHAPTER 2 · static-first · opens from file:// · fully readable offline · full sources on the Methodology page</p>
+</footer>
+</div>
+
+<!-- Provenance drawer + scrim (shared shell markup; upgraded by app.js). Static-first:
+     every .provpill is a real <a href="methodology.html#register"> that jumps to the footer with JS off. -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- Per-page provenance data. Defined BEFORE app.js so the drawer machinery can read it.
+     window.PROV maps data-prov key → {t:title, meta:HTML, conf:high|medium|soft}. -->
+<script>
+window.PROV = {
+  research:{
+    t:"Talent & research density",
+    meta:'<b>OECD, "AI Skills and Capabilities in Canada," Feb 2025</b> — Canada hosts ~<b>10% of the world\'s top-tier AI researchers</b> (2nd globally per capita); <b>140,000+</b> actively engaged AI professionals, +29% year over year; leads the G7 in AI-talent growth and AI papers per capita since 2019.<br><br><b>Mila / Bain, Jan 2026</b> — Canada produces ~10% of top AI talent but captures <b>under 2% of global AI venture capital</b>; matching the talent share would require lifting AI VC roughly <b>5×</b>, from ~C$2B to ~C$10B/yr.<br><br><b>Startup Genome GSER 2025</b> — Toronto–Waterloo ranked <b>#20 globally</b> (#10 in North America), the highest-ranked Canadian ecosystem. <b>Tracxn</b> — University of Waterloo alumni have founded <b>1,292 companies</b> (14 unicorns).<br><br>Via <b>Ontario Ecosystem &amp; Competitive Advantages</b> (Part A/B).',
+    conf:"high"
+  },
+  scale:{
+    t:"Institutional & market scale",
+    meta:'<b>Ontario Economic Accounts (2024)</b> + <b>Canada &amp; Ontario — Economic &amp; Investor Profile</b> (StatCan):<ul>'
+      +'<li><b>Ontario GDP C$1.197T</b> (2024) — ~39% of Canada; national GDP ~<b>C$3.06T</b>.</li>'
+      +'<li><b>Population</b> — Ontario 16.14M · Canada 41.47M (Jan 1, 2026).</li>'
+      +'<li><b>Finance &amp; insurance C$93B = 10.5% of GDP</b> — surpassed manufacturing\'s share (10.1%) for the first time in the modern OEA record.</li>'
+      +'<li><b>Retail sales</b> — Canada C$865.2B (2024); Ontario ~C$326B.</li>'
+      +'</ul>The point is directional: a C$1.2-trillion economy with a deep financial sector is not too small to finance its own champions — the capital flows out for structural, not scale, reasons.',
+    conf:"high"
+  },
+  power:{
+    t:"Firm, clean, competitively-priced power",
+    meta:'<b>IESO 2024 Year in Review</b> — Ontario\'s grid was <b>84% emissions-free</b> in 2024; supply mix <b>nuclear 48.5%, hydro 23.4%, wind 16.6%, solar 9.0%, bioenergy 2.2%, gas/oil ~0.4%</b>. Nuclear + hydro (~72%) provide firm, dispatchable clean baseload — 24/7 carbon-free capability, the attribute hyperscalers demand.<br><br><b>OEB RPP Price Report (Oct 2025)</b> — IESO forecast average Ontario wholesale price ~<b>5.3¢/kWh</b> (Nov 2025–Oct 2026) vs a <b>US industrial average ~7.3¢</b> (<b>EIA / Site Selection Group</b>). <b>IMF (2026, p. 17)</b> cited Canada\'s clean-energy infrastructure as a competitive advantage for capital-intensive / AI-data-centre investment.<br><br><b>Honest caveats:</b> Ontario is competitive, not cheapest — Quebec ~4¢/kWh, Manitoba and BC undercut it; and IESO projects demand +~75% by 2050, so the edge is contingent on building generation ahead of the curve.<br><br>Via <b>Ontario Ecosystem &amp; Competitive Advantages §3</b>.',
+    conf:"high"
+  },
+  capital:{
+    t:"Deep institutional capital — latent",
+    meta:'<b>Maple-8 combined AUM ≈ C$2.63T</b> — CPP Investments, CDPQ, OTPP, OMERS, PSP, BCI, AIMCo, HOOPP (Policy Decision Matrix, defined terms). Big Six banks hold C$7T+ in assets. Among the most operationally sophisticated institutional investors on Earth.<br><br><b>The latent part:</b> <b>&lt;0.5% of Maple-8 AUM</b> reaches domestic early-stage VC — 4–40× below UK/US peer levels (International Comparator Data Compendium). No single published figure exists; this is a directional aggregate across annual reports, labelled as such.<br><br><b>The lever:</b> moving that allocation from <b>&lt;0.5% → 1%</b> would add <b>~C$26B</b> of domestic-VC headroom — several times the entire annual VC gap (~C$5–11B). Crowded in, not compelled.<br><br>Via <b>Pension &amp; Institutional Capital Mobilization</b> + <b>Policy Decision Matrix (Lever 4)</b>.',
+    conf:"medium"
+  },
+  champions:{
+    t:"Sector breadth & proven champions",
+    meta:'<b>Vector Institute / Deloitte, Nov 2025</b> — AI-related jobs contributed <b>$42–52B to Ontario\'s GDP (2019–2024, cumulative)</b>, ~half the $82–100B national total. Advanced manufacturing is ~12% of GDP and ~800,000 jobs; four firms hold Canadian Quantum Champions Program (CQCP) awards (Anyon, Nord Quantique, Photonic, Xanadu).<br><br><b>Champion roster</b> (latest disclosed rounds / press-reported caps, C$ at ~1.44/USD; via the <b>Artificial Intelligence</b> &amp; <b>Technology</b> pages):<ul>'
+      +'<li><b>Shopify</b> — ~C$202B, public, retained in Canada.</li>'
+      +'<li><b>Constellation Software</b> — ~C$90B, built and kept on the TSX.</li>'
+      +'<li><b>Cohere</b> — US$7B (~C$10B); would be a top-3 TSX tech name if it listed.</li>'
+      +'<li><b>Tenstorrent / Waabi / Xanadu</b> — ~US$1–3B each; Xanadu cross-listed on the TSX (XNDU).</li>'
+      +'</ul>The roster is strength <em>and</em> risk: the strongest private names run US-led growth rounds and face US acquisition offers — the leakage the report exists to stop.',
+    conf:"medium"
+  },
+  limits:{
+    t:"Where the strengths stop",
+    meta:'<b>Startup Genome GSER 2025</b> — the Toronto–Waterloo barbell in one report: <b>STEM Access 10/10, talent quality &amp; access 9, AI-native transition 8, knowledge 7</b> — but <b>funding 2/10 and scaling experience 2/10</b>. World-class inputs, missing middle.<br><br><b>Market Size, Domestic Adoption &amp; Scaling Barriers</b>:<ul>'
+      +'<li>Canada\'s consumer market is <b>~6% of the US</b>; enterprise IT spend just <b>~1.2%</b> — a structural pull toward US customers.</li>'
+      +'<li>Business <b>AI adoption 12.2%</b> (Q2 2025, up from 6.1%) — less than half US rates (StatCan).</li>'
+      +'<li>Robotics <b>13th</b> globally; business R&amp;D just <b>1% of GDP</b> (2nd-lowest in the G7) — ITIF / OECD.</li>'
+      +'</ul>The endowment is not the constraint — the architecture that converts it into scaled, retained companies is.',
+    conf:"high"
+  }
+};
+</script>
+<script src="app.js"></script>
+</body>
+</html>

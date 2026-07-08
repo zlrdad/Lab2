@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Methodology & Sources — Scaling & Retaining Canada's Champions</title>
+<meta name="description" content="The appendix of Ontario's capital-markets research report: the data layers and vintages behind the charts, the three-grade confidence scheme, the key caveats, and the vault's eight-tier source-authority hierarchy — with the full source register.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Page-scoped components (token-driven only).
+   1. .laylist / .layrow — hairline "data layer" rows (layer name + description + vintage),
+      open-composition.
+   2. .grdlist / .grdrow — the three confidence grades as hairline rows, each keyed to its
+      grade token (.conf semantics: high=--stay, medium=--acq, soft=--left).
+   3. .cvlist / .cvrow — the key-caveats rows (two-column: caveat title + gloss).
+   4. .srcreg / .srcgrp / .srcitems — the FULL static source register in the footer,
+      grouped by authority tier; the no-JS canonical target for every .provpill.
+   All mirror the shared .evlist pattern (styles.css) in spirit without reusing its exact
+   selectors, since each list's column layout differs.
+   5. .hbar-lab / .hbar-val are promoted to styles.css — no local definition needed. */
+.laylist{margin-top:36px;border-top:1px solid var(--hair)}
+.layrow{display:grid;grid-template-columns:minmax(200px,1.1fr) 2.4fr minmax(120px,.7fr);gap:24px;padding:24px 0;border-bottom:1px solid var(--hair);align-items:baseline}
+.layrow .ln{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(16px,1.9vw,20px);letter-spacing:-.01em}
+.layrow .ld{font-size:14.5px;color:var(--body);line-height:1.6;max-width:56ch}
+.layrow .ld b{color:var(--ink)}
+.layrow .lv{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--accent-txt);text-align:right}
+.layrow .lv b{color:var(--ink);font-weight:600}
+.grdlist{margin-top:36px;border-top:1px solid var(--hair)}
+.grdrow{display:grid;grid-template-columns:minmax(190px,1fr) 2.6fr;gap:26px;padding:26px 0;border-bottom:1px solid var(--hair);border-left:3px solid var(--gc,var(--slate));padding-left:20px;align-items:baseline}
+.grdrow .gt{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(16px,1.9vw,20px);letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.grdrow .gs{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:7px}
+.grdrow .gd{font-size:14.5px;color:var(--body);line-height:1.62;max-width:60ch}
+.grdrow .gd b{color:var(--ink)}
+.grdrow.g-high{--gc:var(--stay)}
+.grdrow.g-med{--gc:var(--acq)}
+.grdrow.g-soft{--gc:var(--left)}
+.cvlist{margin-top:36px;border-top:1px solid var(--hair)}
+.cvrow{display:grid;grid-template-columns:minmax(210px,1fr) 2.6fr;gap:26px;padding:22px 0;border-bottom:1px solid var(--hair);align-items:baseline}
+.cvrow .ct{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(15px,1.8vw,19px);letter-spacing:-.01em}
+.cvrow .cd{font-size:14px;color:var(--body);line-height:1.6;max-width:60ch}
+.cvrow .cd b{color:var(--ink)}
+/* full source register (footer) */
+.srcreg{margin-top:20px}
+.srcgrp{padding:18px 0;border-bottom:1px solid var(--hair)}
+.srcgrp .sgh{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-txt);margin-bottom:10px}
+.srcitems{font-size:13px;color:var(--body);line-height:1.7;max-width:82ch}
+.srcitems b{color:var(--ink);font-weight:600}
+@media(max-width:640px){.layrow,.grdrow,.cvrow{grid-template-columns:1fr;gap:8px}.layrow .lv{text-align:left}}
+</style>
+</head>
+<body data-accent="azure">
+<div class="prog" id="prog"></div>
+
+<!-- ====== SHARED SHELL TOPBAR (Mission Control; methodology active) ====== -->
+<div class="topbar">
+  <a class="tb-l brand" href="index.html"><span class="dot"></span><b>Canada's Champions</b></a>
+  <span class="tb-r">
+        <span class="links">
+      <a href="index.html">Overview</a>
+      <a href="growth-prize.html">Prize</a>
+      <a href="strengths.html">Strengths</a>
+      <a href="growth-sectors.html">Sectors</a>
+      <a href="public-markets.html" title="Public Markets">Markets</a>
+      <a href="financing-gap.html" title="The Financing Gap">Gap</a>
+      <a href="what-works.html" title="What Works Abroad">Abroad</a>
+      <a href="comparators.html" title="The Comparators">Compare</a>
+      <a href="champions.html">Champions</a>
+      <a href="recommendations.html" title="Recommendations">Recs</a>
+      <a href="methodology.html" class="on" title="Methodology &amp; Sources">Method</a>
+      <span class="tb-div" aria-hidden="true"></span>
+      <span class="tb-grouplab">Data</span>
+      <a href="exchanges.html" title="The Exchanges — interactive">Exchanges</a>
+      <a href="global-exchanges.html" title="Global Exchanges Explorer">Global</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› appendix · data layers · confidence grades · caveats · source register"></div>
+    <div class="cat rv">◇ Appendix · methodology &amp; sources</div>
+    <h1 class="rv d1">How to read these numbers.</h1>
+    <div class="tag rv d1">This report draws on a single validated research vault. Every figure is graded by confidence and caveated honestly: point-in-time market caps are flagged, private valuations are marked, and computed estimates carry a stated range. Below are the data layers behind the charts, the grading scheme, the caveats that matter, and the source-authority hierarchy that governs what gets cited.</div>
+    <div class="sigwrap">
+      <div class="signum rv d1">8</div>
+      <div>
+        <div class="sigpct rv d2">tiers of source authority · higher overrides lower</div>
+        <div class="siglab rv d2">Every citation is ranked on an eight-tier scale, from primary official sources down to general web content. Tier-1 sources anchor every headline figure.</div>
+        <a href="#register" class="provpill rv d2" data-prov="hierarchy"><span class="o"></span>source</a>
+      </div>
+    </div>
+    <div class="scrollcue rv d3"><span class="arr"></span>scroll the appendix</div>
+  </div>
+</section>
+
+<!-- ============ 01 · DATA LAYERS & VINTAGES — hairline rows ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> Data layers &amp; vintages</div>
+    <h2 class="rv d1">What the charts are built on — and as at when.</h2>
+    <p class="lede rv d1">Every quantitative claim resolves to one of these layers. Each carries a <em>vintage</em> — the as-at or reporting date — because market data ages fast and several figures have already moved since the snapshot.</p>
+    <div class="laylist">
+      <div class="layrow rv d1">
+        <div><div class="ln">TMX listed-companies &amp; financing</div></div>
+        <div class="ld">TSX / TSXV issuer counts, market caps, and equity-financing statistics — the backbone of the public-markets diagnosis. Canonical operating-issuer count re-based to <b>672 TSX / 1,347 TSXV</b> (May 31 2026).</div>
+        <div class="lv">as at <b>May 31 2026</b><br>(issuers) · <b>FY2025</b> (financing)</div>
+      </div>
+      <div class="layrow rv d1">
+        <div><div class="ln">CSE listed-companies + market summary</div></div>
+        <div class="ld">CSE listed-companies API plus the annual market summary — issuer counts, equity market cap, financing.</div>
+        <div class="lv">as at <b>end-2025</b></div>
+      </div>
+      <div class="layrow rv d2">
+        <div><div class="ln">OECD Entrepreneurship Financing DB</div></div>
+        <div class="ld">VC investment as a share of GDP across OECD members — the comparator base for the financing-gap computation.</div>
+        <div class="lv">vintage <b>2024</b></div>
+      </div>
+      <div class="layrow rv d2">
+        <div><div class="ln">WFE Exchange Statistics</div></div>
+        <div class="ld">The 20-exchange annual export (IPO new listings, turnover velocity, 2010–2025) behind the IPO-drought and Asian-liquidity charts.</div>
+        <div class="lv">export <b>Jul 2026</b><br>(data to 2025)</div>
+      </div>
+      <div class="layrow rv d3">
+        <div><div class="ln">The four vault workbooks</div></div>
+        <div class="ld">The structured research store: <b>public-markets</b>, <b>financing-gaps</b>, <b>capital-mobilization</b>, and <b>tax-incentives</b>. Validated working data, cross-checked against primary sources.</div>
+        <div class="lv">rolling · <b>cross-checked</b></div>
+      </div>
+      <div class="layrow rv d3">
+        <div><div class="ln">CVCA / NACO / BDC reporting</div></div>
+        <div class="ld">Venture &amp; growth financing volumes, angel activity, and deal counts — the industry view of the private market.</div>
+        <div class="lv">reporting yrs <b>2024–2026</b></div>
+      </div>
+      <div class="layrow rv d4">
+        <div><div class="ln">Case studies &amp; secondary studies</div></div>
+        <div class="ld">~<b>34 company case studies</b>; the <b>WFE</b> listings study (2025); and the <b>OECD</b> growth-markets and Asia capital-markets reports (2025). Illustrative and analytical, not statistical samples.</div>
+        <div class="lv"><b>illustrative</b><br>not sampled</div>
+      </div>
+    </div>
+    <a href="#register" class="provpill rv d2" data-prov="layers"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 02 · CONFIDENCE GRADING — hairline rows, grade-keyed ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> Confidence grading</div>
+    <h2 class="rv d1">Three grades, colour-keyed — so you know how hard a number is.</h2>
+    <p class="lede rv d1">Not every figure carries equal weight. Each is graded by the authority of its source. The colour key below is reused on the data pages — as the confidence chip beside each source line — so a glance tells you whether you're reading a regulator's number or a press-reported estimate.</p>
+    <div class="grdlist">
+      <div class="grdrow g-high rv d1">
+        <div><div class="gt"><span class="conf high">High</span> Gov · regulator · int'l org</div><div class="gs">primary · audited · official</div></div>
+        <div class="gd">The hardest numbers in the report. Sources: TMX, OECD, StatCan, Dept of Finance, OSFI, WFE. <b>e.g.</b> TSX 672 operating companies (TMX, May 2026) · VC/GDP comparator series (OECD 2024) · 82% median free float (OECD growth-markets study).</div>
+      </div>
+      <div class="grdrow g-med rv d2">
+        <div><div class="gt"><span class="conf medium">Medium</span> Industry · association</div><div class="gs">self-reported · well-governed</div></div>
+        <div class="gd">Self-reported by well-governed bodies, but not regulatory. Sources: CVCA, NACO, BDC, exchange commentary. <b>e.g.</b> annual VC deal volume &amp; counts (CVCA) · angel-investment activity (NACO) · growth-financing commentary (BDC).</div>
+      </div>
+      <div class="grdrow g-soft rv d3">
+        <div><div class="gt"><span class="conf soft">Soft</span> Advocacy · consultancy · aggregator</div><div class="gs">modelled · advocacy-tinted · last-priced</div></div>
+        <div class="gd">Useful colour, but advocacy-tinted, modelled, or based on private valuations. Sources: Vector/Deloitte, PitchBook/Crunchbase, press, last-priced rounds. <b>e.g.</b> AI-talent share figures · private-company valuations (last-priced) · round details (press, ⚠️).</div>
+      </div>
+    </div>
+    <a href="#register" class="provpill rv d2" data-prov="grades"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 03 · KEY CAVEATS — hairline rows ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> Key caveats</div>
+    <h2 class="rv d1">Where to be careful.</h2>
+    <p class="lede rv d1">The honest reading of any synthesis is in its caveats. These are the limits a careful reader should hold in mind.</p>
+    <div class="cvlist">
+      <div class="cvrow rv d1"><div class="ct">Market caps are point-in-time</div><div class="cd">TSX/TSXV as at May 2026; CSE end-2025. Several names have moved materially since the snapshot — treat them as a dated cross-section, not live quotes.</div></div>
+      <div class="cvrow rv d1"><div class="ct">Private valuations are last-priced ⚠️</div><div class="cd">Figures for private champions are last-priced or press-reported rounds, flagged with ⚠️. They are not marks, audited values, or current.</div></div>
+      <div class="cvrow rv d1"><div class="ct">Investor-domicile is indicative</div><div class="cd">"US-backed" / "Canadian-backed" tags reflect lead or notable investors, not full cap-table control or board math.</div></div>
+      <div class="cvrow rv d2"><div class="ct">"AI company" is curated</div><div class="cd">The AI cohort is a curated list, not a bottom-up definition. Different definitions would shift counts at the margin.</div></div>
+      <div class="cvrow rv d2"><div class="ct">The financing gap is a computation</div><div class="cd">Canada's VC/GDP vs. the comparator median and the US benchmark — a modelled estimate with a stated range, not an observed figure.</div></div>
+      <div class="cvrow rv d2"><div class="ct">Two VC/GDP figures, two bases</div><div class="cd">The report cites Canada's venture capital at <b>0.20% of GDP</b> on the diagnosis pages (OECD Entrepreneurship Financing DB, 2024 — the Ontario Financing Gap Landscape basis) and at <b>~0.35%</b> on the Comparators page (Compendium §3.1 — a CVCA / KPMG / NVCA / OECD blend on a broader deal definition and vintage). These are not in conflict: they measure venture activity on different bases. Each usage states its basis; they are never averaged.</div></div>
+      <div class="cvrow rv d3"><div class="ct">Turnover velocity is on one WFE basis</div><div class="cd">The velocity chart (Canada TSX ~64%) is computed on a single basis — WFE 2024 annual value traded ÷ market cap — so every exchange is directly comparable. TSXV ~45% is a separate vault issuer-level figure (WFE does not split the junior board), labelled as such wherever it appears.</div></div>
+      <div class="cvrow rv d2"><div class="ct">Korea KVIC figures are trade-press</div><div class="cd">The South Korea KVIC numbers are trade-press-sourced and should be read as indicative of scale, not audited.</div></div>
+      <div class="cvrow rv d3"><div class="ct">Case studies are illustrative</div><div class="cd">The ~34 company studies illustrate mechanisms; they are not a statistical sample and don't support frequency claims.</div></div>
+      <div class="cvrow rv d3"><div class="ct">CAD conversions are approximate</div><div class="cd">USD figures converted at ~US$1 = C$1.44. Cross-currency comparisons carry an FX margin.</div></div>
+    </div>
+    <a href="#register" class="provpill rv d2" data-prov="caveats"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 04 · SOURCE HIERARCHY — inline-SVG authority ladder ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04</span> Source hierarchy</div>
+    <h2 class="rv d1">The vault's eight-tier authority hierarchy.</h2>
+    <p class="lede rv d1">Every citation in the vault is ranked on an eight-tier authority scale, from primary official sources down to general web content. Higher tiers override lower ones on points of fact. The principal sources used at each tier:</p>
+    <div class="chart-head rv d2" style="margin-top:44px">
+      <h3>Authority weight, by tier</h3>
+      <div class="sub">Bar length encodes authority, not citation count</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="An eight-tier authority ladder. Tier 1, government, regulators and international organisations (TMX, OECD, StatCan, IMF, OSFI, Department of Finance), carries the highest weight; authority declines through academic, industry-standards, institutional-research, law-firm, news, think-tank, and general-web tiers. Tiers 4 and 6 do the most work in this report's private-market and exit narratives; tier-1 sources anchor every headline figure.">
+      <svg viewBox="0 0 900 430">
+        <defs>
+          <linearGradient id="meth-tier-subj" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--accent-deep)"/><stop offset="1" style="stop-color:var(--accent)"/></linearGradient>
+          <linearGradient id="meth-tier-web" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.16"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:.10"/></linearGradient>
+        </defs>
+        <!-- 8 tiers, weight ∝ bar width. Full width 640px = 100%. Rows every 50px from y=20. -->
+        <!-- T1 100% — SUBJECT: gradient accent + glow -->
+        <text x="200" y="40" text-anchor="end" class="hbar-lab subj">T1 · Gov / reg / int'l</text>
+        <rect x="210" y="22" width="640" height="30" rx="4" fill="url(#meth-tier-subj)" class="subj-glow"/>
+        <text x="218" y="42" fill="var(--bg)" font-family="var(--mono)" font-size="11.5" font-weight="700">TMX · OECD · StatCan · IMF · OSFI · Dept of Finance</text>
+        <!-- T2 88% = 563 — accent ramp, densest -->
+        <text x="200" y="90" text-anchor="end" class="hbar-lab">T2 · Academic</text>
+        <rect x="210" y="72" width="563" height="30" rx="4" class="ramp-1"/>
+        <text x="781" y="92" class="hbar-val">Wilson · Cumming · Demmou</text>
+        <!-- T3 76% = 486 -->
+        <text x="200" y="140" text-anchor="end" class="hbar-lab">T3 · Industry / standards</text>
+        <rect x="210" y="122" width="486" height="30" rx="4" class="ramp-2"/>
+        <text x="704" y="142" class="hbar-val">WFE · exchange standards bodies</text>
+        <!-- T4 64% = 410 -->
+        <text x="200" y="190" text-anchor="end" class="hbar-lab">T4 · Institutional research</text>
+        <rect x="210" y="172" width="410" height="30" rx="4" class="ramp-3"/>
+        <text x="628" y="192" class="hbar-val">CVCA · NACO · BDC · RBC · Deloitte</text>
+        <!-- T5 52% = 333 -->
+        <text x="200" y="240" text-anchor="end" class="hbar-lab">T5 · Law-firm / legal</text>
+        <rect x="210" y="222" width="333" height="30" rx="4" class="ramp-4"/>
+        <text x="551" y="242" class="hbar-val">firm commentary &amp; analysis</text>
+        <!-- T6 40% = 256 -->
+        <text x="200" y="290" text-anchor="end" class="hbar-lab">T6 · News / trade press</text>
+        <rect x="210" y="272" width="256" height="30" rx="4" class="ramp-5"/>
+        <text x="474" y="292" class="hbar-val">BetaKit · Globe · The Logic · PCJ</text>
+        <!-- T7 28% = 179 -->
+        <text x="200" y="340" text-anchor="end" class="hbar-lab">T7 · Think tanks / policy</text>
+        <rect x="210" y="322" width="179" height="30" rx="4" class="ramp-6"/>
+        <text x="397" y="342" class="hbar-val">policy-institute analysis</text>
+        <!-- T8 16% = 102 — faintest accent tail (below ramp-6) -->
+        <text x="200" y="390" text-anchor="end" class="hbar-lab">T8 · Blog / opinion / web</text>
+        <rect x="210" y="372" width="102" height="30" rx="4" fill="url(#meth-tier-web)"/>
+        <text x="320" y="392" class="hbar-val">general web content</text>
+        <!-- baseline -->
+        <line x1="210" y1="416" x2="850" y2="416" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="210" y="428" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">low authority</text>
+        <text x="850" y="428" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">highest authority — anchors every headline figure</text>
+      </svg>
+    </div>
+    <div class="mininote rv d2">Bar length encodes <b>authority weight</b>, not citation count. Tiers <b>4 and 6</b> do the most work in this report's private-market and exit narratives; <b>tier-1</b> sources anchor every headline figure.</div>
+    <a href="#register" class="provpill rv d2" data-prov="hierarchy"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 05 · A NOTE ON STANDING — close + next ============ -->
+<section class="band" data-rev>
+  <div class="wrap narrow">
+    <div class="kicker rv"><span class="l">05</span> A note on standing</div>
+    <h2 class="rv d1">A research synthesis — not a government report.</h2>
+    <p class="lede rv d1">This is a <em>proof-of-concept research synthesis</em>, assembled from a single validated vault to make the case readable end-to-end. It is not a published government report, a regulatory filing, or audited research. Figures are graded and caveated above; where a number is soft, the report says so. Read it as a structured argument with its sources on the table — not as an official statistic.</p>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="index.html"><div class="n">RETURN · OVERVIEW</div><div><div class="t">Back to the top</div><div class="d">The four numbers, the diagnosis, and the through-line from exchanges to companies to levers.</div></div></a>
+      <a class="nextrow rv d1" href="growth-prize.html"><div class="n">RE-READ · THE PRIZE</div><div><div class="t">The Growth Prize</div><div class="d">The living-standards slide and the headline gap — the justification layer, now with the grades in mind.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FULL STATIC SOURCE REGISTER (footer) — the no-JS canonical target ============ -->
+<footer id="sources">
+  <div class="ft-h">Appendix · Methodology &amp; Sources</div>
+  <p>The appendix of Ontario's capital-markets research report. Figures throughout this report resolve to the data layers and source hierarchy above. Market caps are point-in-time (TSX/TSXV May 2026; CSE end-2025); private valuations are last-priced or press-reported (⚠️); the financing gap is a computed estimate with a stated range. CAD conversions at ~US$1 = C$1.44. This is a research synthesis and proof-of-concept, not a published government report.</p>
+
+  <div class="srcreg" id="register">
+    <div class="reg-lead">The canonical source register. Every <span class="o" style="display:inline-block;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--accent);vertical-align:middle"></span> source pill in the report opens the figure's own provenance in a drawer; with JavaScript off, each pill jumps here. Grouped by the vault's eight authority tiers.</div>
+    <div class="srcgrp">
+      <div class="sgh">T1 · Government · regulator · international organisations</div>
+      <div class="srcitems"><b>TMX Group</b> (TSX / TSXV Listed Companies &amp; New Listings, Jun 2026 file, data as at May 31 2026) · <b>Canadian Securities Exchange (CSE)</b> (listed-companies API + annual market summary, end-2025) · <b>OECD</b> (Entrepreneurship Financing Database 2024; Growth-Markets study; Asia Capital Markets Report 2025; Benchmarking Government Support for VC 2025) · <b>Statistics Canada</b> (GDP-per-capita relative-to-US, Mar 2026; Ontario Economic Accounts to Q4-2025) · <b>IMF</b> (Canada Article IV 2026; WEO) · <b>OSFI</b> (LICAT 2025 + July-2025 infrastructure carve-out) · <b>Department of Finance Canada</b> (flow-through-shares envelope) · <b>HM Revenue &amp; Customs</b> (SEIS/EIS statistics 2025) · <b>OSC</b> (Strategic Plan 2024–2030).</div>
+    </div>
+    <div class="srcgrp">
+      <div class="sgh">T2 · Academic / peer-reviewed</div>
+      <div class="srcitems"><b>Wilson</b> (public-VC design) · <b>Cumming</b> (2026 — pension-mandate critique) · <b>Demmou</b> (firm-growth / productivity) · <b>Gu &amp; Lesica</b> (StatCan Economic &amp; Social Reports, Dec 2025 — productivity gap).</div>
+    </div>
+    <div class="srcgrp">
+      <div class="sgh">T3 · Industry / standards bodies</div>
+      <div class="srcitems"><b>World Federation of Exchanges (WFE)</b> — Statistics portal (20-exchange annual export, IPO new listings + turnover velocity, 2010–2025) and the 2025 listings study · exchange standards bodies.</div>
+    </div>
+    <div class="srcgrp">
+      <div class="sgh">T4 · Institutional research &amp; industry associations</div>
+      <div class="srcitems"><b>CVCA</b> (VC deal volume/counts; foreign-participation analysis) · <b>NACO</b> (Angel Investing 2026 — C$113.79M, 2025; &amp; Startup Genome early-stage shortfall) · <b>BDC</b> (VC Landscape 2026 — "a sovereignty issue") · <b>RBC</b> · <b>Deloitte</b> / <b>Vector Institute</b> (AI-talent share). Comparator programs: <b>KVIC</b> (Korea) · <b>Tesi</b> (Finland) · <b>NZ Growth Fund / NZGCP</b> · <b>Israel Innovation Authority</b> (Yozma; §19A) · <b>SBA</b> (SBIC) · <b>DG Trésor</b> (Initiative Tibi) · <b>ABI / Borsa Italiana</b> (STAR) · Sweden ISK; Japan NISA; UK PISCES &amp; Mansion House Accord; Australia Superannuation.</div>
+    </div>
+    <div class="srcgrp">
+      <div class="sgh">T5–T6 · Legal commentary · news &amp; trade press</div>
+      <div class="srcitems">Law-firm commentary &amp; analysis (T5) · <b>BetaKit</b> · <b>The Globe and Mail</b> · <b>The Logic</b> · <b>Private Capital Journal</b> · <b>KoreaTechDesk</b> (KVIC trade-press) (T6).</div>
+    </div>
+    <div class="srcgrp">
+      <div class="sgh">T7–T8 · Think tanks / policy · aggregators / general web</div>
+      <div class="srcitems"><b>C.D. Howe Institute</b> (Plant 2023 — large-firm density) and policy-institute analysis (T7) · <b>PitchBook</b> / <b>Crunchbase</b> (last-priced private valuations) · press round-details (⚠️) · general web content (T8).</div>
+    </div>
+    <div class="srcgrp">
+      <div class="sgh">Vault working store</div>
+      <div class="srcitems">The four structured workbooks — <b>public-markets</b>, <b>financing-gaps</b>, <b>capital-mobilization</b>, <b>tax-incentives</b> · the <b>~34 company case studies</b> (Themes/Case Studies) + <b>Cross-Case Synthesis</b> · <b>Ontario Financing Gap Landscape</b> · <b>The Growth Prize — Ontario's Opportunity</b> · <b>Value Capture &amp; IP Loss</b> (Value Leakage Index) · <b>International Comparator Data Compendium</b> · <b>Domestic Champions — Policy Hypotheses</b>. All cross-checked against the primary sources above.</div>
+    </div>
+  </div>
+
+  <p style="margin-top:18px">Confidence collapses the eight tiers into three report grades: <span style="color:var(--stay)">high</span> (T1–3), <span style="color:var(--acq)">medium</span> (T4), <span style="color:var(--left)">soft</span> (T5–8). The full vault register runs to 234 sources across 22 categories in the <code>Sources &amp; Access Guide</code>; the list above names the principal sources actually cited in this report.</p>
+  <p class="footid">METHODOLOGY · APPENDIX · static-first · opens from file:// · full static source register · fully readable offline</p>
+</footer>
+</div>
+
+<!-- Provenance drawer + scrim (shared shell markup; upgraded by app.js). Static-first:
+     every .provpill is a real <a href="#register"> that jumps to the full source register with JS off. -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- Per-page provenance data. Defined BEFORE app.js so the drawer machinery can read it.
+     window.PROV maps data-prov key → {t:title, meta:HTML, conf:high|medium|soft}. -->
+<script>
+window.PROV = {
+  layers:{
+    t:"Data layers & vintages",
+    meta:'Every quantitative claim resolves to one of seven layers, each carrying an as-at / reporting date:<ul>'
+      +'<li><b>TMX listed-companies &amp; financing</b> — issuers as at May 31 2026 (canonical 672 TSX / 1,347 TSXV operating issuers), financing FY2025.</li>'
+      +'<li><b>CSE listed-companies + market summary</b> — end-2025.</li>'
+      +'<li><b>OECD Entrepreneurship Financing DB</b> — VC/GDP, vintage 2024.</li>'
+      +'<li><b>WFE Exchange Statistics</b> — 20-exchange annual export (Jul 2026, data to 2025) — IPO new listings + turnover velocity.</li>'
+      +'<li><b>The four vault workbooks</b> — public-markets, financing-gaps, capital-mobilization, tax-incentives.</li>'
+      +'<li><b>CVCA / NACO / BDC reporting</b> — reporting years 2024–2026.</li>'
+      +'<li><b>Case studies &amp; secondary studies</b> — ~34 company studies; WFE listings study (2025); OECD growth-markets &amp; Asia reports (2025). Illustrative, not sampled.</li>'
+      +'</ul>Market data ages fast; several figures have moved since their snapshot.',
+    conf:"high"
+  },
+  grades:{
+    t:"Confidence grading — three grades",
+    meta:'Each figure is graded by source authority; the chip beside every source line uses this key:<ul>'
+      +'<li><b>High</b> — government / regulator / int\'l org: primary, audited, or official (TMX, OECD, StatCan, Dept of Finance, OSFI, WFE). e.g. TSX 672 operating companies (TMX, May 2026); VC/GDP comparator series (OECD 2024); 82% median free float (OECD growth-markets study).</li>'
+      +'<li><b>Medium</b> — industry / association: self-reported by well-governed bodies, not regulatory (CVCA, NACO, BDC, exchange commentary).</li>'
+      +'<li><b>Soft</b> — advocacy / consultancy / aggregator: modelled, advocacy-tinted, or last-priced (Vector/Deloitte, PitchBook/Crunchbase, press, ⚠️).</li>'
+      +'</ul>The three report grades collapse the vault\'s eight tiers: high = T1–3, medium = T4, soft = T5–8.',
+    conf:"high"
+  },
+  caveats:{
+    t:"Key caveats",
+    meta:'The limits a careful reader should hold in mind:<ul>'
+      +'<li><b>Market caps are point-in-time</b> — TSX/TSXV May 2026; CSE end-2025; a dated cross-section, not live quotes.</li>'
+      +'<li><b>Private valuations are last-priced ⚠️</b> — not marks, audited, or current.</li>'
+      +'<li><b>Investor-domicile is indicative</b> — "US-/Canadian-backed" = lead/notable investors, not control math.</li>'
+      +'<li><b>"AI company" is curated</b> — a curated list, not a bottom-up definition.</li>'
+      +'<li><b>The financing gap is a computation</b> — VC/GDP vs comparator-median and US, a modelled estimate with a stated range.</li>'
+      +'<li><b>Korea KVIC figures are trade-press</b> — indicative of scale, not audited.</li>'
+      +'<li><b>Case studies are illustrative</b> — mechanisms, not a statistical sample; no frequency claims.</li>'
+      +'<li><b>CAD conversions are approximate</b> — ~US$1 = C$1.44; cross-currency comparisons carry an FX margin.</li>'
+      +'</ul>',
+    conf:"high"
+  },
+  hierarchy:{
+    t:"The eight-tier authority hierarchy",
+    meta:'Every vault citation is ranked on an eight-tier authority scale; higher tiers override lower ones on points of fact. Bar length in the chart encodes <b>authority weight</b>, not citation count.<ul>'
+      +'<li><b>T1</b> Gov / regulator / int\'l — TMX, OECD, StatCan, IMF, OSFI, Dept of Finance (anchors every headline figure).</li>'
+      +'<li><b>T2</b> Academic / peer-reviewed — Wilson, Cumming, Demmou.</li>'
+      +'<li><b>T3</b> Industry / standards — WFE, exchange standards bodies.</li>'
+      +'<li><b>T4</b> Institutional research — CVCA, NACO, BDC, RBC, Deloitte.</li>'
+      +'<li><b>T5</b> Law-firm / legal commentary.</li>'
+      +'<li><b>T6</b> News / trade press — BetaKit, Globe &amp; Mail, The Logic, Private Capital Journal.</li>'
+      +'<li><b>T7</b> Think tanks / policy institutes.</li>'
+      +'<li><b>T8</b> Blog / opinion / general web.</li>'
+      +'</ul>Tiers 4 and 6 do the most work in the private-market and exit narratives. Full register: 234 sources across 22 categories in the vault <b>Sources &amp; Access Guide</b>.',
+    conf:"high"
+  }
+};
+</script>
+<script src="app.js"></script>
+</body>
+</html>

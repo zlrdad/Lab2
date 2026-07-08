@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Exchanges — an interactive look · Scaling &amp; Retaining Canada's Champions</title>
+<meta name="description" content="An interactive TMX / TSXV / CSE dashboard for Ontario's capital-markets research report. Switch board, toggle operating companies vs. investment products, and read the sector distribution behind Canada's three equity exchanges.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ============================================================================
+   PAGE-SCOPED COMPONENTS — exchanges.html (token-driven only; no literal hex).
+   1. .bswitch / .bchip — board switcher + operating/products toggle chips.
+      Reuses the provpill visual register (mono, hairline, accent-on-active).
+   2. .kpirow / .kpi — a compact live KPI figrow (re-rendered by JS). Same
+      numeral register as .fig-n but tighter for a 4-up dashboard header.
+   3. #secChart tooltip (.dtip) — a positioned hover tooltip for the SVG bars.
+   These are dashboard-specific (interactive re-render) so they stay scoped here
+   per the README "only promote when identical on 3+ pages" rule.
+   ============================================================================ */
+.bswitch{display:flex;flex-wrap:wrap;gap:10px;margin:34px 0 6px;align-items:center}
+.bswitch .grouplab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-right:4px}
+.bchip{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--body);background:transparent;border:1px solid var(--hair-strong);border-radius:7px;padding:8px 15px;cursor:pointer;transition:background .15s,border-color .15s,color .15s;user-select:none}
+.bchip:hover{border-color:rgba(var(--accent-rgb),.5);color:var(--ink)}
+.bchip[aria-pressed="true"]{color:var(--accent-txt);border-color:rgba(var(--accent-rgb),.55);background:rgba(var(--accent-rgb),.09)}
+.bchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bswitch .sep{width:1px;height:24px;background:var(--hair);margin:0 4px}
+.tgllab{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:0 2px 0 6px}
+
+.kpirow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:40px;border-top:1px solid var(--hair-strong)}
+.kpi{padding:26px 24px 24px 0;border-bottom:1px solid var(--hair);position:relative}
+.kpi + .kpi::before{content:"";position:absolute;left:-1px;top:22px;bottom:22px;width:1px;background:var(--hair)}
+.kpi .kn{font-family:var(--disp);font-weight:700;font-size:clamp(30px,4.4vw,50px);line-height:.92;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--accent);text-shadow:var(--gfx-glow-strong)}
+.kpi.grey .kn{color:var(--ink);text-shadow:none}
+.kpi .kc{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-top:14px}
+.kpi .kl{font-size:12.5px;color:var(--body);line-height:1.5;margin-top:7px;max-width:26ch}
+@media(max-width:760px){.kpirow{grid-template-columns:1fr 1fr}.kpi:nth-child(3)::before,.kpi:nth-child(1)::before{display:none}}
+
+.dashcap{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.04em;margin-top:14px;line-height:1.6}
+.dashcap b{color:var(--body);font-weight:500}
+.dtip{position:fixed;z-index:80;pointer-events:none;opacity:0;transition:opacity .12s;background:var(--surface);border:1px solid var(--hair-strong);border-radius:8px;padding:9px 12px;font-family:var(--mono);font-size:12px;color:var(--ink);box-shadow:0 8px 30px rgba(0,0,0,.45);max-width:260px;line-height:1.5}
+html[data-theme="light"] .dtip{box-shadow:0 8px 30px rgba(46,77,96,.18)}
+.dtip .tt{color:var(--accent-txt);font-weight:700}
+.dtip .tv{color:var(--body)}
+.barrow{cursor:pointer}
+.barrow:hover .bfill{opacity:1}
+.legendline{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.06em;margin-top:8px}
+.legendline .sw{display:inline-block;width:11px;height:11px;border-radius:2px;vertical-align:-1px;margin:0 4px 0 12px}
+</style>
+</head>
+<body data-accent="azure">
+<div class="prog" id="prog"></div>
+
+<!-- ====== SHARED SHELL TOPBAR (Mission Control; 10-link grouped nav) ====== -->
+<div class="topbar">
+  <a class="tb-l brand" href="index.html"><span class="dot"></span><b>Canada's Champions</b></a>
+  <span class="tb-r">
+        <span class="links">
+      <a href="index.html">Overview</a>
+      <a href="growth-prize.html">Prize</a>
+      <a href="strengths.html">Strengths</a>
+      <a href="growth-sectors.html">Sectors</a>
+      <a href="public-markets.html" title="Public Markets">Markets</a>
+      <a href="financing-gap.html" title="The Financing Gap">Gap</a>
+      <a href="what-works.html" title="What Works Abroad">Abroad</a>
+      <a href="comparators.html" title="The Comparators">Compare</a>
+      <a href="champions.html">Champions</a>
+      <a href="recommendations.html" title="Recommendations">Recs</a>
+      <a href="methodology.html" title="Methodology &amp; Sources">Method</a>
+      <span class="tb-div" aria-hidden="true"></span>
+      <span class="tb-grouplab">Data</span>
+      <a href="exchanges.html" class="on" title="The Exchanges — interactive">Exchanges</a>
+      <a href="global-exchanges.html" title="Global Exchanges Explorer">Global</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› interactive · the exchanges · TSX · TSXV · CSE · pick a board"></div>
+    <div class="cat rv">◇ Interactive · the exchanges</div>
+    <h1 class="rv d1">The exchanges — an interactive look.</h1>
+    <div class="tag rv d1">Canada lists on three equity boards: the senior <strong>TSX</strong>, the <strong>TSX Venture</strong> board, and the <strong>CSE</strong>. This page lets you switch between them and read the sector distribution, the size of the market, and — on the TSX — the gap between <em>what is listed</em> and <em>what actually operates</em>. Pick a board below; everything re-renders.</div>
+    <div class="sigwrap">
+      <div class="signum rv d1" id="issuerNum">672</div>
+      <div>
+        <div class="sigpct rv d2">TSX operating issuers · the senior board</div>
+        <div class="siglab rv d2">Genuine operating companies on the senior board — the productive economy, once the 1,564 funds and depositary receipts are stripped out. Below: 1,347 on the venture board and ~601 on the CSE.</div>
+        <a href="methodology.html#register" class="provpill rv d2" data-prov="method"><span class="o"></span>data &amp; method</a>
+      </div>
+    </div>
+    <div class="scrollcue rv d3"><span class="arr"></span>explore the boards</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE INTERACTIVE BOARD DASHBOARD ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> The interactive board dashboard</div>
+    <h2 class="rv d1">One board at a time.</h2>
+    <p class="lede rv d1">Choose a board to re-render its KPI row and sector-distribution chart. On the TSX you can also toggle between <em>operating companies</em> and the <em>investment products</em> (ETFs, CDRs, closed-end funds, SPACs) that make up the bulk of its listings — the masking effect at the heart of the "listed ≠ operating" story. <em>Operating counts as at May 31 2026; sector market caps computed from the same TMX workbook (CSE end-2025).</em></p>
+
+    <!-- Board switcher + operating/products toggle -->
+    <div class="bswitch rv d1" role="group" aria-label="Choose exchange board">
+      <span class="grouplab">Board</span>
+      <button type="button" class="bchip" id="bTSX" data-board="tsx" aria-pressed="true">TSX · senior</button>
+      <button type="button" class="bchip" id="bTSXV" data-board="tsxv" aria-pressed="false">TSXV · venture</button>
+      <button type="button" class="bchip" id="bCSE" data-board="cse" aria-pressed="false">CSE · lighter regime</button>
+      <span class="sep" id="tglSep"></span>
+      <span class="tgllab" id="tglLab">TSX view</span>
+      <button type="button" class="bchip" id="tOp" data-view="operating" aria-pressed="true">Operating</button>
+      <button type="button" class="bchip" id="tProd" data-view="products" aria-pressed="false">Investment products</button>
+    </div>
+
+    <!-- LIVE KPI ROW (build-time = TSX operating; re-rendered by JS) -->
+    <div class="kpirow rv d1" id="kpirow" aria-live="polite">
+      <div class="kpi"><div class="kn" id="kIssuers">672</div><div class="kc">operating issuers</div><div class="kl" id="kIssuersL">Genuine operating companies on the senior board.</div></div>
+      <div class="kpi grey"><div class="kn" id="kListed">2,236</div><div class="kc">total listings</div><div class="kl" id="kListedL">Including 1,564 ETFs, CDRs, closed-end funds &amp; SPACs.</div></div>
+      <div class="kpi grey"><div class="kn" id="kCap">C$5.96T</div><div class="kc">operating market cap</div><div class="kl" id="kCapL">Total market cap of operating issuers.</div></div>
+      <div class="kpi grey"><div class="kn" id="kMed">C$899M</div><div class="kc">median issuer</div><div class="kl" id="kMedL">Median operating-issuer market cap.</div></div>
+    </div>
+
+    <!-- LIVE SECTOR CHART (build-time = TSX operating; re-rendered by JS as inline SVG) -->
+    <div class="chart-head rv d2" style="margin-top:46px">
+      <h3 id="chTitle">TSX operating issuers, by sector</h3>
+      <div class="sub" id="chSub">Bar length = number of issuers · hover for market cap</div>
+    </div>
+    <div class="svgwrap rv d2" id="secWrap" role="img" aria-label="Sector distribution of TSX operating issuers by count: Mining 181, Industrial 102, Consumer 58, Financial Services 63, Technology 57, Oil & Gas 51, Real Estate 56, Life Sciences 40, Cleantech 28, Comms & Media 19, Utilities & Pipelines 17. Mining leads by count; Financial Services leads by market cap at about C$1.9 trillion.">
+      <!-- Build-time DEFAULT view: TSX operating, sorted by ISSUER COUNT (bars = count). Rebuilt by JS on interaction. -->
+      <svg viewBox="0 0 900 520" id="secChart">
+        <defs>
+          <linearGradient id="exch-static-subj" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" style="stop-color:var(--accent-deep)"/>
+            <stop offset="1" style="stop-color:var(--accent)"/>
+          </linearGradient>
+        </defs>
+        <!-- rows: label · bar(count) · value(count) · faint mcap tick. x-scale: 181 issuers -> 640px -->
+        <!-- Mining 181 -->
+        <g class="barrow" data-sec="Mining" data-n="181" data-cap="1199.2">
+          <text x="196" y="42" text-anchor="end" class="hbar-lab">Mining</text>
+          <rect class="bfill subj-glow" x="210" y="26" width="640" height="24" rx="4" fill="url(#exch-static-subj)"/>
+          <text x="838" y="43" text-anchor="end" class="hbar-val subj inbar">181</text>
+        </g>
+        <!-- Industrial 102 -->
+        <g class="barrow" data-sec="Industrial" data-n="102" data-cap="644.9">
+          <text x="196" y="86" text-anchor="end" class="hbar-lab">Industrial</text>
+          <rect class="bfill ramp-1" x="210" y="70" width="360.7" height="24" rx="4"/>
+          <text x="858" y="87" text-anchor="end" class="hbar-val">102</text>
+        </g>
+        <!-- Financial Services 63 -->
+        <g class="barrow" data-sec="Financial Services" data-n="63" data-cap="1897.0">
+          <text x="196" y="130" text-anchor="end" class="hbar-lab">Financial Services</text>
+          <rect class="bfill ramp-2" x="210" y="114" width="222.8" height="24" rx="4"/>
+          <text x="858" y="131" text-anchor="end" class="hbar-val">63</text>
+        </g>
+        <!-- Consumer 58 -->
+        <g class="barrow" data-sec="Consumer" data-n="58" data-cap="397.8">
+          <text x="196" y="174" text-anchor="end" class="hbar-lab">Consumer</text>
+          <rect class="bfill ramp-2" x="210" y="158" width="205.1" height="24" rx="4"/>
+          <text x="858" y="175" text-anchor="end" class="hbar-val">58</text>
+        </g>
+        <!-- Technology 57 -->
+        <g class="barrow" data-sec="Technology" data-n="57" data-cap="435.3">
+          <text x="196" y="218" text-anchor="end" class="hbar-lab">Technology</text>
+          <rect class="bfill ramp-3" x="210" y="202" width="201.5" height="24" rx="4"/>
+          <text x="858" y="219" text-anchor="end" class="hbar-val">57</text>
+        </g>
+        <!-- Real Estate 56 -->
+        <g class="barrow" data-sec="Real Estate" data-n="56" data-cap="100.2">
+          <text x="196" y="262" text-anchor="end" class="hbar-lab">Real Estate</text>
+          <rect class="bfill ramp-3" x="210" y="246" width="197.9" height="24" rx="4"/>
+          <text x="858" y="263" text-anchor="end" class="hbar-val">56</text>
+        </g>
+        <!-- Oil & Gas 51 -->
+        <g class="barrow" data-sec="Oil &amp; Gas" data-n="51" data-cap="551.7">
+          <text x="196" y="306" text-anchor="end" class="hbar-lab">Oil &amp; Gas</text>
+          <rect class="bfill ramp-4" x="210" y="290" width="180.3" height="24" rx="4"/>
+          <text x="858" y="307" text-anchor="end" class="hbar-val">51</text>
+        </g>
+        <!-- Life Sciences 40 -->
+        <g class="barrow" data-sec="Life Sciences" data-n="40" data-cap="24.0">
+          <text x="196" y="350" text-anchor="end" class="hbar-lab">Life Sciences</text>
+          <rect class="bfill ramp-4" x="210" y="334" width="141.4" height="24" rx="4"/>
+          <text x="858" y="351" text-anchor="end" class="hbar-val">40</text>
+        </g>
+        <!-- Cleantech 28 -->
+        <g class="barrow" data-sec="Cleantech" data-n="28" data-cap="56.5">
+          <text x="196" y="394" text-anchor="end" class="hbar-lab">Cleantech</text>
+          <rect class="bfill ramp-5" x="210" y="378" width="99" height="24" rx="4"/>
+          <text x="858" y="395" text-anchor="end" class="hbar-val">28</text>
+        </g>
+        <!-- Comms & Media 19 -->
+        <g class="barrow" data-sec="Comms &amp; Media" data-n="19" data-cap="164.5">
+          <text x="196" y="438" text-anchor="end" class="hbar-lab">Comms &amp; Media</text>
+          <rect class="bfill ramp-6" x="210" y="422" width="67.2" height="24" rx="4"/>
+          <text x="858" y="439" text-anchor="end" class="hbar-val">19</text>
+        </g>
+        <!-- Utilities & Pipe. 17 -->
+        <g class="barrow" data-sec="Utilities &amp; Pipe." data-n="17" data-cap="490.0">
+          <text x="196" y="482" text-anchor="end" class="hbar-lab">Utilities &amp; Pipe.</text>
+          <rect class="bfill ramp-6" x="210" y="466" width="60.1" height="24" rx="4"/>
+          <text x="858" y="483" text-anchor="end" class="hbar-val">17</text>
+        </g>
+        <line x1="210" y1="506" x2="850" y2="506" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="210" y="519" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">0</text>
+        <text x="850" y="519" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">operating issuers, by sector (count)</text>
+      </svg>
+    </div>
+    <div class="legendline rv d2"><span class="sw" style="background:var(--accent)"></span>largest sector by count<span class="sw" style="background:var(--steel)"></span>other sectors · hover any bar for market cap</div>
+    <div class="dashcap rv d2" id="dashCap"><b>The read:</b> Mining leads the TSX by <em>count</em> (181 issuers), but Financial Services leads by <em>capital</em> (~C$1.9T) — the six big banks and Brookfield. Count and capital tell different stories; hover the bars to see the split.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="method"><span class="o"></span>data &amp; method</a>
+  </div>
+</section>
+
+<!-- ============ 02 · STORY BEAT — LISTED ≠ OPERATING ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> Listed is not operating</div>
+    <h2 class="rv d1">The senior board's headline count is 71% funds.</h2>
+    <p class="lede rv d1">Flip the TSX toggle above to <em>Investment products</em> and the picture inverts: of the TSX's 2,236 listings, only <strong>672</strong> are operating companies. The other <strong>1,564</strong> are ETFs, CDRs (Canadian Depositary Receipts — wrappers around foreign shares like Apple or Nvidia), closed-end funds and one dormant SPAC. When TMX reports "issuers up 8% year-on-year," that growth is almost entirely fund creation — not new productive-economy listings.</p>
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-count="672">672</div><div class="fig-cap">operating cos</div><div class="fig-q">the productive economy</div><div class="fig-l">Real operating companies on the TSX — the number that matters.</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="1564">1,564</div><div class="fig-cap">investment products</div><div class="fig-q">1,371 ETPs · 131 CDRs · 61 CEFs · 1 SPAC</div><div class="fig-l">Funds and receipts that inflate the headline listing count.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n" data-count="71.2" data-dec="1" data-suffix="%">71.2%</div><div class="fig-cap">of TSX listings</div><div class="fig-q">are not companies</div><div class="fig-l">The share of the senior board that is a fund, not an operating business.</div></div>
+    </div>
+    <div class="pull rv d2" style="margin-top:40px">
+      <div class="q">Count the funds and the market looks broad and growing. Count the companies and it is flat-to-shrinking — the combined operating base fell from 2,030 to 2,019 in three and a half months.</div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="method"><span class="o"></span>data &amp; method</a>
+  </div>
+</section>
+
+<!-- ============ 03 · STORY BEAT — CONCENTRATION ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> The mega-cap barbell</div>
+    <h2 class="rv d1">Half the senior board sits in 25 names.</h2>
+    <p class="lede rv d1">Among those 672 operating TSX companies, market value is extraordinarily concentrated. The top 25 issuers hold over half the operating market cap; the top 100 hold 85%. The remaining hundreds share a thin tail — and the C$2–10B mid-cap tier, where a scaled Canadian champion would list, is almost empty. <em>Concentration curve on the Feb-28-2026 TSX snapshot; the shape is stable across the May re-base.</em></p>
+    <div class="chart-head rv d2" style="margin-top:44px">
+      <h3>TSX operating market cap — cumulative concentration</h3>
+      <div class="sub">Share of total operating market cap held by the top N issuers</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="Cumulative concentration curve of TSX operating market cap: top 1 issuer 5.4%, top 5 18.3%, top 10 29.7%, top 25 51.8%, top 50 70.4%, top 100 84.9%, all 668 issuers 100%. The top 25 hold over half; the top 100 hold 85%.">
+      <svg viewBox="0 0 900 420">
+        <g stroke="var(--hair)" stroke-width="1">
+          <line x1="70" y1="350" x2="856" y2="350"/>
+          <line x1="70" y1="275" x2="856" y2="275"/>
+          <line x1="70" y1="200" x2="856" y2="200"/>
+          <line x1="70" y1="125" x2="856" y2="125"/>
+          <line x1="70" y1="50" x2="856" y2="50"/>
+        </g>
+        <g fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" text-anchor="end">
+          <text x="62" y="354">0%</text><text x="62" y="279">25%</text><text x="62" y="204">50%</text><text x="62" y="129">75%</text><text x="62" y="54">100%</text>
+        </g>
+        <!-- x: top1,5,10,25,50,100,668 mapped log-ish across 70..856 -->
+        <g fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5" text-anchor="middle">
+          <text x="70" y="370">1</text><text x="201" y="370">5</text><text x="332" y="370">10</text><text x="463" y="370">25</text><text x="594" y="370">50</text><text x="725" y="370">100</text><text x="856" y="370">668</text>
+        </g>
+        <text x="70" y="34" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">% of operating market cap (cumulative)</text>
+        <!-- area + curve : y = 350 - pct/100*300 ; 5.4->333.8 18.3->295.1 29.7->260.9 51.8->194.6 70.4->138.8 84.9->95.3 100->50 -->
+        <path d="M70,333.8 L201,295.1 L332,260.9 L463,194.6 L594,138.8 L725,95.3 L856,50 L856,350 L70,350 Z" fill="rgba(var(--accent-rgb),.12)"/>
+        <polyline fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round" style="filter:drop-shadow(var(--gfx-glow-soft))"
+          points="70,333.8 201,295.1 332,260.9 463,194.6 594,138.8 725,95.3 856,50"/>
+        <!-- top-25 = 51.8% callout -->
+        <circle cx="463" cy="194.6" r="5.5" fill="var(--accent)"/>
+        <line x1="463" y1="194.6" x2="463" y2="350" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 4" opacity=".6"/>
+        <text x="475" y="182" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="19">51.8%</text>
+        <text x="475" y="199" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">in the top 25</text>
+        <circle cx="725" cy="95.3" r="4.5" fill="var(--accent)"/>
+        <text x="713" y="88" text-anchor="end" fill="var(--gann-cmp)" font-family="var(--mono)" font-size="12" font-weight="700">84.9% (top 100)</text>
+        <circle cx="70" cy="333.8" r="4" fill="var(--accent)"/>
+      </svg>
+    </div>
+    <div class="dashcap rv d2"><b>The missing waist.</b> Only 130 TSX operating companies sit in the C$2–10B mid-cap tier — the scale-up zone where a listed Cohere, Waabi or Xanadu would land. A single Cohere listing (~C$10B) would instantly be one of the TSX's largest technology names.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="conc"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 04 · STORY BEAT — MINING DOMINANCE ON THE JUNIOR BOARDS ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04</span> The junior boards run on mining</div>
+    <h2 class="rv d1">Switch to TSXV or CSE — and it's mining, by the hundred.</h2>
+    <p class="lede rv d1">Flip the board switcher to <em>TSXV</em> or <em>CSE</em> and the sector chart transforms. Where the TSX is banks-and-miners at scale, the venture board is <strong>899 mining issuers of 1,347</strong> (two-thirds by count), and the CSE is <strong>340 mining of 601</strong> (57%) plus a distinctive large-cap layer of US cannabis operators that list on the CSE for its lighter regime — their value reflecting US operations, not Canadian capital formation.</p>
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-count="899">899</div><div class="fig-cap">TSXV mining cos</div><div class="fig-q">of 1,347 operating issuers</div><div class="fig-l">Two-thirds of the venture board by count is mining — plus the Constellation-lineage software roll-ups (Topicus, Lumine).</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="340">340</div><div class="fig-cap">CSE mining cos</div><div class="fig-q">of 601 active equities</div><div class="fig-l">The CSE mirrors and amplifies the TSXV's mining-and-nano-cap tilt.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n" data-count="89" data-suffix="%">89%</div><div class="fig-cap">CSE equities &lt; C$50M</div><div class="fig-q">nano-cap and thinly traded</div><div class="fig-l">Even further down the size spectrum than the TSXV (~71% below C$50M).</div></div>
+    </div>
+    <div class="pull rv d2" style="margin-top:40px">
+      <div class="q">The senior board's single largest tech name — Shopify, ~C$201B — exceeds the entire TSXV and CSE combined many times over. Scale lives in one place.</div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="cse"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 05 · THE READ ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">05</span> The read</div>
+    <h2 class="rv d1">Three boards, one masking effect.</h2>
+    <p class="lede rv d1">Read the headline listing counts and Canada's public markets look broad and growing. Strip the funds and read the operating companies — sector by sector, board by board — and the market is concentrated, mining-heavy on the juniors, and missing the mid-cap middle where champions belong. The lever is not cheaper listings; it is liquidity, coverage, and a domestic-demand base. The reconciliation to remember: <strong>3,744 all-in listings, but only ~2,019 operating companies</strong> across the TSX and TSXV.</p>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="public-markets.html"><div class="n">CONTINUE · DIAGNOSIS I</div><div><div class="t">Public Markets</div><div class="d">Turnover velocity as the binding constraint, the IPO drought, and the missing middle — the full narrative diagnosis.</div></div></a>
+      <a class="nextrow rv d1" href="global-exchanges.html"><div class="n">COMPARE · GLOBAL</div><div><div class="t">Global Exchanges Explorer</div><div class="d">TMX against 24 world exchanges across listings, IPOs, market cap and value traded — 2010 to 2025, plus the monthly market-cap race.</div></div></a>
+      <a class="nextrow rv d2" href="growth-prize.html"><div class="n">WHY IT MATTERS</div><div><div class="t">The Growth Prize</div><div class="d">A decade of living-standards divergence (GDP per capita 83% &rarr; 71% of the US) — the stakes this interactive evidence underpins.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">Interactive · The Exchanges</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">THE EXCHANGES · INTERACTIVE · static-first · opens from file:// · default view (TSX) renders with JS off · full sources on the Methodology page</p>
+</footer>
+</div>
+
+<!-- Positioned hover tooltip for the sector bars (enhancement only). -->
+<div class="dtip" id="dtip" aria-hidden="true"></div>
+
+<!-- Provenance drawer + scrim (shared shell markup; upgraded by app.js). -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- Per-page provenance data + baked dashboard data. Defined BEFORE app.js. -->
+<script>
+window.PROV = {
+  method:{
+    t:"Data & method — the canonical operating-issuer count",
+    meta:'<b>TMX Issuers List</b> workbook (June-2026 file, sheets labelled "May 2026", data as at <b>May 31 2026</b>). Operating-issuer counts reproduce the canonical vault methodology exactly:<ul>'
+      +'<li><b>TSX operating = total − (Sector ∈ {ETP, CDR, Closed-End Funds, SPAC})</b> → 2,236 − 1,564 = <b>672</b>.</li>'
+      +'<li><b>TSXV operating = total − (Sector = CPC)</b> → 1,508 − 161 = <b>1,347</b>.</li>'
+      +'</ul>Verified to reproduce the Feb-2026 baseline (668 / 1,362) before being applied to the June file. Sector distributions and market caps in the chart/KPIs are computed from the same workbook. <b>CSE</b> — 601 active common-equity issuers, ~C$16.3B, from the CSE listed-companies API (sector, shares) joined to the CSE Annual Market Summary (end-2025 close).<br><br>Combined operating base 2,019 (May 31 2026), down from 2,030 (Feb 28) — the all-in total rose only on ETP creation.',
+    conf:"high"
+  },
+  conc:{
+    t:"TSX operating market-cap concentration",
+    meta:'<b>TMX Listed Companies — Analysis (Feb 2026)</b>. Cumulative share of TSX <em>operating</em> market cap: top 1 = 5.4%, top 5 = 18.3%, top 10 = 29.7%, <b>top 25 = 51.8%</b>, top 50 = 70.4%, <b>top 100 = 84.9%</b>. The C$2–10B mid-cap tier holds just 130 of 672 TSX operating issuers — the thin "missing waist." Concentration is computed on the Feb-28-2026 snapshot; the barbell shape is stable across the May re-base.',
+    conf:"high"
+  },
+  cse:{
+    t:"The junior boards — mining dominance",
+    meta:'<b>CSE Listed Companies — Analysis (Dec 2025)</b> + TMX Issuers List (May 2026). <b>TSXV</b>: 899 mining of 1,347 operating issuers (67% by count) — plus the Constellation-lineage software roll-ups Topicus (C$8.3B) and Lumine (C$5.5B). <b>CSE</b>: 340 mining of 601 active equities (57%); Life Sciences punches above its count (70 issuers, ~C$5.6B) because the CSE hosts large US cannabis multi-state operators (Green Thumb, Cresco, Trulieve). 89% of priced CSE equities are below C$50M — even more nano-cap than the TSXV (~71%). The CSE mirrors and amplifies the venture board\'s structural profile.',
+    conf:"high"
+  }
+};
+
+/* ---- BAKED DASHBOARD DATA (computed with python from the TMX June-2026 workbook +
+   CSE analysis page; see PROV.method). All figures match the vault sources exactly. ---- */
+window.EXDATA = {
+  tsx:{
+    label:"TSX", tier:"senior",
+    operating:{ issuers:672, listed:2236, cap:"C$5.96T", median:"C$899M",
+      lIss:"Genuine operating companies on the senior board.",
+      lList:"Including 1,564 ETFs, CDRs, closed-end funds & SPACs.",
+      lCap:"Total market cap of the 672 operating issuers.",
+      lMed:"Median operating-issuer market cap.",
+      title:"TSX operating issuers, by sector",
+      sub:"Bar length = number of issuers · hover for market cap",
+      cap_read:"<b>The read:</b> Mining leads the TSX by <em>count</em> (181 issuers), but Financial Services leads by <em>capital</em> (~C$1.9T) — the six big banks and Brookfield. Count and capital tell different stories; hover the bars to see the split.",
+      sectors:[
+        {sec:"Mining",n:181,cap:1199.2},{sec:"Industrial",n:102,cap:644.9},
+        {sec:"Financial Services",n:63,cap:1897.0},{sec:"Consumer",n:58,cap:397.8},
+        {sec:"Technology",n:57,cap:435.3},{sec:"Real Estate",n:56,cap:100.2},
+        {sec:"Oil & Gas",n:51,cap:551.7},{sec:"Life Sciences",n:40,cap:24.0},
+        {sec:"Cleantech",n:28,cap:56.5},{sec:"Comms & Media",n:19,cap:164.5},
+        {sec:"Utilities & Pipe.",n:17,cap:490.0}
+      ]
+    },
+    products:{ issuers:1564, listed:2236, cap:"—", median:"—",
+      lIss:"Investment products — not operating companies.",
+      lList:"1,371 ETPs · 131 CDRs · 61 closed-end funds · 1 SPAC.",
+      lCap:"Fund NAV, not company market cap — not comparable.",
+      lMed:"Not applicable to funds & receipts.",
+      title:"TSX investment products, by type",
+      sub:"Bar length = number of listings · the 71% of the board that is not a company",
+      cap_read:"<b>The masking effect.</b> 1,564 of the TSX's 2,236 listings are investment products. ETPs alone (1,371) outnumber every operating company on the board more than two-to-one. This is why the headline \"issuers up 8%\" is fund creation, not new companies.",
+      sectors:[
+        {sec:"ETP (ETFs)",n:1371,cap:null},{sec:"CDR",n:131,cap:null},
+        {sec:"Closed-End Funds",n:61,cap:null},{sec:"SPAC",n:1,cap:null}
+      ]
+    }
+  },
+  tsxv:{
+    label:"TSXV", tier:"venture",
+    operating:{ issuers:1347, listed:1508, cap:"C$142.5B", median:"C$17M",
+      lIss:"Operating companies on the venture board.",
+      lList:"Including 161 Capital Pool Companies (shell vehicles).",
+      lCap:"Total market cap of the 1,347 operating issuers.",
+      lMed:"Median operating-issuer market cap — nano-cap.",
+      title:"TSXV operating issuers, by sector",
+      sub:"Bar length = number of issuers · hover for market cap",
+      cap_read:"<b>The read:</b> Mining is the venture board — 899 of 1,347 operating issuers (67%). The two largest tech names, Topicus (C$8.3B) and Lumine (C$5.5B), are both Constellation Software spin-offs; below them a long, thin tail.",
+      sectors:[
+        {sec:"Mining",n:899,cap:94.7},{sec:"Technology",n:129,cap:20.3},
+        {sec:"Life Sciences",n:70,cap:1.8},{sec:"Oil & Gas",n:68,cap:5.4},
+        {sec:"Cleantech",n:55,cap:2.2},{sec:"Financial Services",n:38,cap:14.9},
+        {sec:"Consumer",n:32,cap:1.2},{sec:"Industrial",n:29,cap:1.4},
+        {sec:"Real Estate",n:21,cap:0.6},{sec:"Comms & Media",n:5,cap:0.0},
+        {sec:"Utilities & Pipe.",n:1,cap:0.0}
+      ]
+    }
+  },
+  cse:{
+    label:"CSE", tier:"lighter regime",
+    operating:{ issuers:601, listed:731, cap:"C$16.3B", median:"C$0.86M traded",
+      lIss:"Active common-equity issuers (excl. warrants/units/ETFs).",
+      lList:"731 listed securities in total; 601 active equities.",
+      lCap:"Total equity market cap (536 priced issuers).",
+      lMed:"Median 2025 value traded — extremely thin liquidity.",
+      title:"CSE active equity issuers, by sector",
+      sub:"Bar length = number of issuers · hover for market cap (end-2025)",
+      cap_read:"<b>The read:</b> Mining leads by count (340 of 601, 57%), but Life Sciences leads by capital (~C$5.6B) — because the CSE hosts large US cannabis multi-state operators (Green Thumb, Cresco, Trulieve) that list here for the lighter regime, not for Canadian capital formation.",
+      sectors:[
+        {sec:"Mining",n:340,cap:5.907},{sec:"Technology",n:96,cap:2.835},
+        {sec:"Diversified Ind.",n:78,cap:1.915},{sec:"Life Sciences",n:70,cap:5.572},
+        {sec:"Cleantech",n:10,cap:0.090},{sec:"Oil & Gas",n:6,cap:0.005}
+      ],
+      capB:true  // CSE sector caps are in C$B
+    }
+  }
+};
+</script>
+<script>
+/* ============================================================================
+   exchanges.html — dashboard interactivity (vanilla, enhancement-only).
+   Each feature in its own try/catch. With JS off, the build-time TSX view stands.
+   ============================================================================ */
+"use strict";
+(function(){
+  try{
+    var D = window.EXDATA; if(!D) return;
+    var state = { board:"tsx", view:"operating" };
+
+    var elChart = document.getElementById("secChart");
+    var elWrap  = document.getElementById("secWrap");
+    var elTitle = document.getElementById("chTitle");
+    var elSub   = document.getElementById("chSub");
+    var elCap   = document.getElementById("dashCap");
+    var dtip    = document.getElementById("dtip");
+    // KPI nodes
+    var kIss=document.getElementById("kIssuers"), kList=document.getElementById("kListed"),
+        kCap=document.getElementById("kCap"), kMed=document.getElementById("kMed"),
+        kIssL=document.getElementById("kIssuersL"), kListL=document.getElementById("kListedL"),
+        kCapL=document.getElementById("kCapL"), kMedL=document.getElementById("kMedL");
+    // toggle nodes
+    var tgSep=document.getElementById("tglSep"), tgLab=document.getElementById("tglLab"),
+        tOp=document.getElementById("tOp"), tProd=document.getElementById("tProd");
+    var chips = { tsx:document.getElementById("bTSX"), tsxv:document.getElementById("bTSXV"), cse:document.getElementById("bCSE") };
+
+    var SVGNS="http://www.w3.org/2000/svg";
+    function svg(tag,attrs){ var e=document.createElementNS(SVGNS,tag); if(attrs){for(var k in attrs){e.setAttribute(k,attrs[k]);}} return e; }
+    function capLabel(v, capB){
+      if(v==null) return null;
+      if(capB){ return v<1 ? ("C$"+Math.round(v*1000)+"M") : ("C$"+v.toFixed(1)+"B"); }
+      // v is in C$B
+      if(v>=1000) return "C$"+(v/1000).toFixed(2)+"T";
+      if(v<1) return "C$"+Math.round(v*1000)+"M";
+      return "C$"+v.toFixed(1)+"B";
+    }
+
+    function render(){
+      try{
+        var b = D[state.board];
+        var v = (state.board==="tsx") ? b[state.view] : b.operating;
+        // ---- KPIs ----
+        kIss.textContent = v.issuers.toLocaleString();
+        kList.textContent = v.listed.toLocaleString();
+        kCap.textContent = v.cap;
+        kMed.textContent = v.median;
+        kIssL.textContent=v.lIss; kListL.textContent=v.lList; kCapL.textContent=v.lCap; kMedL.textContent=v.lMed;
+        // ---- chart head ----
+        elTitle.textContent = v.title;
+        elSub.textContent = v.sub;
+        elCap.innerHTML = v.cap_read;
+
+        // ---- build the bar chart (sorted by count, desc) ----
+        var secs = v.sectors.slice().sort(function(a,z){return z.n-a.n;});
+        var maxN = secs[0].n;
+        var rowH=44, top=26, barH=24, x0=210, xEnd=850, W=xEnd-x0;
+        var H = top + secs.length*rowH + 30;
+        var VBW=900;
+        // rebuild svg
+        while(elChart.firstChild) elChart.removeChild(elChart.firstChild);
+        elChart.setAttribute("viewBox","0 0 "+VBW+" "+H);
+        var capB = !!v.capB;
+        var maxCap = 0; secs.forEach(function(s){ if(s.cap!=null && s.cap>maxCap) maxCap=s.cap; });
+
+        // subject-bar gradient (accent-deep → accent), injected once per rebuild
+        var defs = svg("defs",{});
+        var grad = svg("linearGradient",{id:"exch-subj-grad",x1:0,y1:0,x2:1,y2:0});
+        grad.appendChild(svg("stop",{offset:0,style:"stop-color:var(--accent-deep)"}));
+        grad.appendChild(svg("stop",{offset:1,style:"stop-color:var(--accent)"}));
+        defs.appendChild(grad);
+        elChart.appendChild(defs);
+
+        secs.forEach(function(s,i){
+          var y = top + i*rowH;
+          var w = Math.max(2, (s.n/maxN)*W);
+          var isTop = (i===0);
+          var g = svg("g",{"class":"barrow"});
+          g.setAttribute("data-sec",s.sec); g.setAttribute("data-n",s.n);
+          g.setAttribute("data-cap", s.cap==null?"":s.cap); g.setAttribute("data-capb", capB?"1":"0");
+          var lab = svg("text",{x:x0-14,y:y+17,"text-anchor":"end","class":"hbar-lab"+(isTop?" subj":"")});
+          lab.textContent=s.sec;
+          // subject bar = azure gradient; ranked comparison bars = fading accent intensity ramp
+          var rampOp = Math.max(0.20, 0.80 - i*0.09);
+          var rect = svg("rect",{"class":"bfill",x:x0,y:y,width:w,height:barH,rx:4,
+            fill:isTop?"url(#exch-subj-grad)":"var(--accent)", opacity:isTop?".92":rampOp});
+          if(isTop) rect.setAttribute("style","filter:drop-shadow(var(--gfx-glow-soft))");
+          // Value label: right-aligned column at xEnd+8; but if the bar reaches into that column
+          // (e.g. TSXV Mining = 899, a full-width bar) the label would be clipped — so render it
+          // INSIDE the bar-end in on-accent ink instead. One rule; mirrors the static SVG.
+          var barEnd = x0 + w, inbar = barEnd > (xEnd - 40);
+          var val = svg("text",{x:(inbar?barEnd-12:xEnd+8),y:y+17,"text-anchor":"end",
+            "class":"hbar-val"+(isTop?" subj":"")+(inbar?" inbar":"")});
+          val.textContent = s.n.toLocaleString();
+          g.appendChild(lab); g.appendChild(rect); g.appendChild(val);
+          elChart.appendChild(g);
+          attachTip(g, s, capB);
+        });
+        // baseline + axis
+        var by = top + secs.length*rowH + 4;
+        elChart.appendChild(svg("line",{x1:x0,y1:by,x2:xEnd,y2:by,stroke:"var(--hair-strong)","stroke-width":1}));
+        var a0=svg("text",{x:x0,y:by+13,fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":10.5}); a0.textContent="0";
+        var a1=svg("text",{x:xEnd,y:by+13,"text-anchor":"end",fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":10.5});
+        a1.textContent = (state.view==="products"&&state.board==="tsx") ? "listings, by product type (count)" : "operating issuers, by sector (count)";
+        elChart.appendChild(a0); elChart.appendChild(a1);
+        // update aria
+        var aria = v.title+". "+secs.map(function(s){return s.sec+" "+s.n;}).join(", ")+".";
+        elWrap.setAttribute("aria-label", aria);
+      }catch(e){}
+    }
+
+    function attachTip(g, s, capB){
+      try{
+        var cl = capLabel(s.cap, capB);
+        g.style.cursor = cl ? "pointer" : "default";
+        g.addEventListener("mousemove", function(ev){
+          if(!dtip) return;
+          var html = '<span class="tt">'+s.sec+'</span><br><span class="tv">'+s.n.toLocaleString()+' issuers';
+          if(cl) html += ' · '+cl+' market cap';
+          html += '</span>';
+          dtip.innerHTML = html;
+          dtip.style.left = (ev.clientX+14)+"px";
+          dtip.style.top = (ev.clientY+14)+"px";
+          dtip.style.opacity = "1";
+        });
+        g.addEventListener("mouseleave", function(){ if(dtip) dtip.style.opacity="0"; });
+      }catch(e){}
+    }
+
+    function setBoard(board){
+      state.board = board;
+      state.view = "operating";
+      for(var k in chips){ if(chips[k]) chips[k].setAttribute("aria-pressed", k===board?"true":"false"); }
+      // TSX-only toggle visibility
+      var isTSX = (board==="tsx");
+      [tgSep,tgLab,tOp,tProd].forEach(function(n){ if(n) n.style.display = isTSX?"":"none"; });
+      if(tOp) tOp.setAttribute("aria-pressed","true");
+      if(tProd) tProd.setAttribute("aria-pressed","false");
+      render();
+    }
+    function setView(view){
+      if(state.board!=="tsx") return;
+      state.view = view;
+      if(tOp) tOp.setAttribute("aria-pressed", view==="operating"?"true":"false");
+      if(tProd) tProd.setAttribute("aria-pressed", view==="products"?"true":"false");
+      render();
+    }
+
+    for(var k in chips){ (function(kk){ if(chips[kk]) chips[kk].addEventListener("click", function(){ setBoard(kk); }); })(k); }
+    if(tOp) tOp.addEventListener("click", function(){ setView("operating"); });
+    if(tProd) tProd.addEventListener("click", function(){ setView("products"); });
+
+    // The build-time SVG is already the TSX-operating view; re-render once to wire tooltips
+    // (also normalises coordinates to the JS layout). Static-first: if this throws, the
+    // hand-authored SVG above remains fully legible.
+    render();
+  }catch(e){}
+})();
+</script>
+<script src="app.js"></script>
+</body>
+</html>

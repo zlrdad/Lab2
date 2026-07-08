@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Recommendations — Scaling & Retaining Canada's Champions</title>
+<meta name="description" content="The prescription layer of Ontario's capital-markets research report: four levers — a growth-capital compact, an innovation-investment tax scheme, a retention architecture, and liquidity-and-coverage fixes — each costed and matched to the situation a champion is actually in.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Page-scoped components (token-driven only).
+   1. .lvrlist / .lvrrow — hairline "design-bolt" rows, open-composition: a mono tag column
+      + prose, hairline-separated.
+   2. .xwlist / .xwrow — the situation→lever crosswalk as hairline rows (company profile +
+      matched levers).
+   Both mirror the shared .evlist pattern (styles.css) without reusing its exact selectors,
+   since their column layout (tag + prose vs. label + prose) differs enough to warrant
+   their own class names.
+   3. .hbar-lab / .hbar-val are promoted to styles.css — no local definition needed. */
+.lvrlist{margin-top:32px;border-top:1px solid var(--hair)}
+.lvrrow{display:grid;grid-template-columns:minmax(200px,1fr) 2.6fr;gap:26px;padding:24px 0;border-bottom:1px solid var(--hair);align-items:baseline}
+.lvrrow .lt{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(16px,1.9vw,20px);letter-spacing:-.01em}
+.lvrrow .lm{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-txt);margin-top:7px}
+.lvrrow .ld{font-size:14.5px;color:var(--body);line-height:1.62;max-width:62ch}
+.lvrrow .ld b{color:var(--ink)}
+.xwlist{margin-top:32px;border-top:1px solid var(--hair)}
+.xwrow{display:grid;grid-template-columns:minmax(210px,1fr) 2.4fr;gap:26px;padding:24px 0;border-bottom:1px solid var(--hair);align-items:baseline}
+.xwrow .xp{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(16px,1.9vw,20px);letter-spacing:-.01em}
+.xwrow .xc{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);margin-top:7px}
+.xwrow .xd{font-size:14.5px;color:var(--body);line-height:1.62;max-width:60ch}
+.xwrow .xd b{color:var(--ink)}
+.hyp{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--accent-txt);border:1px solid rgba(var(--accent-rgb),.35);border-radius:20px;padding:2px 9px;white-space:nowrap;vertical-align:middle}
+@media(max-width:640px){.lvrrow,.xwrow{grid-template-columns:1fr;gap:8px}}
+</style>
+</head>
+<body data-accent="azure">
+<div class="prog" id="prog"></div>
+
+<!-- ====== SHARED SHELL TOPBAR (Mission Control; recommendations active) ====== -->
+<div class="topbar">
+  <a class="tb-l brand" href="index.html"><span class="dot"></span><b>Canada's Champions</b></a>
+  <span class="tb-r">
+        <span class="links">
+      <a href="index.html">Overview</a>
+      <a href="growth-prize.html">Prize</a>
+      <a href="strengths.html">Strengths</a>
+      <a href="growth-sectors.html">Sectors</a>
+      <a href="public-markets.html" title="Public Markets">Markets</a>
+      <a href="financing-gap.html" title="The Financing Gap">Gap</a>
+      <a href="what-works.html" title="What Works Abroad">Abroad</a>
+      <a href="comparators.html" title="The Comparators">Compare</a>
+      <a href="champions.html">Champions</a>
+      <a href="recommendations.html" class="on" title="Recommendations">Recs</a>
+      <a href="methodology.html" title="Methodology &amp; Sources">Method</a>
+      <span class="tb-div" aria-hidden="true"></span>
+      <span class="tb-grouplab">Data</span>
+      <a href="exchanges.html" title="The Exchanges — interactive">Exchanges</a>
+      <a href="global-exchanges.html" title="Global Exchanges Explorer">Global</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› prescription · four levers · incentives not mandates · costed"></div>
+    <div class="cat rv">◇ Prescription · the levers</div>
+    <h1 class="rv d1">Four levers to build, scale, and keep Canadian champions.</h1>
+    <div class="tag rv d1">The levers follow directly from the diagnosis — under-investment at the scale-up stage, exit by acquisition or US listing, and thin liquidity — and from what works abroad. They lead with incentives, not mandates: the aim is to make backing, scaling, and keeping Canadian companies the rational private choice, not a compelled one.</div>
+    <div class="sigwrap">
+      <div class="signum rv d1">4</div>
+      <div>
+        <div class="sigpct rv d2">levers · supply · demand · retention · liquidity</div>
+        <div class="siglab rv d2">Each maps to the Domestic Champions hypothesis scaffold, is costed against the gap it targets, and leads with incentives over mandates.</div>
+        <a href="methodology.html#register" class="provpill rv d2" data-prov="frame"><span class="o"></span>source</a>
+      </div>
+    </div>
+    <div class="scrollcue rv d3"><span class="arr"></span>scroll the prescription</div>
+  </div>
+</section>
+
+<!-- ============ 01 · LEVER ① — SUPPLY OF GROWTH CAPITAL ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> Lever ① · supply of growth capital <span class="hyp">tests H-S1 / H-S2</span></div>
+    <h2 class="rv d1">A Canadian Growth Capital Compact.</h2>
+    <p class="lede rv d1">The scale-up rounds Canada won't write are the binding supply constraint. The fix is an anchor fund-of-funds at market terms, with the matching, sweetener, and prudential carve-outs that crowd private money <em>in</em> — not a mandate that pushes it out.</p>
+    <p class="body rv d1"><strong>Make the Growth VCCI permanent and scale it to C$3–5B</strong> — an anchor fund-of-funds deploying at market terms, on the KVIC (Korea), Tesi (Finland) and NZ Growth Fund model. Four design bolts make it work:</p>
+    <div class="lvrlist">
+      <div class="lvrrow rv d1">
+        <div><div class="lt">0.3 : 1 government match</div><div class="lm">crowd-in, not subsidy</div></div>
+        <div class="ld">A co-investment match on institutional and insurer commitments — concessional enough to move capital, lean enough not to subsidise it.</div>
+      </div>
+      <div class="lvrrow rv d1">
+        <div><div class="lt">Yozma-style sweetener</div><div class="lm">Israel · 1993</div></div>
+        <div class="ld">A buyout-at-cost + <b>5–7% / 5yr call option</b> on the public stake (Israel's Yozma) — caps government upside, hands the winners to private GPs.</div>
+      </div>
+      <div class="lvrrow rv d2">
+        <div><div class="lt">≥ 1× "reinvest in Canada" clause</div><div class="lm">Korea Global Fund</div></div>
+        <div class="ld">A contractual condition that foreign VCs accessing the FoF redeploy <b>at least 1×</b> of drawn capital domestically — the Korea Global Fund mechanism.</div>
+      </div>
+      <div class="lvrrow rv d2">
+        <div><div class="lt">OSFI LICAT carve-out</div><div class="lm">insurer balance sheets</div></div>
+        <div class="ld">Cut the <b>40% capital factor toward 30%</b> for qualifying domestic VC — mirroring Canada's own July-2025 infrastructure carve-out, freeing insurer balance sheets.</div>
+      </div>
+    </div>
+    <div class="mininote rv d2">At VCCI's realised <b>~3:1</b> leverage, a C$3–5B FoF deploying ~C$1B/yr mobilises <b>~C$4B/yr total</b> — about the size of the median scale-up gap.</div>
+    <div class="pull rv d2" style="margin-top:34px">
+      <div class="q">Mandate verdict: against a hard pension mandate. Cumming calls it "a tax on pensioners"; the UK's Mansion House pledge under-delivered at 0.6% vs a 5% target. Make domestic VC the rational choice instead.</div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="lever1"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 02 · LEVER ② — DEMAND-SIDE CAPITAL ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> Lever ② · demand-side capital <span class="hyp">tests H-C1</span></div>
+    <h2 class="rv d1">A Canadian Innovation Investment tax scheme.</h2>
+    <p class="lede rv d1">A SEIS/EIS-style investor credit — roughly <em>~50% at seed, ~30% at growth</em> — pulls private angel and early-growth money into qualifying Canadian companies. The UK's design is proven; copy it rather than reinvent it.</p>
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-count="430" data-prefix="~C$" data-suffix="m">~C$430m</div><div class="fig-cap">gross central cost</div><div class="fig-q">range C$215–645m</div><div class="fig-l">To mobilise ~C$1B/yr of qualifying seed and early-growth investment.</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="0.43" data-dec="2" data-prefix="~C$">~C$0.43</div><div class="fig-cap">cost per dollar mobilised</div><div class="fig-q">~C$1.10–1.70 per net-new $</div><div class="fig-l">Gross; the net-new figure applies a ⅓ additionality haircut.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n">below</div><div class="fig-cap">the mining flow-through envelope</div><div class="fig-q">~C$600–690m/yr</div><div class="fig-l">The scheme sits under Canada's existing flow-through envelope.</div></div>
+    </div>
+    <p class="body rv d2" style="margin-top:34px"><strong>Copy the proven SEIS design:</strong> high-rate relief, a tight seed band, a risk-to-capital screen, a domestic-content requirement, and evaluation built in from day one. <strong>Avoid a broad patent box</strong> — it leaks to incumbents and rewards activity that would have happened anyway.</p>
+    <div class="pull rv d2" style="margin-top:20px">
+      <div class="q">At ~C$0.43 per gross dollar mobilised, the scheme sits below the mining flow-through envelope Canada already funds every year — a costed, precedented ask, not a leap.</div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="lever2"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 03 · LEVER ③ — RETENTION ARCHITECTURE ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> Lever ③ · retention <span class="hyp">tests H-R2 / R3 / R4 / R6</span></div>
+    <h2 class="rv d1">Retention architecture.</h2>
+    <p class="lede rv d1">Supplying capital isn't enough if champions are sold or relisted abroad the moment they scale. Four interlocking pieces keep pre-IPO companies — and their IP, HQ and hiring — anchored in Canada.</p>
+    <div class="lvrlist">
+      <div class="lvrrow rv d1">
+        <div><div class="lt">Pre-IPO liquidity venue</div><div class="lm">PISCES · LTAF</div></div>
+        <div class="ld">A PISCES-style private-secondary market plus a Canadian LTAF — letting founders and early employees realise liquidity without a sale or a US listing.</div>
+      </div>
+      <div class="lvrrow rv d1">
+        <div><div class="lt">Retention conditionality</div><div class="lm">Quebec CQCP · Israel §19A</div></div>
+        <div class="ld">Attach Canadian-HQ / IP / hiring conditions to public grants — à la Quebec's CQCP and Israel's §19A IP-transfer levy.</div>
+      </div>
+      <div class="lvrrow rv d2">
+        <div><div class="lt">Governance &amp; control</div><div class="lm">necessary, not sufficient</div></div>
+        <div class="ld">Benefit-company form, facilitative dual-class with sunset-renewal, and steward-ownership structures. Necessary but <b>not sufficient</b> on their own.</div>
+      </div>
+      <div class="lvrrow rv d2">
+        <div><div class="lt">Anti-take-private scoping</div><div class="lm">CUSMA-constrained</div></div>
+        <div class="ld">Scope measures against opportunistic take-privates — design-constrained by CUSMA and Canada's investment treaties, so calibrate carefully.</div>
+      </div>
+    </div>
+    <div class="pull rv d2" style="margin-top:34px">
+      <div class="q">Governance tools alone don't keep a company home. Retention works only as an architecture — liquidity, conditionality, control and defence reinforcing one another.</div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="lever3"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 04 · LEVER ④ — LIQUIDITY & COVERAGE ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04</span> Lever ④ · liquidity &amp; coverage <span class="hyp">tests H-S3 + H-C2</span></div>
+    <h2 class="rv d1">Fix the trading and the research.</h2>
+    <p class="lede rv d1">The diagnosis identified turnover velocity as the binding public-market constraint. The cleanest causal fixes are designated market-making, mandated coverage, and a retail demand base routed at <em>domestic</em> growth equity.</p>
+    <div class="lvrlist">
+      <div class="lvrrow rv d1">
+        <div><div class="lt">STAR-style market-maker + coverage</div><div class="lm">Borsa Italiana</div></div>
+        <div class="ld">A Borsa Italiana STAR-style designated-market-maker and mandated analyst-coverage obligation for the <b>TSXV / CSE</b> — the cleanest causal liquidity fix in the evidence.</div>
+      </div>
+      <div class="lvrrow rv d1">
+        <div><div class="lt">ISK-style retail account</div><div class="lm">Sweden · not NISA</div></div>
+        <div class="ld">A Swedish-ISK-style retail savings account designed to route to <b>domestic</b> growth equity — learning from Japan's NISA misfire, which leaked savings offshore.</div>
+      </div>
+      <div class="lvrrow rv d2">
+        <div><div class="lt">Graduation escalator</div><div class="lm">TSXV → TSX</div></div>
+        <div class="ld">Reinforce the TSXV → TSX graduation escalator so junior-board winners have a clear, low-friction path up to the senior board.</div>
+      </div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="lever4"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 05 · SITUATION → LEVER crosswalk ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">05</span> Situation → lever</div>
+    <h2 class="rv d1">Which lever fits which company.</h2>
+    <p class="lede rv d1">The levers aren't a menu — they're matched to the situation a champion is actually in. Six recurring profiles, each pointing to a different combination.</p>
+    <div class="xwlist">
+      <div class="xwrow rv d1">
+        <div><div class="xp">Independent at IPO-candidate scale</div><div class="xc">Cohere · Wealthsimple</div></div>
+        <div class="xd">PISCES / LTAF + TSX-listing incentives + the FoF — keep them liquid and home until they list.</div>
+      </div>
+      <div class="xwrow rv d1">
+        <div><div class="xp">Acquisition-in-play</div><div class="xc">Tenstorrent</div></div>
+        <div class="xd">Anti-take-private scoping + retention conditionality — raise the friction on an opportunistic sale.</div>
+      </div>
+      <div class="xwrow rv d1">
+        <div><div class="xp">Growth scaling on US capital</div><div class="xc">Clio · Ada · Tailscale</div></div>
+        <div class="xd">FoF + match + tax scheme to crowd domestic capital into rounds US investors currently own.</div>
+      </div>
+      <div class="xwrow rv d2">
+        <div><div class="xp">Domestic-capital exemplar</div><div class="xc">StackAdapt · Neo</div></div>
+        <div class="xd">Scale it / make it routine — these are proof the model works; the job is to make them ordinary.</div>
+      </div>
+      <div class="xwrow rv d2">
+        <div><div class="xp">Foreign-PE-controlled mature</div><div class="xc">Fullscript · PointClickCare</div></div>
+        <div class="xd">Intervene earlier — the leverage is in the growth round before control passes offshore.</div>
+      </div>
+      <div class="xwrow rv d2">
+        <div><div class="xp">Public, depressed, takeover-exposed</div><div class="xc">Coveo · D2L</div></div>
+        <div class="xd">Anti-take-private + liquidity measures — thin trading is what makes them cheap to take.</div>
+      </div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="crosswalk"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 06 · THE NUMBERS — costed & leveraged, inline-SVG ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">06</span> The numbers that anchor it</div>
+    <h2 class="rv d1">Costed, leveraged, and within reach.</h2>
+    <p class="lede rv d1">The package is sized against the gap it's meant to close — and against pools of domestic capital that already exist. The headroom dwarfs the ask.</p>
+    <div class="chart-head rv d2" style="margin-top:44px">
+      <h3>The ask, against the headroom that already exists</h3>
+      <div class="sub">Annual figures · log-ish comparison (bars scaled to their values)</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="A comparison of the package's annual figures against the Maple-8 headroom. The scale-up financing gap the package targets is C$5–11 billion per year; the Compact mobilises about C$4 billion per year at VCCI's 3-to-1 leverage; the tax scheme's gross central cost is about C$430 million per year. Against this, the Maple-8 pension pools hold C$2.63 trillion, and moving under half a percent toward one percent of that adds about C$26 billion of domestic-VC headroom — several times the entire annual gap.">
+      <svg viewBox="0 0 900 320">
+        <defs>
+          <filter id="glowR" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <linearGradient id="rec-mag-subj" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--accent-deep)"/><stop offset="1" style="stop-color:var(--accent)"/></linearGradient>
+          <linearGradient id="rec-mag-gap" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--fail);stop-opacity:.7"/><stop offset="1" style="stop-color:var(--fail)"/></linearGradient>
+        </defs>
+        <!-- 4 rows. Scale: bars are ∝ sqrt(value C$B) to keep the C$26B headroom visible
+             alongside the C$0.43B cost. sqrt(v)*px; max sqrt(26)=5.10 → 600px full. -->
+        <!-- Row 1: scale-up gap C$5–11B/yr (midpoint 8; sqrt(8)=2.83 → 333px). Alert/leak grey-ink. -->
+        <text x="155" y="45" text-anchor="end" class="hbar-lab">Scale-up gap targeted</text>
+        <rect x="170" y="26" width="333" height="30" rx="4" fill="url(#rec-mag-gap)"/>
+        <text x="513" y="47" class="hbar-val" style="fill:var(--fail)">C$5–11B / yr</text>
+
+        <!-- Row 2: Compact mobilises ~C$4B/yr (sqrt(4)=2.0 → 235px). SUBJECT — page accent + glow. -->
+        <text x="155" y="105" text-anchor="end" class="hbar-lab subj">Compact mobilises</text>
+        <rect x="170" y="86" width="235" height="30" rx="4" fill="url(#rec-mag-subj)" class="subj-glow"/>
+        <text x="415" y="107" class="hbar-val subj">~C$4B / yr</text>
+
+        <!-- Row 3: tax scheme ~C$0.43B/yr (sqrt(0.43)=0.656 → 77px). grey. -->
+        <text x="155" y="165" text-anchor="end" class="hbar-lab">Tax-scheme gross cost</text>
+        <rect x="170" y="146" width="77" height="30" rx="4" class="ramp-3"/>
+        <text x="257" y="167" class="hbar-val">~C$0.43B / yr</text>
+
+        <!-- Row 4: Maple-8 headroom ~C$26B/yr (sqrt(26)=5.10 → 600px). grey-ink, the reference. -->
+        <text x="155" y="225" text-anchor="end" class="hbar-lab">Maple-8 half-point shift</text>
+        <rect x="170" y="206" width="600" height="30" rx="4" fill="var(--body)" opacity=".9"/>
+        <text x="782" y="227" class="hbar-val" style="fill:var(--ink);font-weight:700">~C$26B / yr headroom</text>
+
+        <!-- baseline + caption -->
+        <line x1="170" y1="256" x2="800" y2="256" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="170" y="278" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">Bars scaled ∝ √(C$B) so the C$26B headroom and the C$0.43B cost read on one axis.</text>
+        <text x="170" y="298" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">The headroom is several times the entire annual gap — from a &lt;0.5% → 1% shift in Maple-8 domestic-growth allocation.</text>
+      </svg>
+    </div>
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n">C$5–11B</div><div class="fig-cap">/ yr — the scale-up gap</div><div class="fig-q">the package targets this</div><div class="fig-l">The stage-specific financing gap from the diagnosis.</div></div>
+      <div class="fig rv d1"><div class="fig-n" data-count="4" data-prefix="~C$" data-suffix="B">~C$4B</div><div class="fig-cap">/ yr mobilised by the Compact</div><div class="fig-q">at VCCI's ~3:1 leverage</div><div class="fig-l">About the size of the median scale-up gap.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n" data-count="430" data-prefix="~C$" data-suffix="m">~C$430m</div><div class="fig-cap">gross cost · tax scheme</div><div class="fig-q">below the mining envelope</div><div class="fig-l">Central gross cost to mobilise ~C$1B/yr.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n" data-count="2.63" data-dec="2" data-prefix="C$" data-suffix="T">C$2.63T</div><div class="fig-cap">Maple-8 AUM</div><div class="fig-q">&lt;0.5% → 1% adds ~C$26B</div><div class="fig-l">A half-point shift dwarfs the entire annual gap.</div></div>
+    </div>
+    <div class="mininote rv d2">The headroom dwarfs the ask: a <b>half-point shift</b> in Maple-8 allocation toward domestic growth equity is several times the entire annual gap.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="numbers"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 07 · THE OBJECTIVE — close + next ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">07</span> The objective</div>
+    <h2 class="rv d1">Make the exception the rule.</h2>
+    <div class="pull rv d1" style="margin-top:12px">
+      <div class="q">The goal is to make the retention exceptions — StackAdapt, Wealthsimple, MDA — the rule.</div>
+    </div>
+    <p class="lede rv d1" style="margin-top:30px">Each company that stayed, scaled and listed at home did so against the grain of the system. The four levers are an attempt to bend the system the other way — so that staying is the default, not the act of defiance.</p>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="methodology.html"><div class="n">APPENDIX · METHOD</div><div><div class="t">Methodology &amp; Sources</div><div class="d">The data layers, confidence grades, key caveats, and the eight-tier source hierarchy behind every figure.</div></div></a>
+      <a class="nextrow rv d1" href="index.html"><div class="n">RETURN · OVERVIEW</div><div><div class="t">Back to the top</div><div class="d">The four numbers, the diagnosis, and the through-line from exchanges to companies to levers.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">The Recommendations</div>
+  <p>Note: the vault now carries a ranked, costed <code>Policy Decision Matrix</code> (15 levers, top-5 shortlist); this page's four-lever framing predates it and is a later content-update candidate — figures here are preserved as authored.</p>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">THE RECOMMENDATIONS · PRESCRIPTION · static-first · opens from file:// · fully readable offline · full sources on the Methodology page</p>
+</footer>
+</div>
+
+<!-- Provenance drawer + scrim (shared shell markup; upgraded by app.js). Static-first:
+     every .provpill is a real <a href="methodology.html#register"> that jumps to the footer with JS off. -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- Per-page provenance data. Defined BEFORE app.js so the drawer machinery can read it.
+     window.PROV maps data-prov key → {t:title, meta:HTML, conf:high|medium|soft}. -->
+<script>
+window.PROV = {
+  frame:{
+    t:"The four-lever frame",
+    meta:'The levers map to the <b>Domestic Champions — Policy Hypotheses &amp; Research Roadmap</b> scaffold (vault): <b>H-S1/S2/S3</b> (supply + liquidity), <b>H-C1/C2</b> (demand + coverage), <b>H-R2/R3/R4/R6</b> (retention). Costings draw on the <b>tax-incentive</b> and <b>capital-mobilization</b> workbooks.<br><br>Design philosophy: <b>incentives, not mandates</b> — make backing, scaling and keeping Canadian companies the rational private choice. <em>The vault now also carries a ranked, costed Policy Decision Matrix (15 levers, top-5 shortlist); this four-lever page predates it and is a later content-update candidate.</em>',
+    conf:"medium"
+  },
+  lever1:{
+    t:"Lever ① — Growth Capital Compact",
+    meta:'<b>Make the Growth VCCI permanent, scale to C$3–5B</b> — an anchor fund-of-funds at market terms (KVIC Korea / Tesi Finland / NZ Growth Fund model). Four design bolts:<ul>'
+      +'<li><b>0.3 : 1 government match</b> on institutional / insurer commitments.</li>'
+      +'<li><b>Yozma-style sweetener</b> — buyout-at-cost + 5–7% / 5yr call on the public stake (Israel, 1993).</li>'
+      +'<li><b>≥ 1× "reinvest in Canada" clause</b> — the Korea Global Fund mechanism.</li>'
+      +'<li><b>OSFI LICAT carve-out</b> — cut the 40% capital factor toward 30% for qualifying domestic VC (mirrors Canada\'s July-2025 infrastructure carve-out).</li>'
+      +'</ul>At VCCI\'s ~3:1 leverage, ~C$1B/yr deployed mobilises ~C$4B/yr total. <b>Mandate verdict: against</b> a hard pension mandate (Cumming 2026: "a tax on pensioners"; Mansion House delivered 0.6% vs a 5% target). Confidence medium — leverage + transfer assumptions.',
+    conf:"medium"
+  },
+  lever2:{
+    t:"Lever ② — Innovation Investment tax scheme",
+    meta:'A <b>SEIS/EIS-style investor credit</b> — ~50% at seed, ~30% at growth — into qualifying Canadian companies. Copy the proven UK design (high-rate relief, tight seed band, risk-to-capital screen, domestic-content requirement, evaluation from day one). <b>Avoid a broad patent box</b> (leaks to incumbents).<ul>'
+      +'<li><b>~C$430m gross central cost</b> (range C$215–645m) to mobilise ~C$1B/yr.</li>'
+      +'<li><b>~C$0.43 gross</b> per dollar mobilised; ~C$1.10–1.70 per net-new dollar after a ⅓ additionality haircut.</li>'
+      +'<li>Sits <b>below</b> Canada\'s existing mining flow-through envelope (~C$600–690m/yr).</li>'
+      +'</ul>Source: <b>HMRC SEIS/EIS statistics (2025)</b>; vault tax-incentive workbook; Canada flow-through-shares cost estimate. The UK costing base is high; the Canadian translation is a modelled estimate.',
+    conf:"high"
+  },
+  lever3:{
+    t:"Lever ③ — Retention architecture",
+    meta:'Four interlocking pieces to keep pre-IPO companies — and their IP, HQ, hiring — anchored:<ul>'
+      +'<li><b>Pre-IPO liquidity venue</b> — PISCES-style private secondary + a Canadian LTAF (liquidity without a sale or US listing).</li>'
+      +'<li><b>Retention conditionality</b> — Canadian-HQ / IP / hiring conditions on public grants (Quebec CQCP; Israel §19A IP-transfer levy).</li>'
+      +'<li><b>Governance &amp; control</b> — benefit-company form, facilitative dual-class with sunset-renewal, steward-ownership. Necessary, not sufficient.</li>'
+      +'<li><b>Anti-take-private scoping</b> — constrained by CUSMA and Canada\'s investment treaties; calibrate carefully.</li>'
+      +'</ul>Retention works only as an <b>architecture</b> — liquidity, conditionality, control and defence reinforcing one another. Source: UK PISCES; LTAF design; Quebec CQCP; Israel Innovation Authority §19A; governance literature; CUSMA investment chapter.',
+    conf:"medium"
+  },
+  lever4:{
+    t:"Lever ④ — Liquidity & coverage",
+    meta:'Fix the binding public-market constraint (turnover velocity):<ul>'
+      +'<li><b>STAR-style market-maker + mandated coverage</b> for the TSXV / CSE (Borsa Italiana STAR) — the cleanest causal liquidity fix in the evidence.</li>'
+      +'<li><b>ISK-style retail account</b> routed to <b>domestic</b> growth equity (Sweden ISK) — learning from Japan\'s NISA misfire (leaked offshore).</li>'
+      +'<li><b>Graduation escalator</b> — reinforce the TSXV → TSX path for junior-board winners.</li>'
+      +'</ul>Source: Borsa Italiana STAR segment rules; Sweden ISK design; Japan NISA evaluation; TMX graduation framework. Causal claim per the WFE / OECD liquidity evidence — see Methodology.',
+    conf:"medium"
+  },
+  crosswalk:{
+    t:"Situation → lever crosswalk",
+    meta:'Six recurring champion profiles, each matched to a lever combination:<ul>'
+      +'<li><b>Independent at IPO-candidate scale</b> (Cohere, Wealthsimple) → PISCES/LTAF + TSX-listing incentives + FoF.</li>'
+      +'<li><b>Acquisition-in-play</b> (Tenstorrent) → anti-take-private scoping + retention conditionality.</li>'
+      +'<li><b>Growth scaling on US capital</b> (Clio, Ada, Tailscale) → FoF + match + tax scheme.</li>'
+      +'<li><b>Domestic-capital exemplar</b> (StackAdapt, Neo) → scale it, make it routine.</li>'
+      +'<li><b>Foreign-PE-controlled mature</b> (Fullscript, PointClickCare) → intervene earlier, before control passes offshore.</li>'
+      +'<li><b>Public, depressed, takeover-exposed</b> (Coveo, D2L) → anti-take-private + liquidity measures.</li>'
+      +'</ul>Company situations are point-in-time; see Champions + Methodology for status caveats.',
+    conf:"medium"
+  },
+  numbers:{
+    t:"The numbers that anchor it",
+    meta:'The package sized against the gap and against existing domestic capital:<ul>'
+      +'<li><b>C$5–11B/yr</b> — the scale-up financing gap targeted.</li>'
+      +'<li><b>~C$4B/yr</b> mobilised by the Compact at VCCI\'s ~3:1 leverage.</li>'
+      +'<li><b>~C$430m</b> gross central cost of the tax scheme.</li>'
+      +'<li><b>C$2.63T</b> Maple-8 AUM — moving &lt;0.5% → 1% adds <b>~C$26B</b> of domestic-VC headroom, several times the entire annual gap.</li>'
+      +'</ul>The chart scales bars by √(C$B) so the C$26B headroom and the C$0.43B cost read on one axis — a magnitude comparison, not a linear plot. Source: CVCA / VCCI leverage; vault tax workbook; Maple-8 AUM (2025 annual reports). CAD ~US$1.44.',
+    conf:"medium"
+  }
+};
+</script>
+<script src="app.js"></script>
+</body>
+</html>

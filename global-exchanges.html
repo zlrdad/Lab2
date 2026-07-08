@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Global Exchanges Explorer · Scaling &amp; Retaining Canada's Champions</title>
+<meta name="description" content="An interactive World Federation of Exchanges explorer for Ontario's capital-markets research report. Compare TMX against 24 world exchanges across listings, IPOs, market cap, IPO proceeds and value traded, 2010–2025 — plus the 2024–2026 monthly market-cap race between TMX, Korea and Taiwan.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ============================================================================
+   PAGE-SCOPED COMPONENTS — global-exchanges.html (token-driven only; no literal hex).
+   1. .picker / .indbtn / .exchip — indicator picker + multi-exchange checkbox chips
+      + "TMX vs peers" preset buttons. Reuses the provpill/bchip visual register.
+   2. .serieskey / .keyitem — live legend for the line chart (swatch + label).
+   3. #wfeChart tooltip (.dtip) — a positioned hover tooltip reading nearest year.
+   Series colours cycle through the design-system family accents + steel, with a
+   dashed pattern for the 5th+ series (all via var(--…) tokens).
+   ============================================================================ */
+.picker{margin:34px 0 6px}
+.picker .plab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:0 0 12px}
+.indrow{display:flex;flex-wrap:wrap;gap:9px}
+.indbtn,.exchip,.preset{font-family:var(--mono);font-size:12px;letter-spacing:.03em;color:var(--body);background:transparent;border:1px solid var(--hair-strong);border-radius:7px;padding:7px 13px;cursor:pointer;transition:background .15s,border-color .15s,color .15s;user-select:none}
+.indbtn:hover,.exchip:hover,.preset:hover{border-color:rgba(var(--accent-rgb),.5);color:var(--ink)}
+.indbtn[aria-pressed="true"]{color:var(--accent-txt);border-color:rgba(var(--accent-rgb),.55);background:rgba(var(--accent-rgb),.09)}
+.exchip[aria-pressed="true"]{color:var(--ink);border-color:var(--hair-strong);background:rgba(172,175,211,.08)}
+.exchip[aria-pressed="true"] .sw{opacity:1}
+.exchip .sw{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:0;margin-right:7px;opacity:.25;background:var(--chipcol,var(--steel))}
+.indbtn:focus-visible,.exchip:focus-visible,.preset:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.presetrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
+.preset{border-style:dashed;color:var(--accent-txt);border-color:rgba(var(--accent-rgb),.4)}
+.preset:hover{background:rgba(var(--accent-rgb),.08)}
+.moreexch{font-family:var(--mono);font-size:11.5px;color:var(--accent-txt);background:none;border:none;cursor:pointer;padding:6px 2px;text-decoration:underline;letter-spacing:.03em}
+.exchhidden{display:none}
+.exchhidden.show{display:inline-block}
+
+.serieskey{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px}
+.keyitem{font-family:var(--mono);font-size:11.5px;color:var(--body);letter-spacing:.02em;display:inline-flex;align-items:center;gap:7px}
+.keyitem .kl{width:16px;height:0;border-top-width:3px;border-top-style:solid;display:inline-block}
+.keyitem b{color:var(--ink);font-weight:500}
+
+.dashcap{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.04em;margin-top:16px;line-height:1.6}
+.dashcap b{color:var(--body);font-weight:500}
+.wfeattr{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-txt);margin-top:18px}
+.caveat{font-size:13px;color:var(--body);line-height:1.6;margin-top:14px;max-width:var(--m-body);border-left:2px solid var(--hair-strong);padding-left:16px}
+.caveat b{color:var(--ink)}
+
+.dtip{position:fixed;z-index:80;pointer-events:none;opacity:0;transition:opacity .12s;background:var(--surface);border:1px solid var(--hair-strong);border-radius:8px;padding:10px 13px;font-family:var(--mono);font-size:12px;color:var(--ink);box-shadow:0 8px 30px rgba(0,0,0,.45);min-width:150px;line-height:1.55}
+html[data-theme="light"] .dtip{box-shadow:0 8px 30px rgba(46,77,96,.18)}
+.dtip .ty{color:var(--accent-txt);font-weight:700;letter-spacing:.08em;margin-bottom:4px;display:block}
+.dtip .tr{display:flex;justify-content:space-between;gap:16px}
+.dtip .tr .tn{color:var(--body)}
+.dtip .tr .tvv{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body data-accent="violet">
+<div class="prog" id="prog"></div>
+
+<!-- ====== SHARED SHELL TOPBAR (Mission Control; 10-link grouped nav) ====== -->
+<div class="topbar">
+  <a class="tb-l brand" href="index.html"><span class="dot"></span><b>Canada's Champions</b></a>
+  <span class="tb-r">
+        <span class="links">
+      <a href="index.html">Overview</a>
+      <a href="growth-prize.html">Prize</a>
+      <a href="strengths.html">Strengths</a>
+      <a href="growth-sectors.html">Sectors</a>
+      <a href="public-markets.html" title="Public Markets">Markets</a>
+      <a href="financing-gap.html" title="The Financing Gap">Gap</a>
+      <a href="what-works.html" title="What Works Abroad">Abroad</a>
+      <a href="comparators.html" title="The Comparators">Compare</a>
+      <a href="champions.html">Champions</a>
+      <a href="recommendations.html" title="Recommendations">Recs</a>
+      <a href="methodology.html" title="Methodology &amp; Sources">Method</a>
+      <span class="tb-div" aria-hidden="true"></span>
+      <span class="tb-grouplab">Data</span>
+      <a href="exchanges.html" title="The Exchanges — interactive">Exchanges</a>
+      <a href="global-exchanges.html" class="on" title="Global Exchanges Explorer">Global</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› global explorer · WFE · 25 exchanges · 2010–2025 · monthly race 2024–2026 · TMX vs the world"></div>
+    <div class="cat rv">◇ Interactive · global comparison</div>
+    <h1 class="rv d1">Global exchanges explorer.</h1>
+    <div class="tag rv d1">Fifteen years of World Federation of Exchanges data for the TMX and twenty-four peer exchanges — now including Shanghai, Shenzhen, India's NSE, Singapore and Saudi's Tadawul. Pick an indicator and add the markets you want to compare — listings, IPOs, market cap, IPO proceeds, value traded. The default view opens on the story the report keeps returning to: <strong>Canada's IPO on-ramp has closed harder than almost anywhere.</strong></div>
+    <div class="sigwrap">
+      <div class="signum rv d1">44 → 5</div>
+      <div>
+        <div class="sigpct rv d2">TMX IPO new listings · 2021 → 2025</div>
+        <div class="siglab rv d2">New listings through IPO on the TMX collapsed from 44 (2021) to 5 (2025) — an 89% fall. Korea held flat near 75; Hong Kong dipped and recovered to 114. The Canadian drought is not universal.</div>
+        <a href="methodology.html#register" class="provpill rv d2" data-prov="wfe"><span class="o"></span>data &amp; method</a>
+      </div>
+    </div>
+    <div class="scrollcue rv d3"><span class="arr"></span>explore the data</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE INTERACTIVE EXPLORER ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> The explorer</div>
+    <h2 class="rv d1">TMX against the world, one indicator at a time.</h2>
+    <p class="lede rv d1">Choose an indicator, then toggle exchanges on and off. Start from a <em>TMX vs peers</em> preset or build your own comparison. The chart re-renders as inline SVG; hover for year-by-year values. <em>Full 2010–2025 range; all monetary figures in US dollars.</em></p>
+
+    <!-- INDICATOR PICKER -->
+    <div class="picker rv d1">
+      <div class="plab">Indicator</div>
+      <div class="indrow" role="group" aria-label="Choose indicator">
+        <button type="button" class="indbtn" data-ind="ipo_count" aria-pressed="true">IPO new listings</button>
+        <button type="button" class="indbtn" data-ind="listed_total" aria-pressed="false">Listed companies (total)</button>
+        <button type="button" class="indbtn" data-ind="listed_dom" aria-pressed="false">Listed (domestic)</button>
+        <button type="button" class="indbtn" data-ind="mktcap" aria-pressed="false">Market cap (US$)</button>
+        <button type="button" class="indbtn" data-ind="ipo_raised" aria-pressed="false">IPO proceeds (US$)</button>
+        <button type="button" class="indbtn" data-ind="value_traded" aria-pressed="false">Value traded (US$)</button>
+      </div>
+    </div>
+
+    <!-- PRESETS -->
+    <div class="picker rv d1" style="margin-top:22px">
+      <div class="plab">TMX vs peers — quick presets</div>
+      <div class="presetrow" role="group" aria-label="Preset comparisons">
+        <button type="button" class="preset" data-preset="drought">IPO drought (TMX · Korea · HKEX · Nasdaq-US)</button>
+        <button type="button" class="preset" data-preset="listings">Listings (TMX · Korea · HKEX · ASX)</button>
+        <button type="button" class="preset" data-preset="mktcap">Market cap (TMX · Nasdaq-US · Japan · HKEX)</button>
+        <button type="button" class="preset" data-preset="global">Global scale (TMX · Shanghai · India · Nasdaq-US)</button>
+      </div>
+    </div>
+
+    <!-- EXCHANGE PICKER -->
+    <div class="picker rv d1" style="margin-top:22px">
+      <div class="plab">Exchanges <span style="color:var(--dim);text-transform:none;letter-spacing:.02em">(TMX + up to a handful of peers reads best)</span></div>
+      <div class="indrow" id="exchRow" role="group" aria-label="Choose exchanges"></div>
+    </div>
+
+    <!-- LIVE LINE CHART (build-time = IPO-drought preset; re-rendered by JS) -->
+    <div class="chart-head rv d2" style="margin-top:40px">
+      <h3 id="chTitle">New listings through IPO (Total)</h3>
+      <div class="sub" id="chSub">2010 → 2025 · TMX vs Korea, Hong Kong &amp; Nasdaq-US · count</div>
+    </div>
+    <div class="svgwrap rv d2" id="wfeWrap" role="img" aria-label="Line chart of new listings through IPO, 2010 to 2025, for four exchanges. TMX falls from 275 in 2010 and 44 in 2021 to 5 in 2025 — an 89 percent fall from the 2021 level. Korea Exchange holds roughly flat near 70 to 75. Hong Kong dips to 68 in 2023 then recovers to 114 in 2025. Nasdaq-US spikes to 319 in 2021 before falling back to 157. The Canadian IPO drought is the steepest of the four.">
+      <!-- Build-time DEFAULT view: the IPO-drought preset, rendered static. Rebuilt by JS on interaction. -->
+      <svg viewBox="0 0 920 440" id="wfeChart">
+        <!-- gridlines: 0,80,160,240,320 -->
+        <g stroke="var(--hair)" stroke-width="1">
+          <line x1="80" y1="380" x2="860" y2="380"/>
+          <line x1="80" y1="295" x2="860" y2="295"/>
+          <line x1="80" y1="210" x2="860" y2="210"/>
+          <line x1="80" y1="125" x2="860" y2="125"/>
+          <line x1="80" y1="40" x2="860" y2="40"/>
+        </g>
+        <g fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" text-anchor="end">
+          <text x="72" y="384">0</text><text x="72" y="299">80</text><text x="72" y="214">160</text><text x="72" y="129">240</text><text x="72" y="44">320</text>
+        </g>
+        <text x="80" y="26" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">IPO new listings / yr</text>
+        <g fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5" text-anchor="middle">
+          <text x="80" y="400">2010</text><text x="236" y="400">2013</text><text x="392" y="400">2016</text><text x="548" y="400">2019</text><text x="652" y="400">2021</text><text x="756" y="400">2023</text><text x="860" y="400">2025</text>
+        </g>
+        <!-- Nasdaq-US (steel, dashed as 4th comparator emphasis) -->
+        <polyline fill="none" stroke="var(--steel)" stroke-width="2" stroke-linejoin="round" opacity=".75"
+          points="80,291.8 132,302.4 184,300.3 236,256.8 288,193 340,249.3 392,306.7 444,285.4 496,220.6 548,225.9 600,184.5 652,41.1 704,288.6 756,275.9 808,246.1 860,213.2"/>
+        <!-- Hong Kong (sx-hkex cyan) -->
+        <polyline fill="none" stroke="var(--sx-hkex)" stroke-width="2.4" stroke-linejoin="round"
+          points="80,298.2 132,293.9 184,316.2 236,276.9 288,264.2 340,251.4 392,255.7 444,210 496,162.2 548,208.9 600,227 652,278 704,295 756,307.8 808,305.6 860,258.9"/>
+        <!-- Korea (sx-korea = the violet accent family) -->
+        <polyline fill="none" stroke="var(--sx-korea)" stroke-width="2.4" stroke-linejoin="round"
+          points="80,282.2 132,302.4 184,344.9 236,287.6 288,263.1 340,211.1 392,291.8 444,292.9 496,298.2 548,302.4 600,315.2 652,296.1 704,310.9 756,306.7 808,304.6 860,300.3"/>
+        <!-- TMX (page accent = violet, subject, glow) -->
+        <polyline fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-linejoin="round" style="filter:drop-shadow(var(--gfx-glow-soft))"
+          points="80,87.8 132,147.3 184,216.4 236,278 288,321.6 340,319.4 392,352.4 444,304.6 496,254.6 548,337.5 600,333.2 652,333.2 704,363 756,376.8 808,375.8 860,374.7"/>
+        <!-- TMX endpoint markers -->
+        <circle cx="80" cy="87.8" r="4" fill="var(--accent)"/>
+        <text x="92" y="83" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">275</text>
+        <circle cx="652" cy="333.2" r="4" fill="var(--accent)"/>
+        <text x="652" y="325" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="11" font-weight="700">44</text>
+        <circle cx="860" cy="374.7" r="5" fill="var(--accent)"/>
+        <text x="852" y="366" text-anchor="end" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">5</text>
+        <!-- Nasdaq 2021 peak marker -->
+        <circle cx="652" cy="41.1" r="3.5" fill="var(--steel)"/>
+        <text x="652" y="34" text-anchor="middle" fill="var(--gann-cmp)" font-family="var(--mono)" font-size="10.5">319</text>
+      </svg>
+    </div>
+    <!-- LIVE LEGEND -->
+    <div class="serieskey rv d2" id="serieskey">
+      <span class="keyitem"><span class="kl" style="border-top-color:var(--accent)"></span><b>TMX (Canada)</b></span>
+      <span class="keyitem"><span class="kl" style="border-top-color:var(--sx-korea)"></span>Korea</span>
+      <span class="keyitem"><span class="kl" style="border-top-color:var(--sx-hkex)"></span>Hong Kong</span>
+      <span class="keyitem"><span class="kl" style="border-top-color:var(--steel)"></span>Nasdaq (US)</span>
+    </div>
+    <div class="dashcap rv d2" id="dashCap"><b>The read:</b> The TMX line is the steep one. New IPO listings fell from 44 in 2021 to 5 in 2025 — an 89% collapse. Korea held near 75 the whole decade; Hong Kong recovered to 114 in 2025. Canada's on-ramp closed hardest, and it did not reopen.</div>
+    <div class="wfeattr rv d2">Source: World Federation of Exchanges</div>
+    <div class="caveat rv d2"><b>Data notes.</b> WFE annual statistics, 2010–2025, canonical 25-exchange USD file. The five newest venues — <b>Shanghai</b>, <b>Shenzhen</b>, <b>India's NSE</b>, <b>Singapore</b> and <b>Saudi's Tadawul</b> — carry full 2010–2025 coverage. Two exchange-level caveats: <b>China</b> is split across Shanghai and Shenzhen (combined they would rank second only to the two US venues), and <b>India's NSE understates</b> the country's true float because BSE India is not in the WFE set. <b>LSE Group</b> series ends in 2020 (WFE stopped publishing it) — London lines simply stop. Individual <b>Nordic venues</b> (Stockholm, Copenhagen, Helsinki, Tallinn) are partial; prefer the <em>Nasdaq Nordic</em> aggregate. Market-cap and value-traded coverage is thinner than listing counts for a few venues (lines drop where WFE has no figure). No 2026 annuals are published yet, so the series ends at 2025.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="wfe"><span class="o"></span>data &amp; method</a>
+  </div>
+</section>
+
+<!-- ============ 02 · THE MARKET-CAP RACE (monthly, dual-basis) ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> The market-cap race</div>
+    <h2 class="rv d1">The gap to Asia collapsed — but did Canada get overtaken?</h2>
+    <p class="lede rv d1">Through 2024–2026 the headlines said AI-heavy Taiwan and Korea overtook Canada by stock-market size. On the WFE's own month-end series the answer is more precise: the <strong>TMX–Korea gap collapsed from roughly US$1.3&nbsp;trillion in early 2024 to just US$54&nbsp;billion by May 2026</strong> — near-parity, but on this exchange-level instrument <strong>no crossover has yet happened.</strong> The two accounts differ because they count different things; both are true, and on either basis the convergence is undeniable.</p>
+
+    <div class="chart-head rv d2" style="margin-top:36px">
+      <h3>Total market capitalisation · monthly, US$ trillions</h3>
+      <div class="sub">TMX vs Korea &amp; Taiwan · Jan 2024 → Jun 2026 · month-end · WFE exchange-level basis</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="Monthly market-capitalisation line chart, US dollars trillions, January 2024 to June 2026. TMX rises from about 3.06 trillion in January 2024 to 5.00 trillion in May 2026, its last reported month. Korea Exchange rises from about 1.80 trillion to 4.95 trillion in May 2026, then 4.89 trillion in June. Taiwan rises from about 1.82 trillion to 4.56 trillion in May 2026, then 4.70 trillion in June. The TMX lead over Korea narrows from roughly 1.3 trillion in early 2024 to 54 billion in May 2026, but TMX still leads on this exchange-level basis. Source: World Federation of Exchanges.">
+      <svg viewBox="0 0 920 440" id="raceChart">
+        <defs>
+          <linearGradient id="raceGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--pg-spine)" stop-opacity="0.26"/>
+            <stop offset="1" stop-color="var(--pg-spine)" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- gridlines 0..5T -->
+        <g stroke="var(--hair)" stroke-width="1">
+          <line x1="80" y1="380" x2="860" y2="380"/><line x1="80" y1="312" x2="860" y2="312"/>
+          <line x1="80" y1="244" x2="860" y2="244"/><line x1="80" y1="176" x2="860" y2="176"/>
+          <line x1="80" y1="108" x2="860" y2="108"/><line x1="80" y1="40" x2="860" y2="40"/>
+        </g>
+        <g fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" text-anchor="end">
+          <text x="72" y="384">0</text><text x="72" y="316">1</text><text x="72" y="248">2</text><text x="72" y="180">3</text><text x="72" y="112">4</text><text x="72" y="44">5</text>
+        </g>
+        <text x="80" y="26" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">market cap · US$ trillions</text>
+        <g fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5" text-anchor="middle">
+          <text x="80" y="400">Jan '24</text><text x="241.4" y="400">Jul '24</text><text x="402.8" y="400">Jan '25</text><text x="564.1" y="400">Jul '25</text><text x="725.5" y="400">Jan '26</text><text x="860" y="400">Jun '26</text>
+        </g>
+        <!-- area under TMX (subject) -->
+        <polygon fill="url(#raceGrad)" points="80,380 80,171.9 106.9,170.4 133.8,161.7 160.7,168.6 187.6,160.4 214.5,164.7 241.4,155.7 268.3,148.4 295.2,143.0 322.1,148.1 349.0,137.0 375.9,151.2 402.8,146.3 429.7,140.8 456.6,143.7 483.4,134.4 510.3,120.0 537.2,110.6 564.1,110.3 591.0,96.7 617.9,87.2 644.8,86.4 671.7,76.5 698.6,66.8 725.5,60.1 752.4,38.2 779.3,59.7 806.2,48.3 833.1,39.8 833.1,380"/>
+        <!-- Taiwan (cyan) -->
+        <polyline fill="none" stroke="var(--pg-sector)" stroke-width="2.4" stroke-linejoin="round" opacity=".9"
+          points="80,256.1 106.9,250.4 133.8,242.7 160.7,244.7 187.6,238.8 214.5,226.1 241.4,233.4 268.3,228.7 295.2,227.6 322.1,224.9 349.0,230.6 375.9,226.5 402.8,222.9 429.7,226.6 456.6,243.7 483.4,241.9 510.3,223.8 537.2,213.2 564.1,207.3 591.0,206.3 617.9,193.7 644.8,178.2 671.7,185.2 698.6,175.8 725.5,154.1 752.4,128.7 779.3,160.0 806.2,110.3 833.1,70.0 860.0,60.2"/>
+        <!-- Korea (violet) -->
+        <polyline fill="none" stroke="var(--pg-comp)" stroke-width="2.4" stroke-linejoin="round" opacity=".9"
+          points="80,257.9 106.9,250.0 133.8,245.5 160.7,252.4 187.6,254.7 214.5,247.6 241.4,248.9 268.3,250.2 295.2,251.3 322.1,259.5 349.0,266.3 375.9,274.1 402.8,267.2 429.7,266.4 456.6,270.8 483.4,263.2 510.3,253.3 537.2,234.1 564.1,230.3 591.0,232.1 617.9,222.7 644.8,197.2 671.7,208.1 698.6,192.5 725.5,147.2 752.4,106.8 779.3,168.4 806.2,109.0 833.1,43.4 860.0,47.4"/>
+        <!-- TMX (azure subject) -->
+        <polyline fill="none" stroke="var(--pg-spine)" stroke-width="3.2" stroke-linejoin="round" class="subj-glow"
+          points="80,171.9 106.9,170.4 133.8,161.7 160.7,168.6 187.6,160.4 214.5,164.7 241.4,155.7 268.3,148.4 295.2,143.0 322.1,148.1 349.0,137.0 375.9,151.2 402.8,146.3 429.7,140.8 456.6,143.7 483.4,134.4 510.3,120.0 537.2,110.6 564.1,110.3 591.0,96.7 617.9,87.2 644.8,86.4 671.7,76.5 698.6,66.8 725.5,60.1 752.4,38.2 779.3,59.7 806.2,48.3 833.1,39.8"/>
+        <!-- early-2024 gap annotation -->
+        <line x1="133.8" y1="163.7" x2="133.8" y2="243.5" stroke="var(--hair-strong)" stroke-width="1" stroke-dasharray="4 4"/>
+        <text x="140" y="196" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">early 2024</text>
+        <text x="140" y="210" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">gap ≈ US$1.3T</text>
+        <!-- May-2026 convergence callout -->
+        <line x1="833.1" y1="39.8" x2="833.1" y2="22" stroke="var(--hair-strong)" stroke-width="1"/>
+        <text x="826" y="18" text-anchor="end" fill="var(--gann-val)" font-family="var(--mono)" font-size="11" font-weight="700">May 2026 · TMX +US$54bn vs Korea</text>
+        <!-- endpoint markers -->
+        <circle cx="833.1" cy="39.8" r="5" fill="var(--pg-spine)"/>
+        <circle cx="833.1" cy="43.4" r="3.4" fill="var(--pg-comp)"/>
+        <circle cx="860" cy="47.4" r="3" fill="var(--pg-comp)"/>
+        <circle cx="860" cy="60.2" r="3" fill="var(--pg-sector)"/>
+        <text x="838" y="94" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10">TMX: last</text>
+        <text x="838" y="106" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10">reports May</text>
+      </svg>
+    </div>
+    <div class="serieskey rv d2">
+      <span class="keyitem"><span class="kl" style="border-top-color:var(--pg-spine)"></span><b>TMX (Canada)</b> · US$5.00T (May '26)</span>
+      <span class="keyitem"><span class="kl" style="border-top-color:var(--pg-comp)"></span>Korea · US$4.95T (May), 4.89T (Jun)</span>
+      <span class="keyitem"><span class="kl" style="border-top-color:var(--pg-sector)"></span>Taiwan · US$4.56T (May), 4.70T (Jun)</span>
+    </div>
+    <div class="dashcap rv d2"><b>The read:</b> On the WFE exchange-level series, TMX still leads in every month it reports — Korea within US$54bn (May 2026), Taiwan within US$444bn — with the TMX–Korea gap down from ~US$1.3T in early 2024. TMX has not yet reported June 2026, so its line ends at May; the June figures for Korea (4.89T) and Taiwan (4.70T) both sit below TMX's May level, so nothing in the data yet shows either passing it.</div>
+
+    <div class="chart-head rv d2" style="margin-top:44px">
+      <h3>Where TMX sits among the world's exchanges</h3>
+      <div class="sub">Top 10 by market cap · exchange-level · month-end May 2026 · US$ trillions</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="Ranked bar chart of the ten largest exchanges by market capitalisation, month-end May 2026, US dollars trillions. Nasdaq US 43.74, NYSE 32.41, Shanghai 9.84, Japan 8.67, Euronext 8.14, Shenzhen 7.07, Hong Kong 6.01, TMX Canada 5.00 in eighth place, Korea 4.95, India NSE 4.91. Taiwan is eleventh at 4.56.">
+      <svg viewBox="0 0 680 215" id="t10strip">
+        <defs><linearGradient id="t10grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--pg-spine)" stop-opacity="0.5"/><stop offset="1" stop-color="var(--pg-spine)"/></linearGradient></defs>
+<rect x="150" y="15" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="15" width="460.0" height="10" rx="2" class="ramp-1"/>
+<text x="0" y="23.2" class="hbar-lab">1. Nasdaq (US)</text><text x="672" y="23.2" text-anchor="end" class="hbar-val">43.74T</text>
+<rect x="150" y="34.4" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="34.4" width="340.8" height="10" rx="2" class="ramp-1"/>
+<text x="0" y="42.6" class="hbar-lab">2. NYSE</text><text x="672" y="42.6" text-anchor="end" class="hbar-val">32.41T</text>
+<rect x="150" y="53.8" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="53.8" width="103.5" height="10" rx="2" class="ramp-2"/>
+<text x="0" y="62.0" class="hbar-lab">3. Shanghai (SSE)</text><text x="672" y="62.0" text-anchor="end" class="hbar-val">9.84T</text>
+<rect x="150" y="73.2" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="73.2" width="91.2" height="10" rx="2" class="ramp-2"/>
+<text x="0" y="81.4" class="hbar-lab">4. Japan (JPX)</text><text x="672" y="81.4" text-anchor="end" class="hbar-val">8.67T</text>
+<rect x="150" y="92.6" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="92.6" width="85.6" height="10" rx="2" class="ramp-3"/>
+<text x="0" y="100.8" class="hbar-lab">5. Euronext</text><text x="672" y="100.8" text-anchor="end" class="hbar-val">8.14T</text>
+<rect x="150" y="112.0" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="112.0" width="74.4" height="10" rx="2" class="ramp-3"/>
+<text x="0" y="120.2" class="hbar-lab">6. Shenzhen (SZSE)</text><text x="672" y="120.2" text-anchor="end" class="hbar-val">7.07T</text>
+<rect x="150" y="131.4" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="131.4" width="63.2" height="10" rx="2" class="ramp-4"/>
+<text x="0" y="139.6" class="hbar-lab">7. Hong Kong</text><text x="672" y="139.6" text-anchor="end" class="hbar-val">6.01T</text>
+<rect x="150" y="150.8" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="150.8" width="52.6" height="10" rx="2" fill="url(#t10grad)" class="subj-glow"/>
+<text x="0" y="159.0" class="hbar-lab subj">8. TMX (Canada)</text><text x="672" y="159.0" text-anchor="end" class="hbar-val subj">5.00T</text>
+<rect x="150" y="170.2" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="170.2" width="52.1" height="10" rx="2" class="ramp-5"/>
+<text x="0" y="178.4" class="hbar-lab">9. Korea</text><text x="672" y="178.4" text-anchor="end" class="hbar-val">4.95T</text>
+<rect x="150" y="189.6" width="460" height="10" rx="2" fill="var(--hair)"/>
+<rect x="150" y="189.6" width="51.6" height="10" rx="2" class="ramp-6"/>
+<text x="0" y="197.8" class="hbar-lab">10. India (NSE)</text><text x="672" y="197.8" text-anchor="end" class="hbar-val">4.91T</text>
+      </svg>
+    </div>
+    <div class="caveat rv d2"><b>Exchange-level, not country-level.</b> This ranks <em>exchanges</em>, so China is split across Shanghai + Shenzhen (combined, second only to the two US venues), Euronext is a multi-country aggregate, and India is understated (only NSE is in the set; BSE is absent). TMX sits <b>8th</b>, just ahead of Korea (9th, −US$54bn) and India's NSE (10th), with Taiwan 11th at 4.56T.</div>
+
+    <div class="pull rv d2" style="margin-top:36px">
+      <div class="q">Two true stories. On Bloomberg's country-level count, Taiwan (Apr 29) and Korea (May 7) passed Canada in 2026. On the WFE's exchange-level count, TMX is still narrowly ahead. What is not in dispute is the direction: a ~US$1.3T lead became US$54bn in two years.</div>
+    </div>
+    <div class="wfeattr rv d2">Source: World Federation of Exchanges · Bloomberg (country-level crossover)</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="wfemonthly"><span class="o"></span>data &amp; method</a>
+  </div>
+</section>
+
+<!-- ============ 03 · STORY BEAT — NOT UNIVERSAL ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> The drought is not universal</div>
+    <h2 class="rv d1">Other markets kept their on-ramps open.</h2>
+    <p class="lede rv d1">Switch the indicator to <em>Listed companies</em> or step through the presets and a pattern emerges: the collapse in new listings is far steeper in Canada than in the Asian markets it likes to benchmark against. Korea ran a steady 60–160 IPOs a year through the whole window; Hong Kong swung with the cycle but recovered to 114 in 2025; even the volatile Nasdaq-US settled back at 157. The TMX went to single digits and stayed there.</p>
+    <div class="figrow">
+      <div class="fig rv d1"><div class="fig-n" data-count="89" data-suffix="%">89%</div><div class="fig-cap">TMX IPO fall</div><div class="fig-q">2021 → 2025 (44 → 5)</div><div class="fig-l">The steepest new-listings collapse among the four benchmark exchanges.</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="75">75</div><div class="fig-cap">Korea, 2025</div><div class="fig-q">flat all decade</div><div class="fig-l">Korea Exchange held its IPO count near 60–160 for fifteen years.</div></div>
+      <div class="fig grey rv d2"><div class="fig-n" data-count="114">114</div><div class="fig-cap">Hong Kong, 2025</div><div class="fig-q">dipped then recovered</div><div class="fig-l">HKEX fell to 68 in 2023 and rebounded — the cycle turned back for it.</div></div>
+    </div>
+    <div class="pull rv d2" style="margin-top:40px">
+      <div class="q">Every market felt the 2022–23 IPO winter. Only Canada's exchange stayed frozen — three IPOs in 2023, four in 2024, five in 2025.</div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="wfe"><span class="o"></span>data &amp; method</a>
+  </div>
+</section>
+
+<!-- ============ 04 · THE READ ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04</span> The read</div>
+    <h2 class="rv d1">A distinctively Canadian problem — not a global one.</h2>
+    <p class="lede rv d1">The WFE data reframes the diagnosis. The thinning of Canada's public-market on-ramp is not a wave that hit everyone equally; it is unusually severe here. On market cap the TMX has grown (US$2.2T in 2010 to US$4.6T in 2025), but that growth is concentration and fund product, not a widening base of newly-public operating companies. The comparators that kept their on-ramps open — and how — are the subject of the international chapter.</p>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="what-works.html"><div class="n">CONTINUE · INTERNATIONAL</div><div><div class="t">What Works Abroad</div><div class="d">The comparator jurisdictions and the program toolkit — what Korea, Israel, Sweden and others did that Canada has not.</div></div></a>
+      <a class="nextrow rv d1" href="exchanges.html"><div class="n">COMPARE · DOMESTIC</div><div><div class="t">The Exchanges</div><div class="d">The interactive TSX / TSXV / CSE dashboard — the same operating-vs-listed lens, at home.</div></div></a>
+      <a class="nextrow rv d2" href="public-markets.html"><div class="n">DIAGNOSIS I</div><div><div class="t">Public Markets</div><div class="d">Turnover velocity, the IPO drought, and the missing middle — the narrative diagnosis this data underpins.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">Interactive · Global Exchanges Explorer</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">GLOBAL EXCHANGES EXPLORER · INTERACTIVE · static-first · opens from file:// · default view (IPO drought) renders with JS off</p>
+</footer>
+</div>
+
+<!-- Positioned hover tooltip for the line chart (enhancement only). -->
+<div class="dtip" id="dtip" aria-hidden="true"></div>
+
+<!-- Provenance drawer + scrim (shared shell markup; upgraded by app.js). -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- Per-page provenance + baked WFE data. Defined BEFORE app.js. -->
+<script>
+window.PROV = {
+  wfe:{
+    t:"Data & method — World Federation of Exchanges",
+    meta:'<b>World Federation of Exchanges</b>, annual equity-market statistics 2010–2025, pulled from the WFE Statistics Portal as the canonical <b>25-exchange</b> × 13-indicator extract (USD). Anchored in the vault as <em>Data/WFE (2026) - Exchange Statistics 2010-2026 (Annual, USD, 25 exchanges).xlsx</em> (exported July 8 2026; supersedes the earlier 20-exchange file). The five added venues are Shanghai, Shenzhen, India\'s NSE, Singapore and Saudi\'s Tadawul.<br><br>Indicators surfaced: listed companies (total &amp; domestic), new listings through IPO (total), market capitalisation, capital raised through IPO (total), value traded (EOB total). All monetary figures in US dollars.<br><br><b>Quirks handled:</b> China is split across Shanghai + Shenzhen; India\'s NSE understates the country\'s float (BSE not in the set); Singapore market cap includes substantial foreign listings; LSE Group series ends 2020; individual Nordic venues (Stockholm, Copenhagen, Helsinki, Tallinn) are partial — the <b>Nasdaq Nordic and Baltics</b> aggregate is preferred; some venues lack market-cap / value-traded figures (lines drop where WFE has no value); 2026 annual rows are present but blank, so series end 2025.<br><br><b>Headline:</b> TMX IPO new listings 44 (2021) → 5 (2025), −89% — steeper than Korea (flat ~75), Hong Kong (68 → 114), and Nasdaq-US (319 → 157). The decline is not universal.',
+    conf:"high"
+  },
+  wfemonthly:{
+    t:"Data & method — the market-cap race (WFE monthly, dual-basis)",
+    meta:'<b>World Federation of Exchanges — Market Capitalisation, Monthly 2024–2026 (USD)</b>, WFE Statistics Portal export (exported July 8 2026), anchored in the vault as <em>Data/WFE (2026) - Market Capitalisation Monthly 2024-2026 (USD).xlsx</em>. Month-end domestic market cap, 20 exchanges, Jan 2024 → Jun 2026.<br><br><b>The race (exchange-level basis).</b> TMX vs Korea Exchange vs Taiwan SE. The TMX–Korea gap collapsed from ~US$1.3T (Jan 2024) to <b>US$54bn</b> by May 2026 (TMX US$5.003T · Korea US$4.949T · Taiwan US$4.559T). <b>No crossover has yet occurred on this instrument:</b> TMX still leads in every month it reports. TMX has not yet reported June 2026, so its line ends at May; the June figures Korea (US$4.891T) and Taiwan (US$4.703T) both remain below TMX\'s May level.<br><br><b>Dual basis (honest divergence).</b> On <b>Bloomberg\'s country-level</b> series (a different, often primary-listing / free-float security universe; Canada ≈ US$4.4T) Taiwan passed Canada as the world\'s sixth-largest stock market on <a href="https://www.bloomberg.com/news/articles/2026-04-29/taiwan-overtakes-canada-as-world-s-sixth-largest-stock-market">Apr 29 2026</a> and Korea on <a href="https://www.bloomberg.com/news/articles/2026-05-07/korea-surpasses-canada-as-world-s-seventh-largest-stock-market">May 7 2026</a>. WFE reports the exchange\'s all-listed-company domestic market cap (TSX + TSXV), so it shows no crossover — the ~US$0.5T level difference is the universe difference. Both bases are true; on either, convergence is undeniable.<br><br><b>Top-10 (exchange-level, May 2026):</b> Nasdaq-US 43.74 · NYSE 32.41 · Shanghai 9.84 · JPX 8.67 · Euronext 8.14 · Shenzhen 7.07 · HKEX 6.01 · <b>TMX 5.00 (8th)</b> · Korea 4.95 · NSE India 4.91; Taiwan 11th at 4.56. Caveats: China split across Shanghai + Shenzhen; India understated (BSE absent); Euronext is a multi-country aggregate. Grade: High (exchange-reported).',
+    conf:"high"
+  }
+};
+
+/* ---- BAKED WFE DATA (computed with python from the WFE USD workbook; long format
+   Year/Indicator/Exchange/Value → per-indicator per-exchange arrays over 2010–2025.
+   Monetary series are in US$ millions (JS formats to $B/$T). null = no WFE value.
+   2026 partial-year rows dropped; LSE trails off after 2020 as nulls.) ---- */
+window.WFE = {
+  "years":[2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],
+  "exchanges":{"TMX":"TMX (Canada)","KRX":"Korea","HKEX":"Hong Kong","NDQ":"Nasdaq (US)","NYSE":"NYSE","JPX":"Japan (JPX)","ASX":"Australia (ASX)","LSE":"London (LSE)","DB":"Deutsche Börse","ENX":"Euronext","SIX":"Switzerland (SIX)","TWSE":"Taiwan (TWSE)","TPEx":"Taipei","TASE":"Tel Aviv","NORD":"Nasdaq Nordic","STO":"Stockholm","CPH":"Copenhagen","HEL":"Helsinki","TAL":"Tallinn","OSL":"Oslo","SSE":"Shanghai (SSE)","SZSE":"Shenzhen (SZSE)","NSE":"India (NSE)","SGX":"Singapore (SGX)","TAD":"Saudi (Tadawul)"},
+  "indicators":{
+    "ipo_count":{"label":"New listings through IPO (Total)","unit":"count"},
+    "listed_total":{"label":"Number of listed companies (Total)","unit":"count"},
+    "listed_dom":{"label":"Number of listed companies (Domestic)","unit":"count"},
+    "mktcap":{"label":"Market capitalisation","unit":"usd"},
+    "ipo_raised":{"label":"Capital raised through IPO (Total)","unit":"usd"},
+    "value_traded":{"label":"Value traded (EOB Total)","unit":"usd"}
+  },
+  "defaults":{
+    "ipo_count":["TMX","KRX","HKEX","NDQ"],
+    "listed_total":["TMX","KRX","HKEX","ASX"],
+    "listed_dom":["TMX","KRX","HKEX","ASX"],
+    "mktcap":["TMX","NDQ","JPX","HKEX"],
+    "ipo_raised":["TMX","KRX","HKEX","NDQ"],
+    "value_traded":["TMX","KRX","NDQ","ASX"]
+  },
+  "presets":{
+    "drought":{"ind":"ipo_count","ex":["TMX","KRX","HKEX","NDQ"]},
+    "listings":{"ind":"listed_total","ex":["TMX","KRX","HKEX","ASX"]},
+    "mktcap":{"ind":"mktcap","ex":["TMX","NDQ","JPX","HKEX"]},
+    "global":{"ind":"mktcap","ex":["TMX","SSE","NSE","NDQ"]}
+  },
+  "series":{"ipo_count":{"SSE":[28,38,25,0,43,89,103,214,57,123,234,249,154,103,32,42],"SZSE":[291,243,129,1,82,133,124,222,48,78,161,232,187,133,45,48],"NSE":[63,33,11,5,8,25,49,114,105,30,19,80,94,178,268,220],"TAD":[9,0,0,0,0,0,3,16,12,6,4,12,36,37,41,39],"SGX":[32,22,22,27,32,15,18,24,17,13,6,11,13,4,7,3],"TMX":[275,219,154,96,55,57,26,71,118,40,44,44,16,3,4,5],"KRX":[92,73,33,87,110,159,83,82,77,73,61,79,65,69,71,75],"HKEX":[77,81,60,97,109,121,117,160,205,161,144,96,80,68,70,114],"NDQ":[83,73,75,116,176,123,69,89,150,145,184,319,86,98,126,157],"NYSE":[89,69,79,123,116,55,30,74,65,33,51,288,21,20,50,66],"JPX":[null,null,null,null,74,89,81,86,89,82,92,123,87,88,80,59],"ASX":[104,107,57,65,82,102,101,108,94,63,78,201,89,33,29,41],"LSE":[103,85,74,120,163,118,79,138,119,71,72,28,null,null,null,null],"DB":[30,29,11,7,8,14,9,12,14,4,7,10,5,4,2,4],"ENX":[24,21,17,30,35,40,24,18,24,10,43,174,61,40,37,28],"SIX":[0,0,3,1,6,3,1,0,7,9,0,5,3,1,1,2],"TWSE":[30,48,19,29,17,18,21,18,29,15,11,15,20,26,35,33],"TPEx":[null,0,42,29,33,34,36,21,31,20,18,13,27,17,30,42],"TASE":[17,8,0,4,5,2,3,17,11,7,27,97,14,1,5,22],"NORD":[14,23,13,21,47,76,62,86,54,23,52,175,38,5,14,10],"STO":[null,null,null,null,null,null,null,null,null,0,0,0,null,0,0,null],"CPH":[null,null,null,null,null,null,null,null,null,0,0,0,0,0,null,null],"HEL":[null,null,null,null,null,null,null,null,null,0,0,0,0,null,null,null],"TAL":[null,null,null,null,null,null,null,null,null,0,0,0,null,0,null,null],"OSL":[14,7,1,10,12,7,3,11,8,9,null,0,0,null,null,null]},"listed_total":{"SSE":[894,931,954,953,995,1081,1182,1396,1450,1572,1800,2037,2174,2263,2278,2302],"SZSE":[1169,1411,1540,1536,1618,1746,1870,2089,2134,2205,2354,2578,2743,2844,2852,2887],"NSE":[1552,1640,1665,1679,1708,1794,1841,1898,1924,1956,1963,2053,2168,2370,2673,2933],"TAD":[146,150,158,163,169,171,176,188,200,204,207,224,269,310,353,392],"SGX":[778,773,776,776,775,769,757,750,741,723,696,673,651,632,617,606],"TMX":[3741,3945,3970,3886,3761,3559,3419,3328,3383,3413,3394,3504,3584,3584,3528,3701],"KRX":[1798,1816,1784,1813,1864,1961,2059,2134,2207,2283,2340,2406,2468,2558,2621,2674],"HKEX":[1413,1496,1547,1643,1752,1866,1973,2118,2315,2449,2538,2572,2597,2609,2631,2686],"NDQ":[2689,2578,2469,2494,2598,2636,2558,2567,2651,2712,2933,3678,3688,3432,3289,3342],"NYSE":[2317,2308,2339,2371,2466,2424,2307,2286,2285,2165,2229,2496,2405,2272,2132,2147],"JPX":[null,null,null,null,3470,3513,3541,3604,3657,3708,3758,3824,3871,3935,3977,3947],"ASX":[1999,2079,2056,2055,2073,2108,2095,2147,2146,2092,2049,2136,2135,2061,1989,1915],"LSE":[2966,2886,2767,2736,2752,2685,2590,2498,2479,2410,2347,null,null,null,null,null],"DB":[765,746,747,720,670,619,592,499,514,522,485,493,481,497,477,457],"ENX":[1135,1112,1073,1062,1055,1068,1051,1255,1208,1220,1493,1995,1966,1924,1848,1886],"SIX":[296,280,268,272,276,270,264,263,270,272,250,232,227,222,215,210],"TWSE":[784,824,840,866,880,896,911,924,945,956,961,970,981,1007,1041,1073],"TPEx":[564,596,638,658,685,712,732,743,766,775,782,788,808,816,838,874],"TASE":[613,593,549,508,473,461,451,457,448,442,455,541,548,537,533,546],"NORD":[778,773,751,755,787,832,938,984,1019,1082,1071,1236,1251,1221,1178,1125],"STO":[null,null,null,null,null,null,null,null,null,0,0,0,null,0,null,null],"CPH":[null,null,null,null,null,null,null,null,null,0,0,0,0,0,null,null],"HEL":[null,null,null,null,null,null,null,null,null,0,0,0,0,null,null,null],"TAL":[null,null,null,null,null,null,null,null,null,0,0,0,null,0,null,null],"OSL":[239,238,228,216,220,214,214,225,0,1,null,0,0,null,null,null]},"listed_dom":{"SSE":[894,931,954,953,995,1081,1182,1396,1450,1572,1800,2037,2174,2263,2278,2302],"SZSE":[1169,1411,1540,1536,1618,1746,1870,2089,2134,2205,2354,2578,2743,2844,2852,2887],"NSE":[1552,1640,1665,1679,1708,1794,1840,1897,1923,1955,1962,2053,2168,2370,2673,2933],"TAD":[146,150,158,163,169,171,176,188,200,204,207,224,269,309,352,391],"SGX":[461,462,472,479,484,483,479,483,482,470,459,442,425,412,400,394],"TMX":[3654,3845,3874,3810,3691,3501,3368,3278,3330,3358,3344,3455,3534,3537,3482,3661],"KRX":[1781,1799,1767,1798,1849,1948,2039,2114,2186,2262,2318,2383,2446,2536,2599,2653],"HKEX":[1396,1472,1459,1553,1661,1770,1872,1987,2161,2272,2353,2388,2414,2428,2449,2508],"NDQ":[2391,2284,2183,2198,2271,2272,2197,2189,2237,2268,2408,2880,2823,2606,2425,2319],"NYSE":[1799,1788,1815,1852,1939,1910,1822,1791,1775,1641,1695,1893,1818,1709,1584,1588],"JPX":[null,null,null,null,3458,3504,3535,3598,3652,3704,3754,3818,3865,3929,3971,3942],"ASX":[1913,1983,1959,1955,1967,1989,1969,2013,2004,1952,1902,1977,1976,1914,1853,1782],"LSE":[2362,2288,2179,2164,2180,2167,2111,2070,2061,2026,1979,null,null,null,null,null],"DB":[690,670,665,639,595,555,531,450,465,470,438,443,429,453,435,416],"ENX":[983,969,939,935,935,944,936,1093,1059,1067,1282,1740,1714,1668,1604,1728],"SIX":[246,246,238,236,240,234,227,228,236,237,220,220,217,213,206,201],"TWSE":[752,772,783,802,813,824,833,838,855,867,871,881,895,918,946,974],"TPEx":[563,595,621,638,658,681,699,710,732,740,749,756,777,786,810,845],"TASE":[596,576,532,491,458,440,427,431,420,414,426,512,518,512,511,525],"NORD":[752,743,722,728,757,800,900,944,976,1037,1029,1194,1210,1176,1129,1080],"OSL":[195,194,184,173,173,171,171,180,0,0,null,null,null,null,null,null]},"mktcap":{"SSE":[2716470,2357423,2547204,2496990,3932528,4549288,4103990,5089631,3919420,5105841,6975970,8154689,6724471,6524757,7186253,9269763],"SZSE":[1311370,1054685,1150172,1452154,2072420,3638731,3216748,3621636,2405460,3409663,5238495,6219831,4700872,4367476,4528667,6187870],"NSE":[1596625,985269,1234492,1112952,1520925,1485089,1534268,2351462,2056337,2162703,2552464,3548018,3387367,4340131,5131397,5269894],"TAD":[353410,338873,373375,467366,483116,421060,448939,451379,496353,2406820,2429102,2671331,2638591,3015365,2727001,2358620],"SGX":[647226,598273,765078,744413,752831,639956,649456,787255,687257,697271,652615,663388,619362,608306,637630,824336],"TMX":[2170433,1912122,2058839,2113822,2093697,1591929,2041534,2367060,1937903,2409099,2608377,3264137,2744720,3088356,3365365,4606445],"KRX":[1091911,996140,1179419,1234549,1212759,1231200,1282166,1771768,1413717,1484840,2176190,2218658,1644508,1967998,1557488,2756667],"HKEX":[2711316,2258035,2831946,3100777,3233031,3184874,3193236,4350515,3819215,4899235,6130420,5434177,4566809,3974783,4549721,6089227],"NDQ":[3889370,3845132,4582389,6084970,6979172,7280752,7779127,10039336,9756836,13002048,19060372,24557074,16237594,23414747,30609651,37536206],"NYSE":[13394082,11795575,14085944,17949884,19351417,17786787,19573074,22081367,20679477,21083679,22509489,23991464,24060386,25564650,31576034,31401660],"JPX":[null,null,null,null,4377994,4894919,5061537,6222825,5296811,6191073,6718220,6544303,5380475,6149200,6310681,7610544],"ASX":[1454491,1198187,1386874,1365958,1288708,1187083,1316796,1508463,1262800,1487598,1720556,1887401,1679172,1788726,1737106,2047917],"LSE":[3613064,3266418,3396505,4428975,4012882,3878774,3467434,4455408,3637996,4182873,4045597,null,null,null,null,null],"DB":[1429719,1184500,1486315,1936106,1738539,1715800,1718032,2262223,1755173,2098174,2284109,2503046,1889664,2178053,2044249,2898632],"ENX":[2930072,2446767,2832189,3583900,3319062,3305901,3463888,4392995,3730398,4701705,5443948,7333653,6064467,6889031,5836050,7880216],"SIX":[1229357,1089519,1233439,1540700,1495314,1519323,1414746,1686497,1441160,1834453,2001603,2327707,1830525,2044693,1971412,2514308],"TWSE":[818490,635506,735293,822707,850943,745000,861861,1073079,959220,1217274,1598570,2029131,1447691,1852620,2257896,3003149],"TPEx":[67809,44852,59850,78005,84822,83027,86118,111820,92478,114780,154931,208463,144686,188784,195252,230846],"TASE":[227614,156939,161855,203301,200525,243904,215007,231049,187466,237371,262062,362118,269637,264493,330882,564817],"NORD":[1042154,842101,995719,1269214,1196725,1268042,1249628,1533497,1322817,1612577,2110440,2557376,1856730,2119612,1791752,2360083],"OSL":[295288,220936,242765,265377,219370,193896,234102,287192,267382,295549,null,null,null,null,null,null]},"ipo_raised":{"SSE":[30060,12923,5354,0,5025,16750,14668,21146,12578,21723,50144,57340,52036,26952,4479,11293],"SZSE":[45390,28764,11247,0,5756,9396,6905,14202,7463,9276,19385,26631,30668,20873,4048,6147],"NSE":[9036,1114,1131,214,196,1970,4007,10730,4672,1758,1885,15502,7382,7947,19508,19809],"TAD":[1057,461,1420,523,6723,1107,746,1048,1132,26672,1448,5362,10328,652,3572,4974],"SGX":[null,7389,3669,4857,2639,404,1667,3512,548,1673,1071,1231,428,36,36,1432],"TMX":[null,null,4042,5092,4583,4646,426,5148,2116,1099,3333,3164,865,127,210,1027],"KRX":[8818,3694,1172,2197,4245,3775,5321,7451,2347,2872,3972,16364,12361,2323,2537,3451],"HKEX":[57820,33450,11617,21791,29983,33946,25188,16448,36776,40339,51617,42485,13396,5932,11333,36861],"NDQ":[8243,10958,23848,17418,22809,13033,7075,8335,22301,26154,51314,88167,5122,10662,17017,22480],"NYSE":[33813,28040,20700,39763,63155,18047,11404,28244,26253,37479,29232,0,135,5761,16258,24103],"JPX":[null,null,null,null,7426,14527,7134,5113,28449,2971,3515,6698,2582,4474,6148,8287],"ASX":[25674,15894,7419,8515,15281,7972,6383,5300,6002,4712,4082,9085,745,727,2277,6028],"LSE":[19944,null,null,24557,26216,17680,7408,19556,10936,11972,14026,5417,null,null,null,null],"DB":[853,1924,4986,0,0,0,5313,1485,11604,3983,1647,11286,348,2059,1282,1612],"ENX":[533,0,65436,0,12916,0,0,760,3767,3550,7746,24975,1697,2266,3312,657],"SIX":[50592,0,3875,1207,1557,2474,903,4616,4084,2326,0,2340,208,64,2535,1347],"TWSE":[1703,1097,460,589,690,549,396,287,547,780,298,900,909,1100,1306,2705],"TPEx":[694,null,393,374,302,595,417,214,222,157,225,257,276,137,454,719],"TASE":[930,192,0,92,348,38,68,818,492,928,1436,3377,665,40,226,1603],"NORD":[1374,0,0,0,0,4412,8234,4624,3200,1350,4796,13697,748,269,708,7353],"STO":[null,null,null,null,null,null,null,null,null,0,0,0,null,0,0,null],"CPH":[null,null,null,null,null,null,null,null,null,0,0,0,0,0,null,null],"HEL":[null,null,null,null,null,null,null,null,null,0,0,0,0,null,null,null],"TAL":[null,null,null,null,null,null,null,null,null,0,0,0,null,0,null,null],"OSL":[3283,1081,2710,0,0,1146,365,1306,1402,1812,null,0,0,null,null,null]},"value_traded":{"SSE":[4602107,3760430,2629663,3784726,6054218,20457061,7194005,7819767,5838867,7790293,12830535,17829625,13911022,12546178,14780825,24664120],"SZSE":[3655635,2913555,2397536,3911255,5905111,18868956,11124268,9421427,7231775,10457412,18750119,22523497,18549848,17267614,20092221,34551244],"NSE":[815381,516018,509695,453841,611664,655212,682716,1034093,1145391,1168352,1842422,2299666,1687282,1945004,3347429,2687225],"TAD":[201211,291436,511178,362402,567392,436941,306455,218379,229578,220783,485419,593308,447514,348191,476715,336817],"SGX":[305797,274686,260747,278735,200607,198030,190703,219605,219525,197213,270971,243169,230156,196019,224871,287648],"TMX":[1423407,1492412,1361458,1333055,1349264,1099284,1181144,1287152,1380239,1444577,1972401,2207904,2264780,2032752,2163111,2946817],"KRX":[1640889,1941213,1588915,1334043,1294390,1863915,1636104,2011925,2475712,1943951,5221924,5631980,3061988,3404641,3133712,3311315],"HKEX":[1495359,1447303,1106728,1323825,1521119,2126259,1351096,1953138,2342098,1876737,3145219,4146893,2901288,2328890,3058276,5965793],"NDQ":[12659198,12723511,9784206,9584742,12237020,12515349,11070939,11336294,16789815,15909551,24924017,27826316,27242031,23710219,28948101,39511198],"NYSE":[17795600,18027086,13442720,13700450,15867919,17477291,17317928,14535339,19340918,9305144,26176916,29096238,30048965,26359921,30447033,41404536],"JPX":[null,null,null,null,4845396,5571769,5342370,5778420,6306096,5098665,6337933,6344141,5858341,6370663,7384805,8335409],"ASX":[1186622,1172985,937071,821997,735748,781322,825252,842791,815570,880500,1305319,1131544,1140317,948544,908799,1187685],"LSE":[2795641,2623901,2238886,2314523,2539457,2626096,2181642,2457648,2464955,2000028,2242691,528180,null,null,null,null],"DB":[1659431,1625838,1301295,1383416,1347537,1540461,1248014,1558592,1760398,1506507,2211992,1909579,1539289,1137496,1012575,1535131],"ENX":[2056119,1973664,1609223,1722315,1790538,2056570,1687496,2045649,2134408,1920254,2677807,2793049,2889443,2575791,2284244,3335008],"SIX":[878861,830807,595299,703927,737885,961249,844034,948383,957107,976667,1322756,863737,870261,773851,721658,894426],"TWSE":[968886,862384,688982,622457,682879,606094,521668,792273,953614,871760,1612257,3302848,1814703,2039469,2792870,2936689],"TPEx":[null,null,101325,134576,200613,172332,159026,257970,265522,253547,429323,729344,485611,547983,708496,815864],"TASE":[108232,76610,50802,55579,47301,56371,52072,69037,62440,68469,104643,106291,111767,94955,99539,197273],"NORD":[762075,766515,598039,648226,662063,747637,678558,843926,822439,733228,1099284,1106664,920352,759062,657568,855578],"STO":[null,null,null,null,null,null,null,null,null,0,0,0,null,0,0,null],"CPH":[null,null,null,null,null,null,null,null,null,0,0,0,0,0,0,null],"HEL":[null,null,null,null,null,null,null,null,null,0,0,0,0,null,0,null],"TAL":[null,null,null,null,null,null,null,null,null,0,0,0,null,0,0,null],"OSL":[274053,228147,151757,119164,126075,116398,106628,117842,137310,115596,null,0,0,null,null,null]}}
+};
+</script>
+<script>
+/* ============================================================================
+   global-exchanges.html — WFE explorer interactivity (vanilla, enhancement-only).
+   Each feature in its own try/catch. With JS off, the build-time IPO-drought SVG stands.
+   ============================================================================ */
+"use strict";
+(function(){
+  try{
+    var W = window.WFE; if(!W) return;
+    var years = W.years, NY = years.length;
+    // series colour cycle (design-system family accents + steel; 5th+ dashed)
+    var COLS = ["var(--accent)","var(--sx-korea)","var(--sx-hkex)","var(--steel)","var(--acq)","var(--stay)"];
+    var state = { ind:"ipo_count", ex:W.defaults["ipo_count"].slice() };
+
+    var elChart=document.getElementById("wfeChart"), elWrap=document.getElementById("wfeWrap"),
+        elTitle=document.getElementById("chTitle"), elSub=document.getElementById("chSub"),
+        elKey=document.getElementById("serieskey"), elCap=document.getElementById("dashCap"),
+        exchRow=document.getElementById("exchRow"), dtip=document.getElementById("dtip");
+
+    var SVGNS="http://www.w3.org/2000/svg";
+    function svg(tag,a){var e=document.createElementNS(SVGNS,tag);if(a){for(var k in a)e.setAttribute(k,a[k]);}return e;}
+
+    // number formatting
+    function fmt(v, unit){
+      if(v==null) return "—";
+      if(unit==="count") return Math.round(v).toLocaleString();
+      // usd, v in millions
+      if(v>=1e6) return "US$"+(v/1e6).toFixed(2)+"T";
+      if(v>=1e3) return "US$"+(v/1e3).toFixed(1)+"B";
+      return "US$"+Math.round(v).toLocaleString()+"M";
+    }
+    function niceMax(m){
+      if(m<=0) return 1;
+      var p=Math.pow(10,Math.floor(Math.log10(m))), n=m/p;
+      var step = n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10;
+      return step*p;
+    }
+
+    // ---- exchange picker chips ----
+    function colFor(k){
+      var idx = state.ex.indexOf(k);
+      return idx>=0 ? COLS[idx%COLS.length] : "var(--steel)";
+    }
+    function buildExchRow(){
+      try{
+        exchRow.innerHTML="";
+        var order = ["TMX","KRX","HKEX","NDQ","NYSE","JPX","ASX","SSE","SZSE","NSE","SGX","TAD","LSE","DB","ENX","SIX","TWSE","TPEx","TASE","NORD","OSL"];
+        // append any remaining keys (the partial Nordic venues) hidden behind "more"
+        var extra = ["STO","CPH","HEL","TAL"];
+        order.forEach(function(k){ exchRow.appendChild(makeChip(k,false)); });
+        var moreBtn=document.createElement("button");
+        moreBtn.type="button"; moreBtn.className="moreexch"; moreBtn.textContent="+ Nordic venues";
+        exchRow.appendChild(moreBtn);
+        extra.forEach(function(k){ exchRow.appendChild(makeChip(k,true)); });
+        moreBtn.addEventListener("click",function(){
+          var hidden=exchRow.querySelectorAll(".exchhidden");
+          var showing=hidden.length && hidden[0].classList.contains("show");
+          hidden.forEach(function(n){ n.classList.toggle("show",!showing); });
+          moreBtn.textContent = showing ? "+ Nordic venues" : "– Nordic venues";
+        });
+      }catch(e){}
+    }
+    function makeChip(k,hidden){
+      var b=document.createElement("button");
+      b.type="button"; b.className="exchip"+(hidden?" exchhidden":"");
+      b.setAttribute("data-ex",k);
+      var on = state.ex.indexOf(k)>=0;
+      b.setAttribute("aria-pressed", on?"true":"false");
+      b.innerHTML='<span class="sw"></span>'+W.exchanges[k];
+      if(on){ b.style.setProperty("--chipcol", colFor(k)); }
+      b.addEventListener("click",function(){ toggleEx(k); });
+      return b;
+    }
+    function refreshChips(){
+      try{
+        var chips=exchRow.querySelectorAll(".exchip");
+        chips.forEach(function(b){
+          var k=b.getAttribute("data-ex");
+          var on=state.ex.indexOf(k)>=0;
+          b.setAttribute("aria-pressed", on?"true":"false");
+          if(on){ b.style.setProperty("--chipcol", colFor(k)); }
+          else{ b.style.removeProperty("--chipcol"); }
+        });
+      }catch(e){}
+    }
+    function toggleEx(k){
+      var i=state.ex.indexOf(k);
+      if(i>=0){ if(state.ex.length>1) state.ex.splice(i,1); }
+      else{ if(state.ex.length<6) state.ex.push(k); }
+      refreshChips(); render();
+    }
+
+    // ---- indicator + preset buttons ----
+    function setInd(ind){
+      state.ind=ind;
+      document.querySelectorAll(".indbtn").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-ind")===ind?"true":"false"); });
+      render();
+    }
+    document.querySelectorAll(".indbtn").forEach(function(b){ b.addEventListener("click",function(){ setInd(b.getAttribute("data-ind")); }); });
+    document.querySelectorAll(".preset").forEach(function(b){
+      b.addEventListener("click",function(){
+        var p=W.presets[b.getAttribute("data-preset")]; if(!p) return;
+        state.ind=p.ind; state.ex=p.ex.slice();
+        document.querySelectorAll(".indbtn").forEach(function(x){ x.setAttribute("aria-pressed", x.getAttribute("data-ind")===p.ind?"true":"false"); });
+        refreshChips(); render();
+      });
+    });
+
+    // ---- render the line chart ----
+    var x0=80,xEnd=860,ytop=40,ybot=380;
+    function X(i){ return +(x0+(xEnd-x0)*i/(NY-1)).toFixed(1); }
+    var lastGeom=null;
+    function render(){
+      try{
+        var ser=W.series[state.ind]||{};
+        var meta=W.indicators[state.ind];
+        // active series (only those with data)
+        var active=state.ex.filter(function(k){ return ser[k]; });
+        // compute vmax across active
+        var vmax=0;
+        active.forEach(function(k){ ser[k].forEach(function(v){ if(v!=null&&v>vmax)vmax=v; }); });
+        vmax=niceMax(vmax||1);
+        function Y(v){ return +(ybot-(ybot-ytop)*v/vmax).toFixed(1); }
+
+        while(elChart.firstChild) elChart.removeChild(elChart.firstChild);
+        elChart.setAttribute("viewBox","0 0 920 440");
+        // gridlines (5)
+        var g=svg("g",{stroke:"var(--hair)","stroke-width":1});
+        for(var t=0;t<=4;t++){ var yy=ytop+(ybot-ytop)*t/4; g.appendChild(svg("line",{x1:x0,y1:yy,x2:xEnd,y2:yy})); }
+        elChart.appendChild(g);
+        // y labels
+        var gl=svg("g",{fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":11,"text-anchor":"end"});
+        for(var t2=0;t2<=4;t2++){ var val=vmax*(4-t2)/4; var yy2=ytop+(ybot-ytop)*t2/4;
+          var tx=svg("text",{x:72,y:yy2+4}); tx.textContent=shortAxis(val,meta.unit); gl.appendChild(tx); }
+        elChart.appendChild(gl);
+        var ylab=svg("text",{x:x0,y:26,fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":11});
+        ylab.textContent = meta.unit==="count" ? (state.ind==="ipo_count"?"IPO new listings / yr":"count") : "US$";
+        elChart.appendChild(ylab);
+        // x labels
+        var gx=svg("g",{fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":10.5,"text-anchor":"middle"});
+        [0,3,6,9,11,13,15].forEach(function(i){ var t=svg("text",{x:X(i),y:400}); t.textContent=years[i]; gx.appendChild(t); });
+        elChart.appendChild(gx);
+
+        // draw comparator lines first, subject (TMX) last
+        var drawOrder=active.slice().sort(function(a,b){ return (a==="TMX")?1:(b==="TMX")?-1:0; });
+        drawOrder.forEach(function(k){
+          var arr=ser[k]; var origIdx=state.ex.indexOf(k); var col=COLS[origIdx%COLS.length];
+          // build point string skipping nulls (breaks the line where WFE has no value, e.g. LSE post-2020)
+          var segs=[], cur=[];
+          for(var i=0;i<NY;i++){ if(arr[i]==null){ if(cur.length){segs.push(cur);cur=[];} } else { cur.push(X(i)+","+Y(arr[i])); } }
+          if(cur.length) segs.push(cur);
+          var subj=(k==="TMX");
+          segs.forEach(function(pts){
+            if(pts.length<2){ // lone point → dot
+              var xy=pts[0].split(","); elChart.appendChild(svg("circle",{cx:xy[0],cy:xy[1],r:3,fill:col})); return;
+            }
+            var pl=svg("polyline",{fill:"none",stroke:col,"stroke-width":subj?3.2:2.2,"stroke-linejoin":"round",points:pts.join(" ")});
+            if(origIdx>=4) pl.setAttribute("stroke-dasharray","6 5");
+            if(subj) pl.setAttribute("style","filter:drop-shadow(var(--gfx-glow-soft))");
+            else pl.setAttribute("opacity",".82");
+            elChart.appendChild(pl);
+          });
+          // TMX endpoint label
+          if(subj){
+            var li=arr.length-1; while(li>=0&&arr[li]==null) li--;
+            if(li>=0){ elChart.appendChild(svg("circle",{cx:X(li),cy:Y(arr[li]),r:5,fill:col}));
+              var t=svg("text",{x:X(li)-8,y:Y(arr[li])-8,"text-anchor":"end",fill:"var(--gann-val)","font-family":"var(--disp)","font-weight":700,"font-size":15});
+              t.textContent = fmt(arr[li],meta.unit); elChart.appendChild(t); }
+          }
+        });
+
+        // hover overlay (rect capturing pointer, nearest-year tooltip)
+        var ov=svg("rect",{x:x0,y:ytop,width:xEnd-x0,height:ybot-ytop,fill:"transparent"});
+        ov.style.cursor="crosshair";
+        elChart.appendChild(ov);
+        lastGeom={ser:ser,meta:meta,active:active,X:X,Y:Y,vmax:vmax};
+        wireHover(ov);
+
+        // heads
+        elTitle.textContent=meta.label;
+        var names=active.map(function(k){return W.exchanges[k];});
+        elSub.textContent="2010 → 2025 · "+names.join(" · ")+" · "+(meta.unit==="count"?"count":"US$");
+        buildKey(active);
+        elCap.innerHTML = capFor(active, meta);
+        // aria
+        elWrap.setAttribute("aria-label", meta.label+", 2010 to 2025, for "+names.join(", ")+". Source: World Federation of Exchanges.");
+      }catch(e){}
+    }
+    function shortAxis(v,unit){
+      if(unit==="count") return Math.round(v).toLocaleString();
+      if(v>=1e6) return "$"+(v/1e6).toFixed(1)+"T";
+      if(v>=1e3) return "$"+Math.round(v/1e3)+"B";
+      return "$"+Math.round(v)+"M";
+    }
+    function buildKey(active){
+      try{
+        elKey.innerHTML="";
+        active.forEach(function(k){ var i=state.ex.indexOf(k); var col=COLS[i%COLS.length];
+          var span=document.createElement("span"); span.className="keyitem";
+          var subj=(k==="TMX");
+          span.innerHTML='<span class="kl" style="border-top-color:'+col+(i>=4?';border-top-style:dashed':'')+'"></span>'+(subj?'<b>'+W.exchanges[k]+'</b>':W.exchanges[k]);
+          elKey.appendChild(span);
+        });
+      }catch(e){}
+    }
+    function capFor(active,meta){
+      var tmx=W.series[state.ind]["TMX"];
+      if(state.ind==="ipo_count") return '<b>The read:</b> The TMX line is the steep one. New IPO listings fell from 44 in 2021 to 5 in 2025 — an 89% collapse. Korea held near 75 all decade; Hong Kong recovered to 114. Canada’s on-ramp closed hardest.';
+      if(state.ind==="mktcap"){ var a=tmx[0],b=tmx[tmx.length-1]; return '<b>The read:</b> TMX market cap grew from '+fmt(a,"usd")+' (2010) to '+fmt(b,"usd")+' (2025) — but that is concentration and fund product, not a widening base of newly-public companies.'; }
+      if(state.ind==="listed_total"||state.ind==="listed_dom") return '<b>The read:</b> Listing counts move slowly and mask the churn beneath — the TMX total is buoyed by fund product; the IPO-count view (above) is the honest read of the on-ramp.';
+      if(state.ind==="ipo_raised") return '<b>The read:</b> IPO proceeds swing violently with a handful of large deals — read alongside the IPO-count series, where Canada’s drought is unambiguous.';
+      if(state.ind==="value_traded") return '<b>The read:</b> Value traded is the liquidity signal — the Asian markets trade far more relative to their size, the retail-driven turnover that underpins their deeper listing pipelines.';
+      return '';
+    }
+    function wireHover(ov){
+      ov.addEventListener("mousemove",function(ev){
+        try{
+          if(!dtip||!lastGeom) return;
+          var svgEl=elChart, r=svgEl.getBoundingClientRect();
+          var vx=(ev.clientX-r.left)/r.width*920;
+          var i=Math.round((vx-x0)/(xEnd-x0)*(NY-1));
+          if(i<0)i=0; if(i>NY-1)i=NY-1;
+          var html='<span class="ty">'+years[i]+'</span>';
+          lastGeom.active.forEach(function(k){
+            var v=lastGeom.ser[k][i]; var idx=state.ex.indexOf(k); var col=COLS[idx%COLS.length];
+            html+='<div class="tr"><span class="tn"><span style="display:inline-block;width:9px;height:2px;background:'+col+';vertical-align:middle;margin-right:6px"></span>'+W.exchanges[k]+'</span><span class="tvv">'+fmt(v,lastGeom.meta.unit)+'</span></div>';
+          });
+          dtip.innerHTML=html;
+          dtip.style.left=(ev.clientX+16)+"px";
+          dtip.style.top=(ev.clientY+16)+"px";
+          dtip.style.opacity="1";
+        }catch(e){}
+      });
+      ov.addEventListener("mouseleave",function(){ if(dtip) dtip.style.opacity="0"; });
+    }
+
+    buildExchRow();
+    render(); // re-renders over the build-time SVG; static-first fallback = the authored SVG
+  }catch(e){}
+})();
+</script>
+<script src="app.js"></script>
+</body>
+</html>

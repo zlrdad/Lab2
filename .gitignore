@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor swap/backup files
+*.swp
+*.swo
+*~
+.~lock.*
+
+# Superseded legacy single-file version — kept locally for provenance only.
+# Contains stale figures (pre-rebase counts, old chart library) and must not
+# be published alongside the current multi-page report.
+Champions-Report.html

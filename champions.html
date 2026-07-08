@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Champions — Scaling & Retaining Canada's Champions</title>
+<meta name="description" content="The evidence layer of Ontario's capital-markets research report: ~34 company case studies sorted by outcome — who stayed, who was acquired, who lists abroad — and the four patterns that decide which.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Page-scoped components (token-driven only).
+   1. .roster / .costudy — hairline company rows, open-composition; a 3px left status edge
+      carries the SEMANTIC stayed/left/acquired/failed code (reserved tokens
+      --stay/--left/--acq/--fail per spec §4.1). Status word + colour, never a boxed card.
+      .costudy runs its own status hue via a --st custom prop.
+   2. .vbadge — the small mono verdict badge (spec §7 "Verdict badge"), bordered in the
+      status token, sitting beside the company name.
+   3. .evlist / .evrow — hairline evidence rows for the four patterns. The base pattern lives
+      in styles.css; this page overrides just the row's gap/max-width, below. */
+.roster{margin-top:44px;border-top:1px solid var(--hair)}
+.costudy{display:grid;grid-template-columns:minmax(200px,1.1fr) 2.4fr;gap:26px;padding:22px 0 22px 20px;border-bottom:1px solid var(--hair);border-left:3px solid var(--st,var(--slate));align-items:baseline;transition:background .18s}
+.costudy:hover{background:var(--band)}
+.costudy .cn{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(17px,2vw,21px);letter-spacing:-.01em;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.costudy .cx{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:7px}
+.costudy .cs{font-size:14.5px;color:var(--body);line-height:1.62;max-width:60ch}
+.costudy .cs b{color:var(--ink)}
+/* semantic status hues — reserved case-study code (spec §4.1) */
+.costudy.st-stay{--st:var(--stay)}
+.costudy.st-dom{--st:var(--left)}
+.costudy.st-risk{--st:var(--acq)}
+.costudy.st-acq{--st:var(--acq)}
+.costudy.st-left{--st:var(--left)}
+.costudy.st-fail{--st:var(--fail)}
+.vbadge{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:20px;border:1px solid var(--st,var(--slate));color:var(--st,var(--body));white-space:nowrap;line-height:1.5}
+.evrow{gap:28px;padding:26px 0}
+.evrow .ed{max-width:62ch}
+/* legend chips for the status code */
+.stkey{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:20px;letter-spacing:.03em}
+.stkey span{display:inline-flex;align-items:center;gap:8px}
+.stkey i{width:14px;height:3px;border-radius:2px;display:inline-block}
+/* 4. .colink / .cscue — roster-to-case-page affordance (added for the cases/ click-through).
+   The company name becomes a link underlined in its own status hue; a compact mono
+   "case study →" cue sits beside it. Only entries with a built cases/ page carry these. */
+.colink{color:inherit;text-decoration:none;border-bottom:1px solid var(--st,var(--slate));transition:border-color .15s,color .15s}
+.colink:hover{color:var(--st,var(--accent-txt));border-bottom-color:var(--st,var(--accent-txt))}
+.cscue{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--st,var(--accent-txt));opacity:.72;white-space:nowrap;align-self:center}
+.costudy:hover .cscue{opacity:1}
+@media(max-width:640px){.costudy,.evrow{grid-template-columns:1fr;gap:8px}}
+</style>
+</head>
+<body data-accent="cyan">
+<div class="prog" id="prog"></div>
+
+<!-- ====== SHARED SHELL TOPBAR (Mission Control; champions active) ====== -->
+<div class="topbar">
+  <a class="tb-l brand" href="index.html"><span class="dot"></span><b>Canada's Champions</b></a>
+  <span class="tb-r">
+        <span class="links">
+      <a href="index.html">Overview</a>
+      <a href="growth-prize.html">Prize</a>
+      <a href="strengths.html">Strengths</a>
+      <a href="growth-sectors.html">Sectors</a>
+      <a href="public-markets.html" title="Public Markets">Markets</a>
+      <a href="financing-gap.html" title="The Financing Gap">Gap</a>
+      <a href="what-works.html" title="What Works Abroad">Abroad</a>
+      <a href="comparators.html" title="The Comparators">Compare</a>
+      <a href="champions.html" class="on">Champions</a>
+      <a href="recommendations.html" title="Recommendations">Recs</a>
+      <a href="methodology.html" title="Methodology &amp; Sources">Method</a>
+      <span class="tb-div" aria-hidden="true"></span>
+      <span class="tb-grouplab">Data</span>
+      <a href="exchanges.html" title="The Exchanges — interactive">Exchanges</a>
+      <a href="global-exchanges.html" title="Global Exchanges Explorer">Global</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› the evidence · ~34 case studies · stayed · scaled · acquired · lost"></div>
+    <div class="cat rv">◇ The evidence · who stays, who leaves</div>
+    <h1 class="rv d1">Who stays, who's bought, who lists abroad.</h1>
+    <div class="tag rv d1">The diagnosis comes alive in the companies. We traced ~34 case studies — the top-ten technology issuers on each exchange, the marquee private champions, and the leakage cases — and the same patterns recur. Here is the roster, by outcome.</div>
+    <div class="sigwrap">
+      <div class="signum rv d1">~34</div>
+      <div>
+        <div class="sigpct rv d2">company case studies · sorted by outcome</div>
+        <div class="siglab rv d2">Top-ten technology issuers on each exchange, the marquee private champions, and the leakage cases — illustrative of mechanisms, not a statistical sample.</div>
+        <a href="methodology.html#register" class="provpill rv d2" data-prov="roster"><span class="o"></span>source</a>
+      </div>
+    </div>
+    <div class="scrollcue rv d3"><span class="arr"></span>scroll the evidence</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE ROSTER, BY OUTCOME — hairline company rows ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> The roster, by outcome</div>
+    <h2 class="rv d1">Champions and what became of them.</h2>
+    <p class="lede rv d1">Colour-coded by status — the report's reserved <em>stayed / left / acquired / failed</em> semantic code, which appears only here in the case studies: <strong style="color:var(--stay)">stayed &amp; Canadian-listed</strong>, <strong style="color:var(--left)">domestically anchored or scaling on US capital</strong>, <strong style="color:var(--acq)">independent but at risk / in play</strong>, <strong style="color:var(--fail)">acquired, taken private, or lost</strong>.</p>
+    <div class="stkey rv d2" aria-hidden="true">
+      <span><i style="background:var(--stay)"></i>Stayed / repatriated</span>
+      <span><i style="background:var(--left)"></i>Domestic-anchored · US-capital</span>
+      <span><i style="background:var(--acq)"></i>At risk / in play</span>
+      <span><i style="background:var(--fail)"></i>Acquired / lost</span>
+    </div>
+    <div class="roster">
+      <div class="costudy st-stay rv d1"><div class="cn"><a class="colink" href="cases/shopify.html">Shopify</a> <span class="vbadge">Stayed</span> <span class="cscue">case study →</span></div><div class="cs">TSX-listed; founder control kept it independent and Canadian — <b>the retention archetype</b>.</div></div>
+      <div class="costudy st-stay rv d1"><div class="cn"><a class="colink" href="cases/constellation.html">Constellation Software</a> <span class="vbadge">Stayed</span> <span class="cscue">case study →</span></div><div class="cs">The serial-acquirer compounder; spawned Topicus &amp; Lumine (still controlled).</div></div>
+      <div class="costudy st-stay rv d1"><div class="cn">Kinaxis <span class="vbadge">Stayed</span></div><div class="cs">Ottawa SaaS that IPO'd on the TSX and stayed independent.</div></div>
+      <div class="costudy st-stay rv d1"><div class="cn">MDA Space <span class="vbadge">Repatriated</span></div><div class="cs">Was US-owned (Maxar); brought back and re-IPO'd on the TSX in 2021 — <b>the reverse of flight</b>.</div></div>
+      <div class="costudy st-dom rv d2"><div class="cn">Wealthsimple <span class="vbadge">Domestic</span></div><div class="cs">Private; Power-Corp-anchored at ~C$10B; a Canadian-controlled IPO candidate.</div></div>
+      <div class="costudy st-dom rv d2"><div class="cn">StackAdapt <span class="vbadge">Domestic</span></div><div class="cs">2025 round led by Ontario Teachers' — <b>the domestic-capital exemplar</b>.</div></div>
+      <div class="costudy st-dom rv d2"><div class="cn"><a class="colink" href="cases/1password.html">1Password</a> <span class="vbadge">Domestic</span> <span class="cscue">case study →</span></div><div class="cs">Toronto-HQ'd and founder-run at ~US$6.8B, but scaled on large US venture rounds — <b>Canadian-anchored, US-financed</b>.</div></div>
+      <div class="costudy st-risk rv d2"><div class="cn"><a class="colink" href="cases/cohere.html">Cohere</a> <span class="vbadge">At risk</span> <span class="cscue">case study →</span></div><div class="cs">Independent national AI champion (~C$10B) — but US-strategic capital; listing venue TBD.</div></div>
+      <div class="costudy st-risk rv d2"><div class="cn"><a class="colink" href="cases/xanadu.html">Xanadu</a> <span class="vbadge">Cross-listed</span> <span class="cscue">case study →</span></div><div class="cs">SPAC on Nasdaq + TSX; US PIPE capital but kept its Canadian listing, HQ &amp; founder control.</div></div>
+      <div class="costudy st-risk rv d2"><div class="cn"><a class="colink" href="cases/waabi.html">Waabi</a> <span class="vbadge">At risk</span> <span class="cscue">case study →</span></div><div class="cs">Toronto autonomous-driving AI; founder-controlled with a Canadian HQ, but US-strategic capital (Uber, Nvidia, Khosla) and a US listing the likely exit.</div></div>
+      <div class="costudy st-acq rv d3"><div class="cn"><a class="colink" href="cases/tenstorrent.html">Tenstorrent</a> <span class="vbadge">In play</span> <span class="cscue">case study →</span></div><div class="cs">In Qualcomm acquisition talks at US$8–10B — <b>the flagship at the exit door</b>.</div></div>
+      <div class="costudy st-left rv d3"><div class="cn">Clio <span class="vbadge">US capital</span></div><div class="cs">~US$5B legal-tech leader; NEA-led; IPO most likely on a US exchange.</div></div>
+      <div class="costudy st-fail rv d3"><div class="cn"><a class="colink" href="cases/element-ai.html">Element AI</a> <span class="vbadge">Acquired</span> <span class="cscue">case study →</span></div><div class="cs">→ ServiceNow (US, 2020) at a fraction of peak — <b>textbook value leakage</b>.</div></div>
+      <div class="costudy st-fail rv d3"><div class="cn"><a class="colink" href="cases/magnet-forensics.html">Magnet Forensics</a> <span class="vbadge">Take-private</span> <span class="cscue">case study →</span></div><div class="cs">TSX → US private equity barely two years after IPO — the public-market exit.</div></div>
+      <div class="costudy st-fail rv d3"><div class="cn"><a class="colink" href="cases/clearpath.html">Clearpath Robotics</a> <span class="vbadge">Acquired</span> <span class="cscue">case study →</span></div><div class="cs">Kitchener robotics pioneer acquired by Rockwell Automation (US, 2023); OTTO Motors folded into a US parent.</div></div>
+    </div>
+    <div class="mininote rv d2" style="margin-top:16px"><b>And a cautionary precedent, not counted above:</b> <a href="cases/nortel.html" class="colink" style="--st:var(--fail);color:var(--fail)">Nortel — once ~35% of the TSX, bankrupt by 2009 →</a>. What the loss of a single champion can cost — and why retention is never a given.</div>
+    <div class="mininote rv d2">Illustrative, not statistical — the case studies show mechanisms and archetypes. The full set (30 public-issuer studies + private champions + leakage cases) is in the vault's <b>Case Studies</b> and the <b>Cross-Case Synthesis</b>.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="roster"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 01b · THE OUTCOME SPLIT — inline-SVG status bar ============ -->
+<section class="band alt tight" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">—</span> The shape of the roster</div>
+    <h2 class="rv d1">Retention is the minority outcome.</h2>
+    <p class="lede rv d1">Sorting the illustrative roster by outcome, the <em>stays</em> are outnumbered by the companies that scaled on foreign capital, sit at the exit door, or have already been acquired. The default trajectory bends away from Canada.</p>
+    <div class="chart-head rv d2" style="margin-top:44px">
+      <h3>The illustrative roster, by outcome</h3>
+      <div class="sub">15 highlighted champions · the semantic status code</div>
+    </div>
+    <div class="svgwrap rv d2" role="img" aria-label="A 100 percent stacked bar of the fifteen highlighted champions by outcome: four stayed or repatriated, three domestically anchored, four at risk or in play, one scaling on US capital, and three acquired or taken private. Retention is the minority outcome.">
+      <svg viewBox="0 0 900 150">
+        <defs>
+          <linearGradient id="ch-out-stay" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--stay)"/><stop offset="1" style="stop-color:var(--stay);stop-opacity:.72"/></linearGradient>
+          <linearGradient id="ch-out-dom" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--left)"/><stop offset="1" style="stop-color:var(--left);stop-opacity:.66"/></linearGradient>
+          <linearGradient id="ch-out-acq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--acq)"/><stop offset="1" style="stop-color:var(--acq);stop-opacity:.66"/></linearGradient>
+          <linearGradient id="ch-out-us" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--left);stop-opacity:.66"/><stop offset="1" style="stop-color:var(--left);stop-opacity:.42"/></linearGradient>
+          <linearGradient id="ch-out-fail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--fail)"/><stop offset="1" style="stop-color:var(--fail);stop-opacity:.64"/></linearGradient>
+        </defs>
+        <!-- 15 companies tile 70..830 (width 760); each company = 50.67px. Counts match the roster:
+             stay 4 · dom 3 (Wealthsimple, StackAdapt, 1Password) · at-risk/in-play 4 (Cohere, Xanadu, Waabi + Tenstorrent in-play) · US-capital 1 (Clio) · acquired/lost 3 (Element AI, Magnet, Clearpath). Nortel is a cautionary precedent, not counted. -->
+        <!-- Stayed / repatriated = 4 (202.7) -->
+        <rect x="70" y="46" width="202.7" height="54" rx="5" fill="url(#ch-out-stay)" style="filter:drop-shadow(var(--gfx-glow-soft))"/>
+        <text x="171.4" y="79" text-anchor="middle" fill="var(--bg)" font-family="var(--disp)" font-weight="700" font-size="19">4 · stayed</text>
+        <!-- Domestic-anchored = 3 (152.0) -->
+        <rect x="272.7" y="46" width="152.0" height="54" rx="5" fill="url(#ch-out-dom)"/>
+        <text x="348.7" y="79" text-anchor="middle" fill="var(--bg)" font-family="var(--disp)" font-weight="700" font-size="16">3 · dom.</text>
+        <!-- At risk / in play = 4 (202.7) -->
+        <rect x="424.7" y="46" width="202.7" height="54" rx="5" fill="url(#ch-out-acq)"/>
+        <text x="526.0" y="79" text-anchor="middle" fill="var(--bg)" font-family="var(--disp)" font-weight="700" font-size="16">4 · at risk</text>
+        <!-- US capital = 1 (50.7) -->
+        <rect x="627.3" y="46" width="50.7" height="54" rx="5" fill="url(#ch-out-us)"/>
+        <text x="652.7" y="79" text-anchor="middle" fill="var(--ink)" font-family="var(--disp)" font-weight="700" font-size="15">1</text>
+        <!-- Acquired / lost = 3 (152.0) -->
+        <rect x="678.0" y="46" width="152.0" height="54" rx="5" fill="url(#ch-out-fail)"/>
+        <text x="754.0" y="79" text-anchor="middle" fill="var(--bg)" font-family="var(--disp)" font-weight="700" font-size="16">3 · acq.</text>
+        <text x="70" y="128" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">Fifteen highlighted champions, by outcome — stayed (4) · domestic (3) · at risk / in play (4) · US-capital (1) · acquired / lost (3)</text>
+      </svg>
+    </div>
+    <div class="mininote rv d2">A count of the <b>highlighted fifteen</b>, not the full corpus — but the shape holds across the wider roster: <b>stays are exceptional</b>, and the mechanism of departure is acquisition or a US listing, financed by foreign growth capital.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="split"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 02 · WHAT THE ROSTER TEACHES — pattern rows ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> What the roster teaches</div>
+    <h2 class="rv d1">Four patterns that decide the outcome.</h2>
+    <p class="lede rv d1">Strip the individual stories back and the same four mechanics recur — each pointing at where an intervention would actually bind.</p>
+    <div class="evlist">
+      <div class="evrow rv d1">
+        <div class="et">Exit is by acquisition</div>
+        <div class="ed">The credible champions leave chiefly by being <b>bought</b> (Tenstorrent, Element AI, Untether) or taken private (Magnet) — at the growth / public stage, by US buyers.</div>
+      </div>
+      <div class="evrow rv d1">
+        <div class="et">Foreign control = exit by another name</div>
+        <div class="ed">Fullscript and PointClickCare keep Canadian HQs but are US-PE-controlled. Control and upside leave before the jobs do — so intervene <b>earlier</b>.</div>
+      </div>
+      <div class="evrow rv d2">
+        <div class="et">Retention is achievable</div>
+        <div class="ed">StackAdapt, Wealthsimple, Neo, bootstrapped Geotab / Jane, repatriated MDA — domestic capital and control <b>do</b> anchor champions. They're just rare.</div>
+      </div>
+      <div class="evrow rv d2">
+        <div class="et">Control cuts both ways</div>
+        <div class="ed">Dual-class let Shopify stay independent — and let Magnet's controllers <b>sell</b> to US PE. Governance preserves the option; it doesn't compel staying.</div>
+      </div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="patterns"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 03 · A CAVEAT WORTH NAMING — the two proofs, and how thin they are ============ -->
+<section class="band alt tight" data-rev>
+  <div class="wrap narrow">
+    <div class="kicker rv"><span class="l">03</span> A caveat worth naming</div>
+    <h2 class="rv d1">Canada's public-market wins are real — but they rest on two proofs, not an ecosystem.</h2>
+    <p class="lede rv d1">The TSX has two genuine, durable technology successes, and they win in different ways. <strong>Shopify</strong> is the <em>retention</em> archetype — Canada's most valuable tech company (~C$202B), kept independent and TSX/NYSE-listed by founder control and a deliberate embedding in Canadian capital markets. <strong>Constellation Software</strong> is the <em>permanent-capital compounder</em> — a serial acquirer that has thrown off two more listed champions, Topicus and Lumine (both still controlled). But Topicus and Lumine are <em>controlled spin-offs</em>, not independent successes, so the compounding win concentrates in a single lineage <strong>(Constellation → Topicus → Lumine)</strong>, with Descartes the one unrelated parallel. Two models — founder-controlled retention and permanent-capital compounding — each proven exactly once. Both are replicable; the ecosystem simply hasn't replicated them at any scale.</p>
+    <div class="pull rv d2" style="margin-top:36px">
+      <div class="q">A Shopify and a Constellation are proofs of concept, not an ecosystem. The task is to make the second and third of each possible.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · THE READ — outro + next ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04</span> The read</div>
+    <h2 class="rv d1">The companies confirm the diagnosis.</h2>
+    <p class="lede rv d1">Stays are possible but exceptional; the default trajectory is acquisition or a US listing, and foreign growth capital is the mechanism. Retention <em>is</em> achievable when domestic capital and control align — the comparators showed which mechanisms make it so. The report's final question is which of those levers Ontario should actually pull, and in what order.</p>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="recommendations.html"><div class="n">NEXT · LEVERS</div><div><div class="t">Ranked &amp; costed options</div><div class="d">The four levers — supply, demand, retention, liquidity — matched to the situation each champion is actually in, with mobilised capital, annual cost and a confidence grade.</div></div></a>
+      <a class="nextrow rv d1" href="what-works.html"><div class="n">BACK · ABROAD</div><div><div class="t">What works elsewhere</div><div class="d">The comparator field and the programs — KVIC, Yozma, Tibi, STAR, ISK — that built and kept champions.</div></div></a>
+      <a class="nextrow rv d2" href="financing-gap.html"><div class="n">BACK · THE GAP</div><div><div class="t">The financing gap</div><div class="d">Why US capital fills the value-defining rounds — the macro gap these cap tables make concrete.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">The Evidence · The Champions</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">THE CHAMPIONS · THE EVIDENCE · static-first · opens from file:// · fully readable offline · full sources on the Methodology page</p>
+</footer>
+</div>
+
+<!-- Provenance drawer + scrim (shared shell markup; upgraded by app.js). Static-first:
+     every .provpill is a real <a href="methodology.html#register"> that jumps to the footer with JS off. -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- Per-page provenance data. Defined BEFORE app.js so the drawer machinery can read it.
+     window.PROV maps data-prov key → {t:title, meta:HTML, conf:high|medium|soft}. -->
+<script>
+window.PROV = {
+  roster:{
+    t:"The roster, by outcome",
+    meta:'<b>Themes/Case Studies</b> (~34 company deep-dives) + <b>Cross-Case Synthesis — Patterns Across the Champion Case Studies</b> (vault). The roster is <b>illustrative, not statistical</b>: the top-ten technology issuers on each exchange, the marquee private champions, and the leakage cases — chosen to surface mechanisms and archetypes, not to sample the population.<ul>'
+      +'<li><b>Stayed / repatriated:</b> Shopify (TSX, founder-controlled), Constellation (→ Topicus, Lumine), Kinaxis, MDA Space (re-IPO 2021).</li>'
+      +'<li><b>Domestic-anchored:</b> Wealthsimple (Power Corp, ~C$10B), StackAdapt (Ontario Teachers\' 2025 round), 1Password (Toronto-HQ, ~US$6.8B, US-VC-financed).</li>'
+      +'<li><b>At risk / in play:</b> Cohere (~C$10B, US-strategic capital), Xanadu (Nasdaq+TSX SPAC), Waabi (Toronto AI, US-strategic capital), Tenstorrent (Qualcomm talks, US$8–10B).</li>'
+      +'<li><b>US capital / lost:</b> Clio (~US$5B, NEA-led), Element AI (→ ServiceNow 2020), Magnet Forensics (TSX → US PE take-private), Clearpath Robotics (→ Rockwell Automation 2023).</li>'
+      +'<li><b>Cautionary precedent (not counted):</b> Nortel — once ~35% of the TSX, bankrupt 2009.</li>'
+      +'</ul>Status labels are analytic summaries; private valuations are last-priced / press-reported.',
+    conf:"medium"
+  },
+  split:{
+    t:"The roster, by outcome — the split",
+    meta:'A count of the <b>fifteen highlighted champions</b> by the reserved semantic status code: <b>4 stayed / repatriated</b>, <b>3 domestically anchored</b> (Wealthsimple, StackAdapt, 1Password), <b>4 at risk / in play</b> (Cohere, Xanadu, Waabi + Tenstorrent in acquisition talks), <b>1 scaling on US capital</b> (Clio), <b>3 acquired / taken private</b> (Element AI, Magnet, Clearpath). Nortel is shown as a cautionary precedent, not counted.<br><br>This is a count of the highlighted subset chosen for the roster, <b>not a frequency claim over the full ~34-company corpus</b>. It is shown to convey the roster\'s shape — retention is the minority outcome and departure runs through acquisition or a US listing. Source: <b>Cross-Case Synthesis</b> outcome tags.',
+    conf:"medium"
+  },
+  patterns:{
+    t:"Four patterns that decide the outcome",
+    meta:'<b>Cross-Case Synthesis — Patterns Across the Champion Case Studies</b> (vault). Analytic generalisations across the case corpus:<ul>'
+      +'<li><b>Exit is by acquisition</b> — credible champions leave by being bought (Tenstorrent, Element AI, Untether) or taken private (Magnet), at the growth / public stage, by US buyers.</li>'
+      +'<li><b>Foreign control = exit by another name</b> — Fullscript, PointClickCare keep Canadian HQs but are US-PE-controlled; control and upside leave before the jobs do.</li>'
+      +'<li><b>Retention is achievable</b> — StackAdapt, Wealthsimple, Neo, Geotab / Jane (bootstrapped), MDA (repatriated) show domestic capital + control can anchor champions.</li>'
+      +'<li><b>Control cuts both ways</b> — dual-class let Shopify stay independent and let Magnet\'s controllers sell to US PE; governance preserves the option, doesn\'t compel staying.</li>'
+      +'</ul>Patterns are analytic, not statistical findings.',
+    conf:"medium"
+  }
+};
+</script>
+<script src="app.js"></script>
+</body>
+</html>

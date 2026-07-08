@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Waabi — Case Study · Canada's Champions</title>
+<meta name="description" content="Waabi case study: Toronto's physical-AI champion, founded and scaled at home by a returnee founder — but its record-setting rounds are US-led and its commercial channels foreign-controlled. A retention success so far, not yet structurally locked in.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+/* ============================================================================
+   CASE-STUDY REGISTER — scoped, shared across cases/*.html (duplicated verbatim; see
+   cases/README-cases.md §7). Descends from the Waabi / Xanadu POCs. Tokens only —
+   no literal hex except the four reserved semantic status colours below.
+   ============================================================================ */
+body{--st-stay:#2fe6cd;--st-left:#ffb454;--st-acq:#9d8bff;--st-fail:#ff5d6c}
+html[data-theme="light"] body{--st-stay:#0e8a79;--st-left:#8f5400;--st-acq:#5b3fd0;--st-fail:#c62839}
+body.v-stay{--sc:var(--st-stay)}body.v-left{--sc:var(--st-left)}body.v-acq{--sc:var(--st-acq)}body.v-fail{--sc:var(--st-fail)}
+.topbar .back{color:var(--dim);text-decoration:none}
+.topbar .back:hover{color:var(--accent-txt)}
+.statusbadge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sc);border:1px solid var(--sc);border-radius:22px;padding:6px 15px;line-height:1;margin:6px 0 0}
+.statusbadge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sc);box-shadow:0 0 10px var(--sc);flex:0 0 auto}
+.hero-verdict{font-size:clamp(17px,2.3vw,22px);color:var(--body);max-width:60ch;line-height:1.5;margin-top:22px}
+.hero-verdict b{color:var(--ink)}
+.casefig{margin-top:48px;display:flex;flex-direction:column;gap:8px}
+.casefig .n{font-family:var(--disp);font-weight:700;color:var(--accent);font-size:clamp(52px,10vw,116px);line-height:.9;letter-spacing:-.035em;font-variant-numeric:tabular-nums;text-shadow:var(--numeral-glow)}
+.casefig .cap{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.casefig .l{font-size:14.5px;color:var(--body);max-width:54ch;line-height:1.55;margin-top:4px}
+html[data-theme="light"] .casefig .n{text-shadow:none}
+.captl{margin-top:34px;position:relative;padding-left:30px}
+.captl::before{content:"";position:absolute;left:6px;top:10px;bottom:10px;width:2px;background:linear-gradient(var(--accent),rgba(var(--accent-rgb),.12))}
+.capitem{position:relative;padding:0 0 30px}
+.capitem:last-child{padding-bottom:2px}
+.capitem::before{content:"";position:absolute;left:-30px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);box-shadow:0 0 10px rgba(var(--accent-rgb),.5)}
+.capitem.term::before{background:var(--sc);border-color:var(--sc);box-shadow:0 0 12px var(--sc)}
+.capitem .d{font-family:var(--mono);font-size:12px;color:var(--accent-txt);letter-spacing:.06em}
+.capitem .r{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:16.5px;margin:3px 0;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.capitem .a{font-family:var(--disp);font-weight:700;color:var(--accent);font-size:19px;font-variant-numeric:tabular-nums}
+.capitem.term .a{color:var(--sc)}
+.capitem .v{font-family:var(--mono);font-size:11.5px;color:var(--dim);margin-top:2px}
+.capitem .i{font-size:13.5px;color:var(--body);margin-top:8px;line-height:1.55;max-width:62ch}
+.capitem .i b{color:var(--ink)}
+.reported{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--left);border:1px solid var(--conf-soft-bd);border-radius:20px;padding:1px 7px}
+.moment{border-left:3px solid var(--accent);padding:6px 0 6px 26px;margin-top:16px;max-width:68ch}
+.moment .mt{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(20px,2.8vw,30px);line-height:1.22;letter-spacing:-.015em}
+.moment .mw{font-size:15.5px;color:var(--body);margin-top:16px;line-height:1.7}
+.moment .mw b{color:var(--ink)}
+.moment .ms{font-size:14.5px;color:var(--body);margin-top:14px;line-height:1.65}
+.moment .ms b{color:var(--accent-txt)}
+.vbox{border:1px solid var(--hair-strong);border-left:3px solid var(--sc);border-radius:14px;padding:26px 30px;margin-top:22px;background:linear-gradient(180deg,var(--band),transparent);max-width:72ch}
+.vbox .vb{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sc);border:1px solid var(--sc);border-radius:22px;padding:5px 14px;line-height:1;margin-bottom:16px}
+.vbox .vb::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sc);flex:0 0 auto}
+.vbox .vh{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(18px,2.3vw,24px);line-height:1.32;margin-bottom:12px}
+.vbox .vd{font-size:14.5px;color:var(--body);line-height:1.7}
+.vbox .vd b{color:var(--ink)}
+</style>
+</head>
+<body data-accent="violet" class="v-stay">
+<div class="prog" id="prog"></div>
+
+<div class="topbar">
+  <span class="tb-l brand"><span class="dot"></span><a class="back" href="../champions.html">← The Champions</a> · <b>Waabi</b></span>
+  <span class="tb-r">
+    <span class="links">
+      <a href="../index.html">Overview</a>
+      <a href="../champions.html">The Champions</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› case file · waabi · physical ai, kept in toronto · sources verified"></div>
+    <div class="cat rv">◇ Case study · Stayed · Physical AI / Autonomous</div>
+    <h1 class="rv d1">Waabi</h1>
+    <div class="statusbadge rv d1">Stayed · US-led capital</div>
+    <div class="hero-verdict rv d1">Toronto's <b>physical-AI</b> champion — founded and scaled at home by a returnee founder — but its record-setting rounds are <b>US-led</b> and its commercial channels foreign-controlled. A retention success <em>so far</em>, not yet structurally locked in.</div>
+    <div class="casefig rv d2">
+      <div class="n">US$750M</div>
+      <div class="cap">Series C · January 2026 · largest-ever Canadian tech fundraise</div>
+      <div class="l">~US$1.28B raised life-to-date · ~US$3B reported valuation (unconfirmed) · Toronto HQ (440 Bathurst) · ~300 staff · founder Raquel Urtasun.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="scale"><span class="o"></span>source</a>
+    <div class="scrollcue rv d3"><span class="arr"></span>the capital journey</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE CAPITAL JOURNEY ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> The capital journey</div>
+    <h2 class="rv d1">Canadian institutions showed up early — and stayed followers.</h2>
+    <p class="lede rv d1">Autonomous driving is among the most capital-intensive segments in technology. Waabi raised ~US$1.28B across three priced rounds, all US-led (Khosla, G2). Canadian Crown and pension capital (BDC, EDC, OMERS, BMO, TELUS) participated in every round — but never led.</p>
+    <div class="captl rv d2">
+      <div class="capitem">
+        <div class="d">2021 · Founded · Toronto</div>
+        <div class="r">Returnee founder</div>
+        <div class="i">Founded by <b>Raquel Urtasun</b> — U&nbsp;of&nbsp;T professor, Vector Institute co-founder, former Chief Scientist of Uber ATG — who spun her research into an independent Toronto company rather than decamping to the Valley. Differentiator: the "AI-first" generative simulator, <b>Waabi World</b>.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Jun 2021 · Series A</div>
+        <div class="r">Raise <span class="a">US$83.5M</span></div>
+        <div class="v">reported the largest Series A in Canadian tech history at the time</div>
+        <div class="i"><b>Khosla Ventures</b> (lead, US); Uber, 8VC, Radical Ventures, OMERS Ventures, BDC Capital; angels Hinton, Fei-Fei Li, Abbeel, Fidler.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Jun 2024 · Series B</div>
+        <div class="r">Raise <span class="a">US$200M</span></div>
+        <div class="i"><b>Uber</b> and <b>Khosla</b> (co-leads); strategic: NVIDIA, Volvo Group VC, Porsche SE, Scania, Ingka (IKEA); Canadian: BDC (Thrive), Export Development Canada, Radical.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Jan 28 2026 · Series C</div>
+        <div class="r">Raise <span class="a">US$750M</span> + ~US$250M Uber</div>
+        <div class="v">~US$3B reported pre-money (company declined to confirm) · ~US$1B combined</div>
+        <div class="i"><b>Khosla</b> and <b>G2 Venture Partners</b> (co-leads, US); BlackRock, HarbourVest, Radical; Canadian participants BDC (Thrive), EDC, TELUS Global Ventures, BMO Global Asset Management. Robotaxi deal commits <b>25,000+ Waabi-powered vehicles exclusively to Uber's platform</b>.</div>
+      </div>
+      <div class="capitem term">
+        <div class="d">2026 · Private, Toronto-HQ'd</div>
+        <div class="r">Total raised <span class="a">~US$1.28B</span></div>
+        <div class="i">~300 staff at 440 Bathurst St.; Volvo VNL Autonomous truck integrates the Waabi Driver. No public listing, and no publicly disclosed founder-control structure.</div>
+      </div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="journey"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 02 · THE DEFINING MOMENT ============ -->
+<section class="band alt tight" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> The defining moment</div>
+    <div class="moment rv d1">
+      <div class="mt">The record round — kept in Toronto, led from abroad.</div>
+      <div class="mw">The <b>January 2026 Series C</b> — a US$750M equity round plus ~US$250M in milestone capital from Uber — was claimed as the <b>largest-ever Canadian tech fundraise</b>, and Waabi stayed headquartered in Toronto. Yet its two co-leads (Khosla, G2) are US funds, its largest financial cheque came from BlackRock, and its commercialization channels are foreign-controlled: robotaxis run <b>exclusively on Uber's platform</b>, and the truck is <b>Volvo's</b>. Canadian institutions — BDC, EDC, OMERS, BMO, TELUS — were on every round, but only ever as participants.</div>
+      <div class="ms"><b>Why it mattered:</b> Waabi is, so far, a retention success — a globally significant deep-tech company founded, headquartered and scaled in Toronto. But the retention is <b>founder-dependent and not yet structurally locked in</b>: the company is private, foreign capital leads its financing, and its value chain routes through foreign strategics. The decisive test is the next financing or exit.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="moment"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 03 · THE POLICY LENS ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> The policy lens</div>
+    <h2 class="rv d1">Show up early, then lead the round.</h2>
+    <p class="lede rv d1">Waabi's domestic institutions did the hard part — they backed a frontier deep-tech company at the earliest stage. The unmet step is leading, not following, and locking retention in structurally.</p>
+    <div class="evlist">
+      <div class="evrow rv d1"><div class="et">Returnee founder &amp; talent magnet <span class="es">ecosystem-replicable</span></div><div class="ed">Urtasun built Waabi <em>in</em> Toronto, anchored to the U&nbsp;of&nbsp;T / Vector talent base. Sustained Vector / U&nbsp;of&nbsp;T funding and retention policy keeps the talent pipeline that originates such companies.</div></div>
+      <div class="evrow rv d1"><div class="et">Domestic capital follows, never leads <span class="es">the core gap</span></div><div class="ed">BDC, EDC, OMERS, BMO and TELUS joined every round but ceded lead-investor role — and its pricing power — to US funds. Structures to <b>lead</b> large patient-capital rounds are <b>Lever ① Supply</b>.</div></div>
+      <div class="evrow rv d2"><div class="et">No governance moat / undecided exit <span class="es">the Shopify gap</span></div><div class="ed">No publicly disclosed founder-control or dual-class structure; listing/exit path undecided. Founder-control governance and a TSX-inclusive path are <b>Lever ③ Retention</b>.</div></div>
+      <div class="evrow rv d2"><div class="et">Foreign-controlled commercial channels <span class="es">beyond securities policy</span></div><div class="ed">Uber's robotaxi platform and Volvo's trucks route the value chain through foreign corporates and raise acquisition optionality. Any control transaction sits with federal investment review (ICA), not a provincial lever.</div></div>
+    </div>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="../recommendations.html"><div class="n">LEVER ① + ③ · SUPPLY &amp; RETENTION</div><div><div class="t">Lead the cheque, then lock the domicile</div><div class="d">Domestic capital that anchors deep-tech rounds instead of following, plus founder-control governance and a TSX-inclusive path that make staying the rational choice.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · REPLICABILITY VERDICT ============ -->
+<section class="band" data-rev>
+  <div class="wrap narrow">
+    <div class="kicker rv"><span class="l">04</span> Replicability verdict</div>
+    <h2 class="rv d1">A retention success — so far, and not yet locked in.</h2>
+    <div class="vbox rv d1">
+      <span class="vb">Stayed</span>
+      <div class="vh">Originated and kept at home — but the next round is the real test.</div>
+      <div class="vd">Waabi is a genuine win: a returnee founder built a globally competitive deep-tech company <b>in Toronto</b> and kept it there through ~US$1.28B of financing, with real Canadian institutional participation. But it is <b>private, US-led, and channel-dependent on foreign strategics</b>, with no disclosed governance moat. The replicable lessons are upstream — domestic capital that <em>leads</em> deep-tech rounds, and retention structures that survive the next financing or exit.</div>
+    </div>
+    <div class="pull rv d2" style="margin-top:34px">
+      <div class="q">Canada originated and kept the company. It has not yet been the one leading the cheque.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="verdict"><span class="o"></span>source</a>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="../champions.html"><div class="n">← BACK</div><div><div class="t">The roster</div><div class="d">All ~34 champions, sorted by outcome.</div></div></a>
+      <a class="nextrow rv d1" href="clearpath.html"><div class="n">MIRROR · ACQUIRED</div><div><div class="t">Clearpath Robotics</div><div class="d">The robotics mirror — Waabi stayed (so far); Clearpath, the other Ontario robotics champion, was acquired by a US strategic.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">Case study · Waabi</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="../methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">WAABI · CASE STUDY · STAYED · static-first · opens from file:// · fully readable offline</p>
+</footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<script>
+window.PROV = {
+  scale:{
+    t:"Scale — the record round",
+    meta:'<b>Waabi case study</b> (Overview; Current Status).<ul>'
+      +'<li><b>US$750M Series C</b> (Jan 28 2026) + ~US$250M milestone capital from Uber — reported the largest-ever Canadian tech fundraise; ~US$1B combined.</li>'
+      +'<li><b>~US$1.28B</b> (~C$1.84B) raised life-to-date across three priced rounds; <b>~US$3B</b> reported valuation (company declined to confirm on closing).</li>'
+      +'<li>Toronto HQ (440 Bathurst St.); ~300 staff; founder Raquel Urtasun (ex-Uber ATG, Vector co-founder).</li>'
+      +'</ul>Sources cited: Waabi (Jan 2026); BetaKit (Jan 2026); Globe and Mail (Dec 2025); Tracxn. Private valuation is reported/unconfirmed.',
+    conf:"medium"
+  },
+  journey:{
+    t:"The capital journey",
+    meta:'<b>Waabi case study</b> — Capital Raising Journey (~US$1.28B).<ul>'
+      +'<li><b>Series A (Jun 2021):</b> US$83.5M, Khosla Ventures lead — reported the largest Canadian Series A at the time; Uber, OMERS Ventures, BDC.</li>'
+      +'<li><b>Series B (Jun 2024):</b> US$200M, Uber + Khosla co-lead; NVIDIA, Volvo, Porsche SE, Ingka (IKEA); BDC, EDC.</li>'
+      +'<li><b>Series C (Jan 28 2026):</b> US$750M + ~US$250M Uber; Khosla + G2 co-lead; BlackRock, HarbourVest; BDC, EDC, TELUS, BMO GAM. 25,000+ robotaxis exclusive to Uber.</li>'
+      +'</ul>Sources cited: GlobeNewswire (2021); Waabi / Private Capital Journal (2024); Waabi / BetaKit / TechCrunch (2026); PitchBook.',
+    conf:"high"
+  },
+  moment:{
+    t:"The record round (Jan 2026)",
+    meta:'<b>Waabi case study</b> — The Capital Story (Strategic &amp; Foreign Capital).<ul>'
+      +'<li>Kept HQ in Toronto through the largest-ever Canadian tech raise — but both Series C co-leads (Khosla, G2) are US funds and the largest financial cheque came from BlackRock.</li>'
+      +'<li>Commercial channels foreign-controlled: robotaxis exclusive to Uber\'s platform; the truck is Volvo\'s (VNL Autonomous).</li>'
+      +'<li>Canadian institutions (BDC, EDC, OMERS, BMO, TELUS) participated in every round but never led. Retention is founder-dependent, not structurally locked.</li>'
+      +'</ul>An analytic reading grounded in the study\'s cap-table detail.',
+    conf:"medium"
+  },
+  verdict:{
+    t:"Replicability verdict",
+    meta:'<b>Waabi case study</b> — Retention / Talent Assessment, cross-referenced to <b>Pension &amp; Institutional Capital Mobilization</b>, <b>Flight to the US</b> and <b>Robotics &amp; Physical AI</b> (vault). A retention success so far, but private, US-led, and channel-dependent on foreign strategics, with no disclosed governance moat. Replicable levers: domestic capital that <em>leads</em> deep-tech rounds (Lever ①) and founder-control / TSX-inclusive retention structures (Lever ③). An analytic assessment.',
+    conf:"medium"
+  }
+};
+</script>
+<script src="../app.js"></script>
+</body>
+</html>

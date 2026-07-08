@@ -1,0 +1,950 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>International Comparators Explorer · Scaling &amp; Retaining Canada's Champions</title>
+<meta name="description" content="An interactive international-comparators explorer for Ontario's capital-markets research report. Measure Canada against 14 peer economies across seven capital-markets and innovation dimensions — VC intensity, public-market depth, R&amp;D, innovation rank, corporate tax, and GDP.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ============================================================================
+   PAGE-SCOPED COMPONENTS — comparators.html (token-driven only; no literal hex).
+   1. .cmppick / .jchip — jurisdiction picker chips (Canada is locked/pinned on).
+      Reuses the exchip visual register from the global-exchanges explorer.
+   2. .dimblock / .dimhead / .dimsub / .dimdir — the per-dimension chart heading.
+   3. .rk-lab / .rk-badge — text classes for the "where Canada ranks" strip SVG.
+   4. .dtable — the always-present full reference table (static-first backbone).
+   5. .caveat / .tag-new — carried caveat block + the "new section" flag
+      (both mirror the definitions used on global-exchanges.html / what-works.html).
+   Comparator series cycle through the family data palette (cyan / azure / lavender),
+   never violet — violet is reserved for Canada, the subject (gradient + glow).
+   ============================================================================ */
+.tag-new{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bg);background:var(--accent);border-radius:5px;padding:3px 8px;vertical-align:middle;margin-left:12px;box-shadow:var(--gfx-glow-soft)}
+html[data-theme="light"] .tag-new{color:var(--bg);background:var(--accent-deep)}
+
+.cmppick{margin:34px 0 6px}
+.cmppick .plab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:0 0 12px}
+.jrow{display:flex;flex-wrap:wrap;gap:9px}
+.jchip{font-family:var(--mono);font-size:12px;letter-spacing:.03em;color:var(--body);background:transparent;border:1px solid var(--hair-strong);border-radius:7px;padding:7px 13px;cursor:pointer;transition:background .15s,border-color .15s,color .15s;user-select:none}
+.jchip:hover{border-color:rgba(var(--accent-rgb),.5);color:var(--ink)}
+.jchip[aria-pressed="true"]{color:var(--ink);border-color:var(--hair-strong);background:rgba(172,175,211,.08)}
+.jchip .sw{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:0;margin-right:7px;opacity:.25;background:var(--chipcol,var(--steel))}
+.jchip[aria-pressed="true"] .sw{opacity:1}
+.jchip.locked{border-color:rgba(var(--accent-rgb),.55);background:rgba(var(--accent-rgb),.10);color:var(--accent-txt);cursor:default}
+.jchip.locked .sw{opacity:1;background:var(--accent)}
+.jchip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pickhint{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.03em;margin-top:12px;min-height:16px}
+.pickhint b{color:var(--accent-txt);font-weight:500}
+
+.dimblock{margin-top:48px;padding-top:30px;border-top:1px solid var(--hair)}
+.dimblock:first-of-type{border-top:none;padding-top:0}
+.dimhead{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(19px,2.4vw,26px);letter-spacing:-.015em}
+.dimsub{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;margin-top:9px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline}
+.dimdir{color:var(--accent-txt)}
+.dimblock .svgwrap{margin-top:20px}
+
+.rk-lab{font-family:var(--mono);font-size:12.5px;fill:var(--body)}
+.rk-badge{font-family:var(--mono);font-size:12.5px;fill:var(--gann-val);font-weight:700;font-variant-numeric:tabular-nums}
+
+.dtable{width:100%;border-collapse:collapse;margin-top:26px;font-family:var(--mono);font-size:12.5px}
+.dtable caption{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:left;margin-bottom:14px}
+.dtable th,.dtable td{text-align:right;padding:9px 10px;border-bottom:1px solid var(--hair);color:var(--body);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dtable thead th{color:var(--ink);font-weight:500;border-bottom:1px solid var(--hair-strong);letter-spacing:.02em;text-align:right}
+.dtable thead th:first-child,.dtable tbody th{text-align:left}
+.dtable tbody th{color:var(--body);font-weight:400}
+.dtable tr .subj{color:var(--accent-txt);font-weight:700}
+.dtable tbody tr:hover td,.dtable tbody tr:hover th{background:rgba(var(--accent-rgb),.05)}
+
+.caveat{font-size:13px;color:var(--body);line-height:1.6;margin-top:22px;max-width:78ch;border-left:2px solid var(--hair-strong);padding-left:16px}
+.caveat b{color:var(--ink)}
+.caveat + .caveat{margin-top:12px}
+.dashcap{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.04em;margin-top:16px;line-height:1.6;max-width:78ch}
+.dashcap b{color:var(--body);font-weight:500}
+
+/* 6. Overview ALL-15 view — tight ranked-bar label/value text (10.5px, ~14px pitch).
+      Distinct, denser instance than the shared .hbar-lab/.hbar-val (12.5px, 4-row focus). */
+.abar-lab{font-family:var(--mono);font-size:10.5px;fill:var(--body)}
+.abar-lab.subj{fill:var(--gann-val);font-weight:700}
+.abar-val{font-family:var(--mono);font-size:10.5px;fill:var(--body);font-variant-numeric:tabular-nums}
+.abar-val.subj{fill:var(--gann-val);font-weight:700}
+
+/* 7. Mode row — "All jurisdictions" (default) vs. focus-on-a-peer. */
+.moderow{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 14px}
+.modesep{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.jchip.modeall .sw{opacity:.3;background:var(--accent)}
+.jchip.modeall[aria-pressed="true"]{color:var(--accent-txt);border-color:rgba(var(--accent-rgb),.55);background:rgba(var(--accent-rgb),.10)}
+.jchip.modeall[aria-pressed="true"] .sw{opacity:1;background:var(--accent)}
+</style>
+</head>
+<body data-accent="violet">
+<div class="prog" id="prog"></div>
+
+<!-- ====== SHARED SHELL TOPBAR (Mission Control; 10-link grouped nav, as-is) ====== -->
+<div class="topbar">
+  <a class="tb-l brand" href="index.html"><span class="dot"></span><b>Canada's Champions</b></a>
+  <span class="tb-r">
+        <span class="links">
+      <a href="index.html">Overview</a>
+      <a href="growth-prize.html">Prize</a>
+      <a href="strengths.html">Strengths</a>
+      <a href="growth-sectors.html">Sectors</a>
+      <a href="public-markets.html" title="Public Markets">Markets</a>
+      <a href="financing-gap.html" title="The Financing Gap">Gap</a>
+      <a href="what-works.html" title="What Works Abroad">Abroad</a>
+      <a href="comparators.html" class="on" title="The Comparators">Compare</a>
+      <a href="champions.html">Champions</a>
+      <a href="recommendations.html" title="Recommendations">Recs</a>
+      <a href="methodology.html" title="Methodology &amp; Sources">Method</a>
+      <span class="tb-div" aria-hidden="true"></span>
+      <span class="tb-grouplab">Data</span>
+      <a href="exchanges.html" title="The Exchanges — interactive">Exchanges</a>
+      <a href="global-exchanges.html" title="Global Exchanges Explorer">Global</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› comparators · 14 peer economies + Canada · 7 capital-markets &amp; innovation dimensions"></div>
+    <div class="cat rv">◇ Interactive · international comparison <span class="tag-new" title="Newly built page — for Carlo's review">NEW — for review</span></div>
+    <h1 class="rv d1">Canada against the field.</h1>
+    <div class="tag rv d1">The vault's <em>International Comparator Data Compendium</em> benchmarks Canada against fourteen peer economies. This explorer opens on the whole field — <strong>all fifteen economies ranked</strong> on each of seven dimensions (venture capital, public-market depth, R&amp;D, innovation rank, corporate tax and the size of the economy itself) — then lets you focus on any peers you want to read closely. One diagnosis keeps recurring: <strong>Canada builds the capability but captures too little of the return.</strong></div>
+    <div class="sigwrap">
+      <div class="signum rv d1">13 → 20</div>
+      <div>
+        <div class="sigpct rv d2">Canada's innovation rank: inputs vs. outputs (GII 2025)</div>
+        <div class="siglab rv d2">Canada ranks <strong>13th in innovation inputs</strong> but only <strong>20th in innovation outputs</strong> — a seven-rank efficiency gap. It invests in research like a top-tier nation and commercialises it like a nation in the 20s. That gap is the through-line of every comparison below.</div>
+        <a href="methodology.html#register" class="provpill rv d2" data-prov="gii"><span class="o"></span>data &amp; method</a>
+      </div>
+    </div>
+    <div class="scrollcue rv d3"><span class="arr"></span>read the full field</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE EXPLORER ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> The explorer</div>
+    <h2 class="rv d1">The whole field first — then drill down.</h2>
+    <p class="lede rv d1">By default every dimension shows <strong>all fifteen economies at once</strong>, ranked so the strongest position sits on top — <em>Canada is always the violet bar, wherever it lands; the rest fade by rank in the page accent.</em> For corporate tax and innovation rank, where lower is better, the ranking is inverted; the printed figure is always the raw number. Want a closer read? <strong>Select any peer</strong> to switch every chart into a focused Canada-vs-peers comparison (up to three peers); press <strong>All jurisdictions</strong> to return to the overview.</p>
+
+    <!-- JURISDICTION PICKER -->
+    <div class="cmppick rv d1">
+      <div class="plab">View <span style="color:var(--dim);text-transform:none;letter-spacing:.02em">(all fifteen ranked, or focus on Canada + up to three peers)</span></div>
+      <div class="moderow">
+        <button type="button" class="jchip modeall" id="allBtn" aria-pressed="true" title="Show all fifteen economies ranked on every dimension"><span class="sw"></span>All jurisdictions</button>
+        <span class="modesep">or focus on a peer →</span>
+      </div>
+      <div class="jrow" id="jrow" role="group" aria-label="Choose jurisdictions to focus on">
+        <button type="button" class="jchip locked" data-jur="CA" aria-pressed="true" aria-disabled="true"><span class="sw"></span>Canada</button>
+        <button type="button" class="jchip" data-jur="US" aria-pressed="false"><span class="sw"></span>United States</button>
+        <button type="button" class="jchip" data-jur="UK" aria-pressed="false"><span class="sw"></span>United Kingdom</button>
+        <button type="button" class="jchip" data-jur="SE" aria-pressed="false"><span class="sw"></span>Sweden</button>
+        <button type="button" class="jchip" data-jur="IL" aria-pressed="false"><span class="sw"></span>Israel</button>
+        <button type="button" class="jchip" data-jur="SG" aria-pressed="false"><span class="sw"></span>Singapore</button>
+        <button type="button" class="jchip" data-jur="KR" aria-pressed="false"><span class="sw"></span>South Korea</button>
+        <button type="button" class="jchip" data-jur="NL" aria-pressed="false"><span class="sw"></span>Netherlands</button>
+        <button type="button" class="jchip" data-jur="DK" aria-pressed="false"><span class="sw"></span>Denmark</button>
+        <button type="button" class="jchip" data-jur="FI" aria-pressed="false"><span class="sw"></span>Finland</button>
+        <button type="button" class="jchip" data-jur="AU" aria-pressed="false"><span class="sw"></span>Australia</button>
+        <button type="button" class="jchip" data-jur="FR" aria-pressed="false"><span class="sw"></span>France</button>
+        <button type="button" class="jchip" data-jur="DE" aria-pressed="false"><span class="sw"></span>Germany</button>
+        <button type="button" class="jchip" data-jur="JP" aria-pressed="false"><span class="sw"></span>Japan</button>
+        <button type="button" class="jchip" data-jur="TW" aria-pressed="false"><span class="sw"></span>Taiwan</button>
+      </div>
+      <div class="pickhint" id="pickhint">Showing all 15 economies, ranked on every dimension — Canada is the violet bar. Select a peer to focus the comparison.</div>
+    </div>
+
+    <!-- ==== DIMENSION 1: VC / GDP ==== -->
+    <div class="dimblock rv d2">
+      <div class="dimhead">Venture capital, as a share of GDP</div>
+      <div class="dimsub"><span>% of GDP · 2024 (approx.)</span><span class="dimdir">▲ higher is better</span><span>Compendium §3.1</span></div>
+      <div class="svgwrap" id="wrap-vcgdp" role="img" aria-label="Venture capital as a share of GDP, 2024, all 15 economies ranked, higher is better. Israel leads at about 2.0 to 2.3 percent; the United States 0.7 percent; South Korea 0.5 percent. Canada is 6th at 0.35 percent — mid-pack. Finland is lowest at 0.08 percent.">
+        <svg viewBox="0 0 680 220" id="chart-vcgdp">
+<defs><linearGradient id="g_vcgdp" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+<rect x="120" y="7.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="7.5" width="508" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="15.4" class="abar-lab">Israel</text><text x="672" y="15.4" text-anchor="end" class="abar-val">~2.0–2.3%</text>
+<rect x="120" y="21.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="21.5" width="152.2" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="29.4" class="abar-lab">United States</text><text x="672" y="29.4" text-anchor="end" class="abar-val">0.7%</text>
+<rect x="120" y="35.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="35.5" width="103.1" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="43.4" class="abar-lab">South Korea</text><text x="672" y="43.4" text-anchor="end" class="abar-val">0.5%</text>
+<rect x="120" y="49.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="49.5" width="78.5" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="57.4" class="abar-lab">Singapore</text><text x="672" y="57.4" text-anchor="end" class="abar-val">0.4%</text>
+<rect x="120" y="63.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="63.5" width="68.7" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="71.4" class="abar-lab">Taiwan</text><text x="672" y="71.4" text-anchor="end" class="abar-val">0.36%</text>
+<rect x="120" y="77.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="77.5" width="66.3" height="9" rx="2" fill="url(#g_vcgdp)" class="subj-glow"/>
+<text x="0" y="85.4" class="abar-lab subj">Canada</text><text x="672" y="85.4" text-anchor="end" class="abar-val subj">0.35%</text>
+<rect x="120" y="91.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="91.5" width="54" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="99.4" class="abar-lab">Sweden</text><text x="672" y="99.4" text-anchor="end" class="abar-val">0.3%</text>
+<rect x="120" y="105.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="105.5" width="49.1" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="113.4" class="abar-lab">United Kingdom</text><text x="672" y="113.4" text-anchor="end" class="abar-val">0.28%</text>
+<rect x="120" y="119.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="119.5" width="41.7" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="127.4" class="abar-lab">Netherlands</text><text x="672" y="127.4" text-anchor="end" class="abar-val">~0.20–0.30%</text>
+<rect x="120" y="133.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="133.5" width="25.4" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="141.4" class="abar-lab">Denmark</text><text x="672" y="141.4" text-anchor="end" class="abar-val">0.14%</text>
+<rect x="120" y="147.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="147.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="155.4" class="abar-lab">France</text><text x="672" y="155.4" text-anchor="end" class="abar-val">0.14%</text>
+<rect x="120" y="161.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="161.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="169.4" class="abar-lab">Japan</text><text x="672" y="169.4" text-anchor="end" class="abar-val">0.12%</text>
+<rect x="120" y="175.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="175.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="183.4" class="abar-lab">Australia</text><text x="672" y="183.4" text-anchor="end" class="abar-val">0.1%</text>
+<rect x="120" y="189.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="189.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="197.4" class="abar-lab">Germany</text><text x="672" y="197.4" text-anchor="end" class="abar-val">0.09%</text>
+<rect x="120" y="203.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="203.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="211.4" class="abar-lab">Finland</text><text x="672" y="211.4" text-anchor="end" class="abar-val">0.08%</text>
+        </svg>
+      </div>
+      <a href="methodology.html#register" class="provpill" data-prov="vcgdp"><span class="o"></span>data &amp; method</a>
+    </div>
+
+    <!-- ==== DIMENSION 2: EQUITY SHARE ==== -->
+    <div class="dimblock rv d2">
+      <div class="dimhead">Share of global equity market capitalisation</div>
+      <div class="dimsub"><span>% of global equity · ~2025</span><span class="dimdir">▲ higher is better</span><span>Compendium §2.1</span></div>
+      <div class="svgwrap" id="wrap-equity" role="img" aria-label="Share of global equity market capitalisation, end-2025 basis, all 15 economies ranked, higher is better. The United States leads at about 51 percent; Japan 5.7 percent. Canada is 3rd at 3.5 percent on the end-2025 basis. By mid-2026 the reading is basis-dependent: on the country-level basis reported by Bloomberg, AI-driven Taiwan and Korea passed Canada in late April and early May 2026, moving it to about 5th; on the WFE exchange-level basis Canada's TMX still narrowly leads Korea and sits ahead of Taiwan, though the gap has collapsed to near-parity. Aggregate size, not per-capita depth: the top 25 TSX names hold 51.8 percent of Canada's operating market cap.">
+        <svg viewBox="0 0 680 220" id="chart-equity">
+<defs><linearGradient id="g_equity" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+<rect x="120" y="7.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="7.5" width="508" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="15.4" class="abar-lab">United States</text><text x="672" y="15.4" text-anchor="end" class="abar-val">51%</text>
+<rect x="120" y="21.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="21.5" width="54.1" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="29.4" class="abar-lab">Japan</text><text x="672" y="29.4" text-anchor="end" class="abar-val">5.7%</text>
+<rect x="120" y="35.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="35.5" width="32.1" height="9" rx="2" fill="url(#g_equity)" class="subj-glow"/>
+<text x="0" y="43.4" class="abar-lab subj">Canada</text><text x="672" y="43.4" text-anchor="end" class="abar-val subj">3.5%</text>
+<rect x="120" y="49.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="49.5" width="25.4" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="57.4" class="abar-lab">Taiwan</text><text x="672" y="57.4" text-anchor="end" class="abar-val">2.8%</text>
+<rect x="120" y="63.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="63.5" width="25.4" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="71.4" class="abar-lab">France</text><text x="672" y="71.4" text-anchor="end" class="abar-val">2.7%</text>
+<rect x="120" y="77.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="77.5" width="25.4" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="85.4" class="abar-lab">United Kingdom</text><text x="672" y="85.4" text-anchor="end" class="abar-val">2.6%</text>
+<rect x="120" y="91.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="91.5" width="25.4" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="99.4" class="abar-lab">South Korea</text><text x="672" y="99.4" text-anchor="end" class="abar-val">2.2%</text>
+<rect x="120" y="105.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="105.5" width="25.4" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="113.4" class="abar-lab">Germany</text><text x="672" y="113.4" text-anchor="end" class="abar-val">2.2%</text>
+<rect x="120" y="119.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="119.5" width="25.4" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="127.4" class="abar-lab">Australia</text><text x="672" y="127.4" text-anchor="end" class="abar-val">1.9%</text>
+<rect x="120" y="133.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="133.5" width="25.4" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="141.4" class="abar-lab">Netherlands</text><text x="672" y="141.4" text-anchor="end" class="abar-val">1.3%</text>
+<rect x="120" y="147.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="147.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="155.4" class="abar-lab">Sweden</text><text x="672" y="155.4" text-anchor="end" class="abar-val">0.9%</text>
+<rect x="120" y="161.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="161.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="169.4" class="abar-lab">Singapore</text><text x="672" y="169.4" text-anchor="end" class="abar-val">0.7%</text>
+<rect x="120" y="175.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="175.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="183.4" class="abar-lab">Denmark</text><text x="672" y="183.4" text-anchor="end" class="abar-val">0.5%</text>
+<rect x="120" y="189.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="189.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="197.4" class="abar-lab">Israel</text><text x="672" y="197.4" text-anchor="end" class="abar-val">0.4%</text>
+<rect x="120" y="203.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="203.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="211.4" class="abar-lab">Finland</text><text x="672" y="211.4" text-anchor="end" class="abar-val">0.3%</text>
+        </svg>
+      </div>
+      <a href="methodology.html#register" class="provpill" data-prov="equity"><span class="o"></span>data &amp; method</a>
+    </div>
+
+    <!-- ==== DIMENSION 3: R&D INTENSITY ==== -->
+    <div class="dimblock rv d2">
+      <div class="dimhead">R&amp;D intensity (GERD as % of GDP)</div>
+      <div class="dimsub"><span>% of GDP · 2023</span><span class="dimdir">▲ higher is better</span><span>Compendium §5.2</span></div>
+      <div class="svgwrap" id="wrap-rd" role="img" aria-label="Gross domestic R&amp;D expenditure as a share of GDP, 2023, all 15 economies ranked, higher is better. Israel leads at 6.35 percent, South Korea 4.96 percent, Taiwan 3.8 percent, Sweden 3.6 percent. Canada is 14th at 1.7 percent — second-lowest in the G7 and near the bottom of the set; Australia is last, also 1.7 percent.">
+        <svg viewBox="0 0 680 220" id="chart-rd">
+<defs><linearGradient id="g_rd" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+<rect x="120" y="7.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="7.5" width="508" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="15.4" class="abar-lab">Israel</text><text x="672" y="15.4" text-anchor="end" class="abar-val">6.35%</text>
+<rect x="120" y="21.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="21.5" width="356.1" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="29.4" class="abar-lab">South Korea</text><text x="672" y="29.4" text-anchor="end" class="abar-val">4.96%</text>
+<rect x="120" y="35.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="35.5" width="229.4" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="43.4" class="abar-lab">Taiwan</text><text x="672" y="43.4" text-anchor="end" class="abar-val">3.8%</text>
+<rect x="120" y="49.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="49.5" width="207.6" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="57.4" class="abar-lab">Sweden</text><text x="672" y="57.4" text-anchor="end" class="abar-val">3.6%</text>
+<rect x="120" y="63.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="63.5" width="191.2" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="71.4" class="abar-lab">United States</text><text x="672" y="71.4" text-anchor="end" class="abar-val">3.45%</text>
+<rect x="120" y="77.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="77.5" width="190.1" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="85.4" class="abar-lab">Japan</text><text x="672" y="85.4" text-anchor="end" class="abar-val">3.44%</text>
+<rect x="120" y="91.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="91.5" width="154" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="99.4" class="abar-lab">Germany</text><text x="672" y="99.4" text-anchor="end" class="abar-val">3.11%</text>
+<rect x="120" y="105.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="105.5" width="151.9" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="113.4" class="abar-lab">Finland</text><text x="672" y="113.4" text-anchor="end" class="abar-val">3.09%</text>
+<rect x="120" y="119.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="119.5" width="140.9" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="127.4" class="abar-lab">Denmark</text><text x="672" y="127.4" text-anchor="end" class="abar-val">2.99%</text>
+<rect x="120" y="133.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="133.5" width="109.2" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="141.4" class="abar-lab">United Kingdom</text><text x="672" y="141.4" text-anchor="end" class="abar-val">2.7%</text>
+<rect x="120" y="147.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="147.5" width="65.5" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="155.4" class="abar-lab">Netherlands</text><text x="672" y="155.4" text-anchor="end" class="abar-val">2.3%</text>
+<rect x="120" y="161.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="161.5" width="54.6" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="169.4" class="abar-lab">France</text><text x="672" y="169.4" text-anchor="end" class="abar-val">2.2%</text>
+<rect x="120" y="175.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="175.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="183.4" class="abar-lab">Singapore</text><text x="672" y="183.4" text-anchor="end" class="abar-val">1.85%</text>
+<rect x="120" y="189.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="189.5" width="25.4" height="9" rx="2" fill="url(#g_rd)" class="subj-glow"/>
+<text x="0" y="197.4" class="abar-lab subj">Canada</text><text x="672" y="197.4" text-anchor="end" class="abar-val subj">1.7%</text>
+<rect x="120" y="203.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="203.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="211.4" class="abar-lab">Australia</text><text x="672" y="211.4" text-anchor="end" class="abar-val">1.7%</text>
+        </svg>
+      </div>
+      <a href="methodology.html#register" class="provpill" data-prov="rd"><span class="o"></span>data &amp; method</a>
+    </div>
+
+    <!-- ==== DIMENSION 4: GII RANK ==== -->
+    <div class="dimblock rv d2">
+      <div class="dimhead">Global Innovation Index — overall rank</div>
+      <div class="dimsub"><span>WIPO GII 2025 · rank of ~130 economies</span><span class="dimdir">▼ lower is better</span><span>Compendium §5.1</span></div>
+      <div class="svgwrap" id="wrap-gii" role="img" aria-label="Global Innovation Index 2025 overall rank, all ranked economies, lower is better. Sweden 2nd, the United States 3rd, South Korea 4th, Singapore 5th, the United Kingdom 6th. Canada is 13th of the 14 ranked, trailing every core comparator except Australia at 22nd. Taiwan's rank is unconfirmed and shown as not available.">
+        <svg viewBox="0 0 680 220" id="chart-gii">
+<defs><linearGradient id="g_gii" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+<rect x="120" y="7.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="7.5" width="508" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="15.4" class="abar-lab">Sweden</text><text x="672" y="15.4" text-anchor="end" class="abar-val">2</text>
+<rect x="120" y="21.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="21.5" width="482.6" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="29.4" class="abar-lab">United States</text><text x="672" y="29.4" text-anchor="end" class="abar-val">3</text>
+<rect x="120" y="35.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="35.5" width="457.2" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="43.4" class="abar-lab">South Korea</text><text x="672" y="43.4" text-anchor="end" class="abar-val">4</text>
+<rect x="120" y="49.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="49.5" width="431.8" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="57.4" class="abar-lab">Singapore</text><text x="672" y="57.4" text-anchor="end" class="abar-val">5</text>
+<rect x="120" y="63.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="63.5" width="406.4" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="71.4" class="abar-lab">United Kingdom</text><text x="672" y="71.4" text-anchor="end" class="abar-val">6</text>
+<rect x="120" y="77.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="77.5" width="381" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="85.4" class="abar-lab">Finland</text><text x="672" y="85.4" text-anchor="end" class="abar-val">7</text>
+<rect x="120" y="91.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="91.5" width="355.6" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="99.4" class="abar-lab">Netherlands</text><text x="672" y="99.4" text-anchor="end" class="abar-val">8</text>
+<rect x="120" y="105.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="105.5" width="330.2" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="113.4" class="abar-lab">Denmark</text><text x="672" y="113.4" text-anchor="end" class="abar-val">9</text>
+<rect x="120" y="119.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="119.5" width="279.4" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="127.4" class="abar-lab">Germany</text><text x="672" y="127.4" text-anchor="end" class="abar-val">11</text>
+<rect x="120" y="133.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="133.5" width="254" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="141.4" class="abar-lab">Japan</text><text x="672" y="141.4" text-anchor="end" class="abar-val">12</text>
+<rect x="120" y="147.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="147.5" width="228.6" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="155.4" class="abar-lab">France</text><text x="672" y="155.4" text-anchor="end" class="abar-val">13</text>
+<rect x="120" y="161.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="161.5" width="203.2" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="169.4" class="abar-lab">Israel</text><text x="672" y="169.4" text-anchor="end" class="abar-val">14</text>
+<rect x="120" y="175.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="175.5" width="127" height="9" rx="2" fill="url(#g_gii)" class="subj-glow"/>
+<text x="0" y="183.4" class="abar-lab subj">Canada</text><text x="672" y="183.4" text-anchor="end" class="abar-val subj">17</text>
+<rect x="120" y="189.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="189.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="197.4" class="abar-lab">Australia</text><text x="672" y="197.4" text-anchor="end" class="abar-val">22</text>
+<rect x="120" y="203.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<text x="126" y="211.4" class="abar-val" opacity=".55">n/a</text>
+<text x="0" y="211.4" class="abar-lab">Taiwan</text><text x="672" y="211.4" text-anchor="end" class="abar-val">n/a</text>
+        </svg>
+      </div>
+      <a href="methodology.html#register" class="provpill" data-prov="gii"><span class="o"></span>data &amp; method</a>
+    </div>
+
+    <!-- ==== DIMENSION 5: CORPORATE TAX ==== -->
+    <div class="dimblock rv d2">
+      <div class="dimhead">Combined corporate income tax rate</div>
+      <div class="dimsub"><span>statutory, national + sub-national · 2025</span><span class="dimdir">▼ lower is better (competitiveness)</span><span>Compendium §10.1</span></div>
+      <div class="svgwrap" id="wrap-corptax" role="img" aria-label="Combined corporate income tax rate, 2025, all 15 economies ranked, lower is more competitive. Singapore is lowest at 17 percent; Finland and Taiwan 20 percent; Sweden 20.6 percent. Canada is 12th at 26.5 percent. Australia is highest at 30 percent.">
+        <svg viewBox="0 0 680 220" id="chart-corptax">
+<defs><linearGradient id="g_corptax" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+<rect x="120" y="7.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="7.5" width="508" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="15.4" class="abar-lab">Singapore</text><text x="672" y="15.4" text-anchor="end" class="abar-val">17%</text>
+<rect x="120" y="21.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="21.5" width="390.8" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="29.4" class="abar-lab">Finland</text><text x="672" y="29.4" text-anchor="end" class="abar-val">20%</text>
+<rect x="120" y="35.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="35.5" width="390.8" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="43.4" class="abar-lab">Taiwan</text><text x="672" y="43.4" text-anchor="end" class="abar-val">20%</text>
+<rect x="120" y="49.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="49.5" width="367.3" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="57.4" class="abar-lab">Sweden</text><text x="672" y="57.4" text-anchor="end" class="abar-val">20.6%</text>
+<rect x="120" y="63.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="63.5" width="312.6" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="71.4" class="abar-lab">Denmark</text><text x="672" y="71.4" text-anchor="end" class="abar-val">22%</text>
+<rect x="120" y="77.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="77.5" width="273.5" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="85.4" class="abar-lab">Israel</text><text x="672" y="85.4" text-anchor="end" class="abar-val">23%</text>
+<rect x="120" y="91.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="91.5" width="226.6" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="99.4" class="abar-lab">South Korea</text><text x="672" y="99.4" text-anchor="end" class="abar-val">24.2%</text>
+<rect x="120" y="105.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="105.5" width="195.4" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="113.4" class="abar-lab">United Kingdom</text><text x="672" y="113.4" text-anchor="end" class="abar-val">25%</text>
+<rect x="120" y="119.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="119.5" width="195.4" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="127.4" class="abar-lab">France</text><text x="672" y="127.4" text-anchor="end" class="abar-val">25.0% (base)</text>
+<rect x="120" y="133.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="133.5" width="165.3" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="141.4" class="abar-lab">United States</text><text x="672" y="141.4" text-anchor="end" class="abar-val">25.77%</text>
+<rect x="120" y="147.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="147.5" width="164.1" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="155.4" class="abar-lab">Netherlands</text><text x="672" y="155.4" text-anchor="end" class="abar-val">25.8%</text>
+<rect x="120" y="161.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="161.5" width="136.8" height="9" rx="2" fill="url(#g_corptax)" class="subj-glow"/>
+<text x="0" y="169.4" class="abar-lab subj">Canada</text><text x="672" y="169.4" text-anchor="end" class="abar-val subj">26.5%</text>
+<rect x="120" y="175.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="175.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="183.4" class="abar-lab">Japan</text><text x="672" y="183.4" text-anchor="end" class="abar-val">29.74%</text>
+<rect x="120" y="189.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="189.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="197.4" class="abar-lab">Germany</text><text x="672" y="197.4" text-anchor="end" class="abar-val">29.83%</text>
+<rect x="120" y="203.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="203.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="211.4" class="abar-lab">Australia</text><text x="672" y="211.4" text-anchor="end" class="abar-val">30%</text>
+        </svg>
+      </div>
+      <a href="methodology.html#register" class="provpill" data-prov="corptax"><span class="o"></span>data &amp; method</a>
+    </div>
+
+    <!-- ==== DIMENSION 6: GDP PER CAPITA ==== -->
+    <div class="dimblock rv d2">
+      <div class="dimhead">GDP per capita</div>
+      <div class="dimsub"><span>nominal US$ · 2024 estimate</span><span class="dimdir">▲ higher is better</span><span>Compendium §1.1</span></div>
+      <div class="svgwrap" id="wrap-gdppc" role="img" aria-label="GDP per capita, nominal US dollars, 2024, all 15 economies ranked, higher is better. Singapore is highest at 91,200 dollars; the United States 83,600; Denmark 71,600; Netherlands 67,500. Canada is 8th at about 54,500 dollars. Taiwan is lowest at 32,600.">
+        <svg viewBox="0 0 680 220" id="chart-gdppc">
+<defs><linearGradient id="g_gdppc" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+<rect x="120" y="7.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="7.5" width="508" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="15.4" class="abar-lab">Singapore</text><text x="672" y="15.4" text-anchor="end" class="abar-val">$91.2k</text>
+<rect x="120" y="21.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="21.5" width="442.1" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="29.4" class="abar-lab">United States</text><text x="672" y="29.4" text-anchor="end" class="abar-val">$83.6k</text>
+<rect x="120" y="35.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="35.5" width="338.1" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="43.4" class="abar-lab">Denmark</text><text x="672" y="43.4" text-anchor="end" class="abar-val">$71.6k</text>
+<rect x="120" y="49.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="49.5" width="302.5" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="57.4" class="abar-lab">Netherlands</text><text x="672" y="57.4" text-anchor="end" class="abar-val">$67.5k</text>
+<rect x="120" y="63.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="63.5" width="263.5" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="71.4" class="abar-lab">Australia</text><text x="672" y="71.4" text-anchor="end" class="abar-val">$63.0k</text>
+<rect x="120" y="77.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="77.5" width="212.4" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="85.4" class="abar-lab">Sweden</text><text x="672" y="85.4" text-anchor="end" class="abar-val">$57.1k</text>
+<rect x="120" y="91.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="91.5" width="201.1" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="99.4" class="abar-lab">Germany</text><text x="672" y="99.4" text-anchor="end" class="abar-val">$55.8k</text>
+<rect x="120" y="105.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="105.5" width="190.1" height="9" rx="2" fill="url(#g_gdppc)" class="subj-glow"/>
+<text x="0" y="113.4" class="abar-lab subj">Canada</text><text x="672" y="113.4" text-anchor="end" class="abar-val subj">$54.5k</text>
+<rect x="120" y="119.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="119.5" width="185.5" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="127.4" class="abar-lab">Israel</text><text x="672" y="127.4" text-anchor="end" class="abar-val">$54.0k</text>
+<rect x="120" y="133.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="133.5" width="180.3" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="141.4" class="abar-lab">Finland</text><text x="672" y="141.4" text-anchor="end" class="abar-val">$53.4k</text>
+<rect x="120" y="147.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="147.5" width="120.5" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="155.4" class="abar-lab">France</text><text x="672" y="155.4" text-anchor="end" class="abar-val">$46.5k</text>
+<rect x="120" y="161.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="161.5" width="61.5" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="169.4" class="abar-lab">United Kingdom</text><text x="672" y="169.4" text-anchor="end" class="abar-val">$39.7k</text>
+<rect x="120" y="175.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="175.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="183.4" class="abar-lab">Japan</text><text x="672" y="183.4" text-anchor="end" class="abar-val">$34.4k</text>
+<rect x="120" y="189.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="189.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="197.4" class="abar-lab">South Korea</text><text x="672" y="197.4" text-anchor="end" class="abar-val">$32.7k</text>
+<rect x="120" y="203.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="203.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="211.4" class="abar-lab">Taiwan</text><text x="672" y="211.4" text-anchor="end" class="abar-val">$32.6k</text>
+        </svg>
+      </div>
+      <a href="methodology.html#register" class="provpill" data-prov="gdppc"><span class="o"></span>data &amp; method</a>
+    </div>
+
+    <!-- ==== DIMENSION 7: NOMINAL GDP ==== -->
+    <div class="dimblock rv d2">
+      <div class="dimhead">Domestic market size (nominal GDP)</div>
+      <div class="dimsub"><span>nominal US$ trillions · 2024 estimate</span><span class="dimdir">▲ higher is better</span><span>Compendium §1.1</span></div>
+      <div class="svgwrap" id="wrap-gdp" role="img" aria-label="Nominal GDP in US dollar trillions, 2024, all 15 economies ranked, higher is better. The United States leads at 28 trillion, Germany 4.7 trillion, Japan 4.3 trillion, France 3.2 trillion. Canada is 6th at about 2.2 trillion. Finland is smallest at 0.3 trillion.">
+        <svg viewBox="0 0 680 220" id="chart-gdp">
+<defs><linearGradient id="g_gdp" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+<rect x="120" y="7.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="7.5" width="508" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="15.4" class="abar-lab">United States</text><text x="672" y="15.4" text-anchor="end" class="abar-val">$28T</text>
+<rect x="120" y="21.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="21.5" width="80.7" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="29.4" class="abar-lab">Germany</text><text x="672" y="29.4" text-anchor="end" class="abar-val">$4.7T</text>
+<rect x="120" y="35.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="35.5" width="73.4" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="43.4" class="abar-lab">Japan</text><text x="672" y="43.4" text-anchor="end" class="abar-val">$4.3T</text>
+<rect x="120" y="49.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="49.5" width="53.2" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="57.4" class="abar-lab">France</text><text x="672" y="57.4" text-anchor="end" class="abar-val">$3.2T</text>
+<rect x="120" y="63.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="63.5" width="44" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="71.4" class="abar-lab">United Kingdom</text><text x="672" y="71.4" text-anchor="end" class="abar-val">$2.7T</text>
+<rect x="120" y="77.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="77.5" width="34.8" height="9" rx="2" fill="url(#g_gdp)" class="subj-glow"/>
+<text x="0" y="85.4" class="abar-lab subj">Canada</text><text x="672" y="85.4" text-anchor="end" class="abar-val subj">$2.2T</text>
+<rect x="120" y="91.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="91.5" width="25.7" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="99.4" class="abar-lab">South Korea</text><text x="672" y="99.4" text-anchor="end" class="abar-val">$1.7T</text>
+<rect x="120" y="105.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="105.5" width="25.7" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="113.4" class="abar-lab">Australia</text><text x="672" y="113.4" text-anchor="end" class="abar-val">$1.7T</text>
+<rect x="120" y="119.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="119.5" width="25.4" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="127.4" class="abar-lab">Netherlands</text><text x="672" y="127.4" text-anchor="end" class="abar-val">$1.2T</text>
+<rect x="120" y="133.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="133.5" width="25.4" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="141.4" class="abar-lab">Taiwan</text><text x="672" y="141.4" text-anchor="end" class="abar-val">$0.78T</text>
+<rect x="120" y="147.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="147.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="155.4" class="abar-lab">Sweden</text><text x="672" y="155.4" text-anchor="end" class="abar-val">$0.6T</text>
+<rect x="120" y="161.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="161.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="169.4" class="abar-lab">Singapore</text><text x="672" y="169.4" text-anchor="end" class="abar-val">$0.55T</text>
+<rect x="120" y="175.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="175.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="183.4" class="abar-lab">Israel</text><text x="672" y="183.4" text-anchor="end" class="abar-val">$0.54T</text>
+<rect x="120" y="189.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="189.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="197.4" class="abar-lab">Denmark</text><text x="672" y="197.4" text-anchor="end" class="abar-val">$0.43T</text>
+<rect x="120" y="203.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="203.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="211.4" class="abar-lab">Finland</text><text x="672" y="211.4" text-anchor="end" class="abar-val">$0.3T</text>
+        </svg>
+      </div>
+      <a href="methodology.html#register" class="provpill" data-prov="gdp"><span class="o"></span>data &amp; method</a>
+    </div>
+
+    <div class="dashcap rv">Whether you read all fifteen at once or focus on a handful, the pattern holds. Canada is <b>big on aggregate size</b> and <b>thin on innovation intensity and venture capital</b> — the shape of the "builds the capability, captures too little" story below.</div>
+  </div>
+</section>
+
+<!-- ============ 02 · WHERE CANADA RANKS ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> Where Canada ranks</div>
+    <h2 class="rv d1">Big by size. Thin on conversion.</h2>
+    <p class="lede rv d1">Ranked against all fourteen peers at once, Canada's position splits cleanly in two. On the <em>size</em> measures — its share of global equity, the scale of its economy — it sits near the top. On the <em>conversion</em> measures — R&amp;D intensity, innovation rank — it sits near the bottom. Venture capital and tax competitiveness fall in between. The gap between the top block and the bottom block <em>is</em> the growth prize.</p>
+    <div class="svgwrap rv d2" role="img" aria-label="Canada's rank across the seven dimensions, best to worst: global equity share 3rd of 15 on the end-2025 basis, and by mid-2026 between 3rd and 5th depending on the measurement basis — still 3rd on the WFE exchange-level count, about 5th on the Bloomberg country-level count after Taiwan and Korea closed the gap; domestic market size 6th of 15; VC investment per GDP 6th of 15; GDP per capita 8th of 15; corporate tax competitiveness 12th of 15; innovation rank 13th of 14; R&amp;D intensity 14th of 15.">
+      <svg viewBox="0 0 680 296" id="rankstrip">
+        <rect x="234" y="21" width="326" height="14" rx="3" fill="var(--hair)"/>
+        <rect x="234" y="21" width="279.4" height="14" rx="3" class="ramp-1"/>
+        <text x="0" y="32" class="rk-lab">Global equity share</text><text x="672" y="32" text-anchor="end" class="rk-badge">3rd → 3rd–5th</text>
+        <rect x="234" y="61" width="326" height="14" rx="3" fill="var(--hair)"/>
+        <rect x="234" y="61" width="209.6" height="14" rx="3" class="ramp-3"/>
+        <text x="0" y="72" class="rk-lab">Domestic market size (GDP)</text><text x="672" y="72" text-anchor="end" class="rk-badge">6th / 15</text>
+        <rect x="234" y="101" width="326" height="14" rx="3" fill="var(--hair)"/>
+        <rect x="234" y="101" width="209.6" height="14" rx="3" class="ramp-3"/>
+        <text x="0" y="112" class="rk-lab">VC investment / GDP</text><text x="672" y="112" text-anchor="end" class="rk-badge">6th / 15</text>
+        <rect x="234" y="141" width="326" height="14" rx="3" fill="var(--hair)"/>
+        <rect x="234" y="141" width="163.0" height="14" rx="3" class="ramp-4"/>
+        <text x="0" y="152" class="rk-lab">GDP per capita</text><text x="672" y="152" text-anchor="end" class="rk-badge">8th / 15</text>
+        <rect x="234" y="181" width="326" height="14" rx="3" fill="var(--hair)"/>
+        <rect x="234" y="181" width="69.9" height="14" rx="3" class="ramp-5"/>
+        <text x="0" y="192" class="rk-lab">Corporate tax competitiveness</text><text x="672" y="192" text-anchor="end" class="rk-badge">12th / 15</text>
+        <rect x="234" y="221" width="326" height="14" rx="3" fill="var(--hair)"/>
+        <rect x="234" y="221" width="25.1" height="14" rx="3" class="ramp-6"/>
+        <text x="0" y="232" class="rk-lab">Innovation rank (GII)</text><text x="672" y="232" text-anchor="end" class="rk-badge">13th / 14</text>
+        <rect x="234" y="261" width="326" height="14" rx="3" fill="var(--hair)"/>
+        <rect x="234" y="261" width="23.3" height="14" rx="3" class="ramp-6"/>
+        <text x="0" y="272" class="rk-lab">R&amp;D intensity (GERD)</text><text x="672" y="272" text-anchor="end" class="rk-badge">14th / 15</text>
+      </svg>
+    </div>
+    <p class="dashcap rv d2"><b>Equity-share rank is stamped on the end-2025 WFE-consistent basis</b> — as are all bars on this page. By mid-2026 Canada's standing is <b>basis-dependent</b>. On the <b>country-level</b> basis (Bloomberg) it slips to about <b>5th in this set</b>: Taiwan overtook Canada as the world's sixth-largest stock market on Apr 29, 2026, and Korea followed on May 7, 2026 — both AI- and semiconductor-driven. On the <b>exchange-level</b> basis (WFE, the vault's own monthly series) no crossover has yet occurred — TMX (US$5.00T, May 2026) still narrowly leads Korea (US$4.95T, +US$54bn) and sits well ahead of Taiwan (US$4.56T) — but the TMX–Korea gap has collapsed from ~US$1.3T in early 2024 to US$54bn. Both bases are true; they measure different universes, and on either the convergence is undeniable. An AI-weighted market closing fast on a commodities-and-financials one; it sharpens, rather than softens, the page's diagnosis.</p>
+    <div class="pull rv d2" style="margin-top:40px">
+      <div class="q">Third by the sheer size of its stock market — and by mid-2026 in a photo finish with AI-heavy Taiwan and Korea (still ahead on the exchange-level count, passed on the country-level one). Fourteenth by how much it spends turning research into product. The distance between those ranks is what the report is about.</div>
+    </div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="ranks"><span class="o"></span>data &amp; method</a>
+  </div>
+</section>
+
+<!-- ============ 03 · THE FULL TABLE ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> The full table</div>
+    <h2 class="rv d1">Every jurisdiction, every dimension.</h2>
+    <p class="lede rv d1">The complete matrix behind the explorer — the 14 core comparators plus Canada, across all seven dimensions. This table is the honest backbone: it reads fully with JavaScript disabled, and it carries the figures the bars are scaled from.</p>
+    <div style="overflow-x:auto" class="rv d2">
+      <table class="dtable">
+        <caption>International comparator matrix · Canada highlighted</caption>
+        <thead>
+          <tr>
+            <th scope="col">Jurisdiction</th>
+            <th scope="col">VC / GDP</th>
+            <th scope="col">Equity share</th>
+            <th scope="col">R&amp;D / GDP</th>
+            <th scope="col">GII rank</th>
+            <th scope="col">Corp. tax</th>
+            <th scope="col">GDP / capita</th>
+            <th scope="col">GDP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row" class="subj">Canada</th><td class="subj">0.35%</td><td class="subj">3.5%</td><td class="subj">1.7%</td><td class="subj">17</td><td class="subj">26.5%</td><td class="subj">$54.5k</td><td class="subj">$2.2T</td></tr>
+          <tr><th scope="row">United States</th><td>0.7%</td><td>51%</td><td>3.45%</td><td>3</td><td>25.77%</td><td>$83.6k</td><td>$28T</td></tr>
+          <tr><th scope="row">United Kingdom</th><td>0.28%</td><td>2.6%</td><td>2.7%</td><td>6</td><td>25%</td><td>$39.7k</td><td>$2.7T</td></tr>
+          <tr><th scope="row">Sweden</th><td>0.3%</td><td>0.9%</td><td>3.6%</td><td>2</td><td>20.6%</td><td>$57.1k</td><td>$0.6T</td></tr>
+          <tr><th scope="row">Israel</th><td>~2.0–2.3%</td><td>0.4%</td><td>6.35%</td><td>14</td><td>23%</td><td>$54.0k</td><td>$0.54T</td></tr>
+          <tr><th scope="row">Singapore</th><td>0.4%</td><td>0.7%</td><td>1.85%</td><td>5</td><td>17%</td><td>$91.2k</td><td>$0.55T</td></tr>
+          <tr><th scope="row">South Korea</th><td>0.5%</td><td>2.2%</td><td>4.96%</td><td>4</td><td>24.2%</td><td>$32.7k</td><td>$1.7T</td></tr>
+          <tr><th scope="row">Netherlands</th><td>~0.20–0.30%</td><td>1.3%</td><td>2.3%</td><td>8</td><td>25.8%</td><td>$67.5k</td><td>$1.2T</td></tr>
+          <tr><th scope="row">Denmark</th><td>0.14%</td><td>0.5%</td><td>2.99%</td><td>9</td><td>22%</td><td>$71.6k</td><td>$0.43T</td></tr>
+          <tr><th scope="row">Finland</th><td>0.08%</td><td>0.3%</td><td>3.09%</td><td>7</td><td>20%</td><td>$53.4k</td><td>$0.3T</td></tr>
+          <tr><th scope="row">Australia</th><td>0.1%</td><td>1.9%</td><td>1.7%</td><td>22</td><td>30%</td><td>$63.0k</td><td>$1.7T</td></tr>
+          <tr><th scope="row">France</th><td>0.14%</td><td>2.7%</td><td>2.2%</td><td>13</td><td>25.0%*</td><td>$46.5k</td><td>$3.2T</td></tr>
+          <tr><th scope="row">Germany</th><td>0.09%</td><td>2.2%</td><td>3.11%</td><td>11</td><td>29.83%</td><td>$55.8k</td><td>$4.7T</td></tr>
+          <tr><th scope="row">Japan</th><td>0.12%</td><td>5.7%</td><td>3.44%</td><td>12</td><td>29.74%</td><td>$34.4k</td><td>$4.3T</td></tr>
+          <tr><th scope="row">Taiwan</th><td>0.36%</td><td>2.8%</td><td>3.8%</td><td>n/a</td><td>20%</td><td>$32.6k</td><td>$0.78T</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="caveat rv d2"><b>Bases &amp; years.</b> VC/GDP: 2024 approximations (Compendium §3.1) — Israel is a range (~2.0–2.3%) and the Netherlands a range (~0.20–0.30%); the bar uses the midpoint. Equity share: shares of a ~US$120T domestic base, various dates 2025–early 2026 (§2.1) — Canada's <b>3rd</b> place is on the end-2025 basis and measures <b>aggregate</b> market size, not depth or per-capita listing (the top 25 TSX names hold 51.8% of operating market cap). By mid-2026 the reading is basis-dependent: on the country-level basis (Bloomberg) Canada had slipped to ~5th in this set after AI-driven Taiwan (Apr 29, 2026) and Korea (May 7, 2026) passed it; on the exchange-level basis (WFE monthly) TMX still narrowly led Korea (+US$54bn, May 2026) and Taiwan, with the gap collapsing to near-parity. The bar and rank are kept on the end-2025 basis for consistency with every other dimension on this page. R&amp;D: GERD 2023, OECD MSTI (§5.2); Canada's business-funded component is weaker still (~0.89%). Corporate tax: combined statutory 2025 (§10.1); <b>*France</b> shows the 25% base rate — its large-company surtax runs 30.98–36.30%. GDP figures: IMF 2024 estimates (§1.1), nominal US$.</div>
+    <div class="caveat rv d2"><b>What's excluded, and why.</b> Only rows with clean, unflagged cross-jurisdiction coverage are charted. The Compendium's four <b>expansion comparators</b> (Ireland, Switzerland, Norway, Estonia) are deliberately left out — their coverage carries ⚠️ flags and unreconciled bases (e.g. Ireland's GDP-vs-GNI* distortion, Estonia's cumulative-not-current unicorn counts). Taiwan's GII rank (~16th, "Chinese Taipei") is unconfirmed by WIPO, so it is shown as <b>n/a</b> and excluded from the innovation ranking. Capital-gains treatment is not charted here to avoid range-vs-effective apples-to-oranges — the innovation-specific CGT-relief lattice lives on <a href="what-works.html">What Works</a> §04b.</div>
+  </div>
+</section>
+
+<!-- ============ 04 · HANDOFF ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">04</span> The read</div>
+    <h2 class="rv d1">The numbers set up the evidence.</h2>
+    <p class="lede rv d1">This page is the diagnosis in one matrix: a large, prosperous economy that under-invests in the conversion of research to companies and under-funds the venture stage that scales them. <em>What Works</em>, just read, supplied the mechanisms — how Israel, Sweden, Korea and the UK built what Canada has not; this explorer is the full instrument its four highlight charts pointed to. What remains is to watch the position play out in real companies — <strong>who stayed, who was bought, and who listed abroad.</strong></p>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="champions.html"><div class="n">NEXT · THE EVIDENCE</div><div><div class="t">The Champions</div><div class="d">~34 company case studies, sorted by outcome — the position on this page playing out firm by firm, and the four patterns that decide which way each goes.</div></div></a>
+      <a class="nextrow rv d1" href="what-works.html"><div class="n">BACK · THE MECHANISMS</div><div><div class="t">What Works Abroad</div><div class="d">The comparator jurisdictions and the program toolkit — Yozma, Mansion House, EIS/SEIS, KOSDAQ — that these numbers set up.</div></div></a>
+      <a class="nextrow rv d2" href="global-exchanges.html"><div class="n">COMPARE · MARKETS</div><div><div class="t">Global Exchanges Explorer</div><div class="d">The same benchmarking lens applied to fifteen years of exchange data — TMX against twenty-four peer markets, plus the 2024–2026 market-cap race.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">Interactive · International Comparators Explorer</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">INTERNATIONAL COMPARATORS EXPLORER · INTERACTIVE · static-first · opens from file:// · the full 15-economy ranked overview and the data table both render with JS off · focus mode is enhancement-only</p>
+</footer>
+</div>
+
+<!-- Provenance drawer + scrim (shared shell markup; upgraded by app.js). -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<!-- Per-page provenance + baked comparator data. Defined BEFORE app.js. -->
+<script>
+window.PROV = {
+  gii:{
+    t:"Data & method — Global Innovation Index",
+    meta:'<b>WIPO Global Innovation Index 2025</b> overall ranks, from the vault <b>International Comparator Data Compendium §5.1</b>. Lower rank = more innovative. Canada 17th; inputs 13th, outputs 20th — a seven-rank efficiency gap (research not converting to commercial output). Sweden 2nd, US 3rd, South Korea 4th, Singapore 5th, UK 6th; Australia 22nd is the only core comparator below Canada.<br><br><b>Caveat:</b> Taiwan (listed as "Chinese Taipei", ~16th) is unconfirmed and excluded (shown n/a). Input/output sub-ranks confirmed only for Canada and Singapore in the source. Grade: High (primary WIPO ranking).',
+    conf:"high"
+  },
+  vcgdp:{
+    t:"Data & method — VC investment / GDP",
+    meta:'Venture capital deployed as a share of GDP, 2024 approximations, from <b>Compendium §3.1</b>. Israel ~2.0–2.3% (global leader; midpoint 2.15 charted); US ~0.70%; South Korea ~0.50%; Singapore ~0.40%; Taiwan ~0.36%; <b>Canada ~0.35%</b> (mid-pack, but 66% concentrated in megadeals); Sweden ~0.30%; UK ~0.28%; Netherlands ~0.20–0.30% (midpoint charted); France/Denmark ~0.14%; Japan ~0.12%; Australia ~0.10%; Germany ~0.09%; Finland ~0.08%.<br><br>Sources: CVCA Year-End 2024/2025 · KPMG Venture Pulse · NVCA 2025 Yearbook · OECD · national VC associations. ⚠️ Ratios are compiled estimates, not sourced ratios. Grade: Medium.',
+    conf:"medium"
+  },
+  equity:{
+    t:"Data & method — Share of global equity market cap",
+    meta:'Each jurisdiction\'s share of global equity market capitalisation on the <b>end-2025 WFE-consistent basis</b>, from <b>Compendium §2.1</b>, computed against a ~US$120T domestic-company base. US ~51% (NYSE + Nasdaq ~$61.6T); Japan ~5.7%; <b>Canada ~3.5% — 3rd in this set at end-2025</b>; Taiwan ~2.8%; France ~2.7%; UK ~2.6%; Korea/Germany ~2.2%.<br><br><b>Honest caveat:</b> Canada\'s rank measures <b>aggregate size</b>, not depth. Concentration is extreme — the top 25 TSX names hold 51.8% of operating market cap, and the TSXV is 66.7% mining. Market caps are approximate (exchange reports, CEIC, various 2025–early-2026 dates).<br><br><b>2026 update — a dual-basis story.</b> On the <b>country-level</b> basis (Bloomberg) Canada slipped to about <b>5th in this set</b> (~8th globally) by mid-2026: Taiwan overtook Canada to become the world\'s sixth-largest stock market — Taiwan ≈ US$4.47T (+35% YTD) vs Canada ≈ US$4.44T (+5%) — on a TSMC/AI-driven surge (<a href="https://www.bloomberg.com/news/articles/2026-04-29/taiwan-overtakes-canada-as-world-s-sixth-largest-stock-market">Bloomberg, Apr 29 2026</a>); Korea followed on <a href="https://www.bloomberg.com/news/articles/2026-05-07/korea-surpasses-canada-as-world-s-seventh-largest-stock-market">May 7 2026</a>. On the <b>exchange-level</b> basis (WFE monthly market-cap series, the vault\'s own instrument — <em>Data/WFE (2026) - Market Capitalisation Monthly 2024-2026 (USD).xlsx</em>) <b>no crossover has yet occurred</b>: TMX US$5.00T (May 2026) still narrowly leads Korea US$4.95T (+US$54bn) and sits well ahead of Taiwan US$4.56T, though the TMX–Korea gap has collapsed from ~US$1.3T (early 2024) to US$54bn. The ~US$0.5T level difference is a universe difference — Bloomberg aggregates a country-level (often primary-listing / free-float) security set; WFE reports the exchange\'s all-listed-company domestic market cap (TSX + TSXV). Both are true. The bar and rank badge are kept on the end-2025 basis for consistency with every other dimension on this page. An AI-weighted market closing fast on a commodities-and-financials one <b>sharpens</b> the page\'s diagnosis. Grade: Medium.',
+    conf:"medium"
+  },
+  rd:{
+    t:"Data & method — R&D intensity (GERD)",
+    meta:'Gross domestic expenditure on R&D as a share of GDP, 2023, from <b>Compendium §5.2</b> (OECD MSTI 2025). Israel 6.35% (leader); South Korea 4.96%; Taiwan ~3.8%; Sweden 3.60%; US 3.45%; Japan 3.44%; Germany 3.11%; Finland 3.09%; Denmark 2.99%; UK ~2.7%; Netherlands ~2.3%; France ~2.2%; Singapore ~1.85%; <b>Canada ~1.7%</b> (second-lowest in the G7); Australia ~1.7%.<br><br><b>Note:</b> Canada\'s business-funded component (BERD) is weaker still (~0.89%). OECD average GERD 2.7%. Grade: High.',
+    conf:"high"
+  },
+  corptax:{
+    t:"Data & method — Combined corporate tax rate",
+    meta:'Combined statutory corporate income tax rate (national + sub-national), 2025, from <b>Compendium §10.1</b> (OECD Corporate Tax Statistics 2025 · Tax Foundation · PwC). Singapore 17.0% (lowest); Taiwan/Finland 20.0%; Sweden 20.6%; Denmark 22.0%; Israel 23.0%; South Korea 24.2%; UK 25.0%; US 25.77%; Netherlands 25.8%; <b>Canada ~26.5%</b> (federal 15% + Ontario 11.5%; 12th of 15); Japan 29.74%; Germany 29.83%; Australia 30.0%.<br><br><b>*France</b> is charted at its 25% base rate; its large-company surtax runs 30.98–36.30% (turnover ≥ €1.5B). OECD average 23.58% unweighted. Grade: High.',
+    conf:"high"
+  },
+  gdppc:{
+    t:"Data & method — GDP per capita",
+    meta:'Nominal GDP per capita, US$, 2024 estimates, from <b>Compendium §1.1</b> (IMF World Economic Outlook). Singapore ~$91,200; US ~$83,600; Denmark ~$71,600; Netherlands ~$67,500; Australia ~$63,000; Sweden ~$57,100; Germany ~$55,800; <b>Canada $54,531</b> (8th of 15); Israel ~$54,000; Finland ~$53,400; France ~$46,500; UK ~$39,700; Japan ~$34,400; South Korea ~$32,700; Taiwan ~$32,600.<br><br><b>Note:</b> nominal, not PPP. On a PPP basis Canada\'s slide relative to the US (83%→71%) is the Growth Prize framing. Grade: High.',
+    conf:"high"
+  },
+  gdp:{
+    t:"Data & method — Domestic market size (nominal GDP)",
+    meta:'Nominal GDP, US$ trillions, 2024 estimates, from <b>Compendium §1.1</b> (IMF World Economic Outlook). US ~$28.0T; Germany ~$4.7T; Japan ~$4.3T; France ~$3.2T; UK ~$2.7T; <b>Canada $2.2T</b> (6th of 15); Korea/Australia ~$1.7T; Netherlands ~$1.2T; Taiwan ~$0.78T; Sweden ~$0.6T; Singapore ~$0.55T; Israel ~$0.54T; Denmark ~$0.43T; Finland ~$0.30T.<br><br>Domestic-market size is the "small open economy" backdrop to the capital-markets story — a thinner home market than the US/EU peers. Grade: High.',
+    conf:"high"
+  },
+  ranks:{
+    t:"Data & method — Where Canada ranks",
+    meta:'Canada\'s rank on each dimension, computed across the 14 core comparators + Canada from the figures cited on the dimension pills. Best to worst: <b>global equity share 3rd/15</b> (end-2025 basis; by mid-2026 <b>between 3rd and 5th, basis-dependent</b> — still 3rd on the WFE exchange-level count, where TMX at US$5.00T still led Korea US$4.95T (+US$54bn, May 2026) and Taiwan US$4.56T; ~5th on the Bloomberg country-level count after Taiwan overtook Canada on Apr 29 2026 and Korea on May 7 2026, both AI-driven — the bar is kept on the end-2025 basis) · domestic market size (GDP) 6th/15 · VC/GDP 6th/15 · GDP per capita 8th/15 · corporate-tax competitiveness 12th/15 (lower = better) · <b>innovation rank (GII) 13th/14</b> (Taiwan excluded, unconfirmed) · <b>R&D intensity 14th/15</b>.<br><br>The strip encodes goodness (best rank = fullest bar, brightest accent). It is a derived composite of the underlying dimensions — graded Medium because it depends on the several bases and approximations noted per dimension.',
+    conf:"medium"
+  }
+};
+
+/* ---- BAKED COMPARATOR DATA (harvested from the vault International Comparator
+   Data Compendium; 14 core comparators + Canada across 7 dimensions).
+   null = value withheld (unflagged coverage rule; e.g. Taiwan GII). ---- */
+window.CMP = {
+  order:["CA","US","UK","SE","IL","SG","KR","NL","DK","FI","AU","FR","DE","JP","TW"],
+  name:{CA:"Canada",US:"United States",UK:"United Kingdom",SE:"Sweden",IL:"Israel",SG:"Singapore",KR:"South Korea",NL:"Netherlands",DK:"Denmark",FI:"Finland",AU:"Australia",FR:"France",DE:"Germany",JP:"Japan",TW:"Taiwan"},
+  defaults:["US","UK","SE"],
+  maxCmp:3,
+  cmpcols:["var(--sx-hkex)","var(--sx-tmx)","var(--acq)"],
+  dims:[
+    {k:"vcgdp",  label:"Venture capital, as a share of GDP",           unit:"pct",  dir:"high"},
+    {k:"equity", label:"Share of global equity market capitalisation", unit:"pct",  dir:"high"},
+    {k:"rd",     label:"R&D intensity (GERD as % of GDP)",         unit:"pct",  dir:"high"},
+    {k:"gii",    label:"Global Innovation Index — overall rank",        unit:"rank", dir:"low"},
+    {k:"corptax",label:"Combined corporate income tax rate",            unit:"pct",  dir:"low"},
+    {k:"gdppc",  label:"GDP per capita",                                unit:"kusd", dir:"high"},
+    {k:"gdp",    label:"Domestic market size (nominal GDP)",            unit:"tusd", dir:"high"}
+  ],
+  vals:{
+    vcgdp:  {CA:0.35,US:0.70,UK:0.28,SE:0.30,IL:2.15,SG:0.40,KR:0.50,NL:0.25,DK:0.14,FI:0.08,AU:0.10,FR:0.14,DE:0.09,JP:0.12,TW:0.36},
+    equity: {CA:3.5,US:51,UK:2.6,SE:0.9,IL:0.4,SG:0.7,KR:2.2,NL:1.3,DK:0.5,FI:0.3,AU:1.9,FR:2.7,DE:2.2,JP:5.7,TW:2.8},
+    rd:     {CA:1.7,US:3.45,UK:2.7,SE:3.60,IL:6.35,SG:1.85,KR:4.96,NL:2.3,DK:2.99,FI:3.09,AU:1.7,FR:2.2,DE:3.11,JP:3.44,TW:3.8},
+    gii:    {CA:17,US:3,UK:6,SE:2,IL:14,SG:5,KR:4,NL:8,DK:9,FI:7,AU:22,FR:13,DE:11,JP:12,TW:null},
+    corptax:{CA:26.5,US:25.77,UK:25.0,SE:20.6,IL:23.0,SG:17.0,KR:24.2,NL:25.8,DK:22.0,FI:20.0,AU:30.0,FR:25.0,DE:29.83,JP:29.74,TW:20.0},
+    gdppc:  {CA:54531,US:83600,UK:39700,SE:57100,IL:54000,SG:91200,KR:32700,NL:67500,DK:71600,FI:53400,AU:63000,FR:46500,DE:55800,JP:34400,TW:32600},
+    gdp:    {CA:2.2,US:28.0,UK:2.7,SE:0.6,IL:0.54,SG:0.55,KR:1.7,NL:1.2,DK:0.43,FI:0.30,AU:1.7,FR:3.2,DE:4.7,JP:4.3,TW:0.78}
+  },
+  disp:{
+    vcgdp:{IL:"~2.0–2.3%",NL:"~0.20–0.30%"},
+    corptax:{FR:"25.0% (base)"}
+  }
+};
+</script>
+<script>
+/* ============================================================================
+   comparators.html — jurisdiction comparator interactivity (vanilla, enhancement-only).
+   Each feature in its own try/catch. With JS off, the build-time default SVGs
+   (Canada · US · UK · Sweden) and the full data table below both stand.
+   Bars are scaled to each dimension's full-set range, direction-aware, so a
+   longer bar always reads as "stronger position"; printed figures are raw values.
+   ============================================================================ */
+"use strict";
+(function(){
+  try{
+    var C = window.CMP; if(!C) return;
+    // Two geometries: ALL = the dense 15-row overview (matches the build-time static SVGs);
+    // FOC = the roomy 2–4-row focus view (Canada + up to maxCmp peers).
+    var ALL={X0:120,XW:508,VALX:672,PT:5,PITCH:14,BARH:9,H:220};
+    var FOC={X0:132,XW:412,VALX:672,PT:12,RH:46,BARH:16};
+
+    // state.mode: "all" (default, overview) | "focus"; state.sel = Canada + selected peers.
+    var state = { mode:"all", sel:["CA"] };
+
+    // precompute per-dimension min/max over ALL non-null values
+    var RANGE={};
+    C.dims.forEach(function(d){
+      var vs=[]; for(var k in C.vals[d.k]){ var v=C.vals[d.k][k]; if(v!=null) vs.push(v); }
+      RANGE[d.k]={lo:Math.min.apply(null,vs), hi:Math.max.apply(null,vs)};
+    });
+
+    function dimDir(dk){ for(var i=0;i<C.dims.length;i++){ if(C.dims[i].k===dk) return C.dims[i].dir; } return "high"; }
+    function dimUnit(dk){ for(var i=0;i<C.dims.length;i++){ if(C.dims[i].k===dk) return C.dims[i].unit; } return "pct"; }
+    function frac(dk,k){
+      var v=C.vals[dk][k]; if(v==null) return null;
+      var r=RANGE[dk], sp=(r.hi-r.lo)||1, dir=dimDir(dk);
+      var g = dir==="high" ? (v-r.lo)/sp : (r.hi-v)/sp;
+      return Math.max(0.05, g);
+    }
+    function fmt(dk,k){
+      try{
+        if(C.disp[dk] && C.disp[dk][k]!=null) return C.disp[dk][k];
+        var v=C.vals[dk][k]; if(v==null) return "n/a";
+        var u=dimUnit(dk);
+        if(u==="pct")  return (+v)+"%";
+        if(u==="rank") return ""+v;
+        if(u==="kusd") return "$"+(v/1000).toFixed(1)+"k";
+        if(u==="tusd") return "$"+(+v)+"T";
+        return ""+v;
+      }catch(e){ return ""; }
+    }
+    // rank intensity ramp (1..6) by 0-based position among the ranked (non-null) set
+    function rampClass(pos,n){ var r=1+Math.floor(pos*6/(n||1)); return r>6?6:r; }
+    // colour for a focus-mode comparator, cycled through the family palette
+    function colFor(k){
+      if(k==="CA") return null; // gradient
+      var idx=state.sel.indexOf(k); var slot=idx-1; if(slot<0) slot=0;
+      return C.cmpcols[slot % C.cmpcols.length];
+    }
+    // direction-aware ordering of all 15 (nulls last, e.g. Taiwan GII)
+    function orderedFor(dk){
+      var dir=dimDir(dk), valid=[], nulls=[];
+      C.order.forEach(function(k){ if(C.vals[dk][k]==null) nulls.push(k); else valid.push(k); });
+      valid.sort(function(a,b){ var va=C.vals[dk][a], vb=C.vals[dk][b]; return dir==="high"?(vb-va):(va-vb); });
+      return { rows: valid.concat(nulls), n: valid.length };
+    }
+
+    // ---- ALL-15 overview render (tight rows, ramp by rank, Canada = gradient) ----
+    function renderAllDim(d){
+      var wrap=document.getElementById("wrap-"+d.k); if(!wrap) return;
+      var G=ALL, o=orderedFor(d.k), rows=o.rows, n=o.n;
+      var s='<svg viewBox="0 0 680 '+G.H+'" id="chart-'+d.k+'">';
+      s+='<defs><linearGradient id="g_'+d.k+'" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>';
+      var pos=0;
+      for(var i=0;i<rows.length;i++){
+        var k=rows[i], subj=(k==="CA");
+        var cy=G.PT+i*G.PITCH+G.PITCH/2, by=cy-G.BARH/2, ty=cy+3.4;
+        s+='<rect x="'+G.X0+'" y="'+by+'" width="'+G.XW+'" height="'+G.BARH+'" rx="2" fill="var(--hair)"/>';
+        var f=frac(d.k,k);
+        if(f!=null){
+          var w=+(G.XW*f).toFixed(1);
+          if(subj){ s+='<rect x="'+G.X0+'" y="'+by+'" width="'+w+'" height="'+G.BARH+'" rx="2" fill="url(#g_'+d.k+')" class="subj-glow"/>'; }
+          else{ s+='<rect x="'+G.X0+'" y="'+by+'" width="'+w+'" height="'+G.BARH+'" rx="2" class="ramp-'+rampClass(pos,n)+'"/>'; }
+          pos++;
+        } else {
+          s+='<text x="'+(G.X0+6)+'" y="'+ty+'" class="abar-val" opacity=".55">n/a</text>';
+        }
+        var lc=subj?"abar-lab subj":"abar-lab", vc=subj?"abar-val subj":"abar-val";
+        s+='<text x="0" y="'+ty+'" class="'+lc+'">'+C.name[k]+'</text>';
+        s+='<text x="'+G.VALX+'" y="'+ty+'" text-anchor="end" class="'+vc+'">'+fmt(d.k,k)+'</text>';
+      }
+      s+='</svg>';
+      wrap.innerHTML=s;
+      var lead=rows.slice(0,3).map(function(k){return C.name[k]+" "+fmt(d.k,k);});
+      wrap.setAttribute("aria-label", d.label+", all "+rows.length+" economies ranked ("+(dimDir(d.k)==="low"?"lower is better":"higher is better")+"). Leaders: "+lead.join("; ")+". Canada "+fmt(d.k,"CA")+". Source: vault International Comparator Data Compendium.");
+    }
+
+    // ---- FOCUS render (Canada + peers, roomy rows, family-palette comparators) ----
+    function renderFocusDim(d){
+      var wrap=document.getElementById("wrap-"+d.k); if(!wrap) return;
+      var G=FOC, rows=state.sel;
+      var H=G.PT+rows.length*G.RH+6;
+      var s='<svg viewBox="0 0 680 '+H+'" id="chart-'+d.k+'">';
+      s+='<defs><linearGradient id="g_'+d.k+'" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>';
+      for(var i=0;i<rows.length;i++){
+        var k=rows[i], subj=(k==="CA");
+        var cy=G.PT+i*G.RH+G.RH/2, by=cy-8;
+        s+='<rect x="'+G.X0+'" y="'+by+'" width="'+G.XW+'" height="16" rx="3" fill="var(--hair)"/>';
+        var f=frac(d.k,k);
+        if(f!=null){
+          var w=+(G.XW*f).toFixed(1);
+          if(subj){ s+='<rect x="'+G.X0+'" y="'+by+'" width="'+w+'" height="16" rx="3" fill="url(#g_'+d.k+')" class="subj-glow"/>'; }
+          else{ s+='<rect x="'+G.X0+'" y="'+by+'" width="'+w+'" height="16" rx="3" fill="'+colFor(k)+'" opacity=".85"/>'; }
+        } else {
+          s+='<text x="'+(G.X0+6)+'" y="'+(cy+4)+'" class="hbar-val" opacity=".6">n/a</text>';
+        }
+        var lc=subj?"hbar-lab subj":"hbar-lab", vc=subj?"hbar-val subj":"hbar-val";
+        s+='<text x="0" y="'+(cy+4)+'" class="'+lc+'">'+C.name[k]+'</text>';
+        s+='<text x="'+G.VALX+'" y="'+(cy+4)+'" text-anchor="end" class="'+vc+'">'+fmt(d.k,k)+'</text>';
+      }
+      s+='</svg>';
+      wrap.innerHTML=s;
+      var names=rows.map(function(k){return C.name[k]+" "+fmt(d.k,k);});
+      wrap.setAttribute("aria-label", d.label+", focused comparison. "+names.join("; ")+". Source: vault International Comparator Data Compendium.");
+    }
+
+    function renderDim(d){ try{ if(state.mode==="all") renderAllDim(d); else renderFocusDim(d); }catch(e){} }
+    function renderAll(){ C.dims.forEach(renderDim); }
+
+    // ---- chip picker + mode toggle ----
+    var jrow=document.getElementById("jrow"), hint=document.getElementById("pickhint"), allBtn=document.getElementById("allBtn");
+    function refreshChips(){
+      try{
+        if(allBtn) allBtn.setAttribute("aria-pressed", state.mode==="all"?"true":"false");
+        if(jrow){
+          jrow.querySelectorAll(".jchip").forEach(function(b){
+            var k=b.getAttribute("data-jur");
+            if(k==="CA"){ b.style.setProperty("--chipcol","var(--accent)"); return; }
+            var on=(state.mode==="focus" && state.sel.indexOf(k)>=0);
+            b.setAttribute("aria-pressed", on?"true":"false");
+            if(on){ b.style.setProperty("--chipcol", colFor(k)); }
+            else{ b.style.removeProperty("--chipcol"); }
+          });
+        }
+        if(!hint) return;
+        if(state.mode==="all"){
+          hint.innerHTML='Showing all 15 economies, ranked on every dimension — Canada is the violet bar. Select a peer to focus the comparison.';
+        } else {
+          var cmp=state.sel.filter(function(k){return k!=="CA";});
+          var picked=cmp.map(function(k){return C.name[k];}).join(", ");
+          if(cmp.length>=C.maxCmp){ hint.innerHTML='Focused: Canada + <b>'+picked+'</b>. Maximum reached — remove a peer, or press <b>All jurisdictions</b> to see the full field.'; }
+          else{ hint.innerHTML='Focused: Canada + '+(picked?('<b>'+picked+'</b>. '):'')+'Add up to '+(C.maxCmp-cmp.length)+' more, or press <b>All jurisdictions</b> for the overview.'; }
+        }
+      }catch(e){}
+    }
+    function setAll(){
+      state.mode="all"; state.sel=["CA"];
+      refreshChips(); renderAll();
+    }
+    function toggle(k){
+      if(k==="CA") return; // locked
+      if(state.mode==="all"){          // first peer click enters focus mode
+        state.mode="focus"; state.sel=["CA",k];
+        refreshChips(); renderAll(); return;
+      }
+      var i=state.sel.indexOf(k);
+      if(i>=0){ state.sel.splice(i,1); }
+      else{
+        var cmp=state.sel.length-1;     // exclude CA
+        if(cmp>=C.maxCmp) return;        // ignore beyond cap
+        state.sel.push(k);
+      }
+      if(state.sel.length<=1){ setAll(); return; } // no peers left → back to overview
+      refreshChips(); renderAll();
+    }
+    if(allBtn){ allBtn.addEventListener("click", setAll); }
+    if(jrow){
+      jrow.querySelectorAll(".jchip").forEach(function(b){
+        if(b.id==="allBtn") return;
+        b.addEventListener("click",function(){ toggle(b.getAttribute("data-jur")); });
+      });
+    }
+
+    refreshChips();
+    renderAll(); // re-renders over the build-time all-15 static SVGs; static-first fallback = those SVGs + the full table
+  }catch(e){}
+})();
+</script>
+<script src="app.js"></script>
+</body>
+</html>
