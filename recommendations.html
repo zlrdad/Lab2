@@ -33,6 +33,12 @@
 .xwrow .xd{font-size:14.5px;color:var(--body);line-height:1.62;max-width:60ch}
 .xwrow .xd b{color:var(--ink)}
 .hyp{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--accent-txt);border:1px solid rgba(var(--accent-rgb),.35);border-radius:20px;padding:2px 9px;white-space:nowrap;vertical-align:middle}
+/* The .kicker (styles.css) is a non-wrapping flex row; a long, nowrap .hyp pill
+   (e.g. Lever ③ "tests H-R1 / R2 / R3 / R4 / R6") otherwise overflows the viewport
+   on narrow screens (iPhone Safari), pushing the page wider than the viewport and
+   clipping the pill at the right edge. Allow wrap so the pill drops to its own line.
+   No effect on desktop, where the kicker already fits on one line. */
+.kicker{flex-wrap:wrap}
 @media(max-width:640px){.lvrrow,.xwrow{grid-template-columns:1fr;gap:8px}}
 </style>
 </head>
@@ -281,7 +287,7 @@
       <div class="sub">Annual flows vs a one-time capacity ceiling · log-ish comparison (bars scaled to their values)</div>
     </div>
     <div class="svgwrap rv d2" role="img" aria-label="A comparison of the package's annual figures against the Maple-8 headroom. The Series B+ scale-up financing gap the package targets is about C$3.7 to 5.1 billion per year (the wider gap to the US level is about C$9.4 to 10.8 billion); the Compact mobilises about C$4 billion per year at VCCI's 3-to-1 leverage, about the size of that scale-up gap; the tax scheme's gross central cost is about C$430 million per year. Against this, the Maple-8 pension pools hold C$2.63 trillion, and moving under half a percent toward one percent of that adds about C$5 to 26 billion of one-time domestic-VC headroom — a capacity ceiling, not an annual flow.">
-      <svg viewBox="0 0 900 320">
+      <svg viewBox="0 0 900 330">
         <defs>
           <filter id="glowR" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           <linearGradient id="rec-mag-subj" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--accent-deep)"/><stop offset="1" style="stop-color:var(--accent)"/></linearGradient>
@@ -307,12 +313,15 @@
         <!-- Row 4: Maple-8 headroom ~C$26B/yr (sqrt(26)=5.10 → 600px). grey-ink, the reference. -->
         <text x="155" y="225" text-anchor="end" class="hbar-lab">Maple-8 half-point shift</text>
         <rect x="170" y="206" width="600" height="30" rx="4" fill="var(--body)" opacity=".9"/>
-        <text x="782" y="227" class="hbar-val" style="fill:var(--ink);font-weight:700">~C$5–26B ceiling (one-time)</text>
+        <text x="760" y="227" text-anchor="end" class="hbar-val inbar" style="font-weight:700">~C$5–26B ceiling (one-time)</text>
 
         <!-- baseline + caption -->
         <line x1="170" y1="256" x2="800" y2="256" stroke="var(--hair-strong)" stroke-width="1"/>
         <text x="170" y="278" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">Bars scaled ∝ √(C$B); rows 1–3 are annual flows, row 4 is a one-time stock reallocation — not an annual flow.</text>
-        <text x="170" y="298" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">The C$5–26B headroom is a one-time capacity ceiling, not a flow — realised mobilisation is inferential, gated on the pension-allocation data gap.</text>
+        <!-- Two lines, not one: the single-line version of this caption ran ~490 user units past
+             the 900-unit viewBox (overflow:visible ink), truncating at every viewport width. -->
+        <text x="170" y="298" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">The C$5–26B headroom is a one-time capacity ceiling, not a flow —</text>
+        <text x="170" y="318" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">realised mobilisation is inferential, gated on the pension-allocation data gap.</text>
       </svg>
     </div>
     <div class="figrow">
