@@ -23,12 +23,40 @@
 <style>
 /* ---- MAP ---- */
 .mapstage{margin-top:40px}
+/* single-column hero: the world map fills the content width; Europe is an on-demand overlay */
 .mapgrid{display:grid;grid-template-columns:1fr;gap:26px}
-@media(min-width:940px){.mapgrid{grid-template-columns:1fr minmax(300px,360px);gap:34px;align-items:start}}
 .mapcard{position:relative}
 .mapcard .cap{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.mapcard .cap.caprow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px}
 #worldmap,#europemap{display:block;width:100%;height:auto;overflow:visible}
-#europemap{border-left:1px solid var(--hair);padding-left:6px}
+#europemap{max-width:640px;margin:0 auto}
+
+/* "Zoom: Europe" affordance (visible trigger, twin of the dashed on-map frame) */
+.euzoom-open{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--accent-txt);text-decoration:none;border:1px solid rgba(var(--accent-rgb),.5);
+  border-radius:20px;padding:5px 13px;transition:border-color .15s,background .15s,color .15s;white-space:nowrap}
+.euzoom-open:hover,.euzoom-open:focus-visible{background:rgba(var(--accent-rgb),.10);border-color:var(--accent);color:var(--accent-txt)}
+.euzoom-open .z{font-size:12px}
+/* on-map dashed frame, now an SVG link into the same overlay */
+.inset-a{cursor:pointer;outline:none}
+.inset-a:hover .inset-frame,.inset-a:focus-visible .inset-frame{opacity:.85;stroke-width:1}
+.inset-a:hover .inset-tag,.inset-a:focus-visible .inset-tag{fill:var(--accent-txt)}
+.inset-a:focus-visible .inset-frame{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---- EUROPE ZOOM OVERLAY (:target — no-JS-first; centred over the map area) ---- */
+.euzoom{position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;padding:clamp(16px,4vw,40px)}
+.euzoom:target{display:flex}
+.euzoom-scrim{position:absolute;inset:0;background:var(--scrim-bg);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border:0;cursor:default}
+.euzoom-panel{position:relative;z-index:1;width:min(920px,94vw);max-height:92vh;overflow:auto;
+  background:var(--bg2);border:1px solid var(--hair-strong);border-radius:14px;
+  padding:20px clamp(16px,3vw,26px) 24px;box-shadow:0 24px 70px rgba(var(--accent-rgb),.16),var(--gfx-glow-soft)}
+.euzoom-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px}
+.euzoom-head .cap{margin-bottom:0}
+.euzoom-x{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+  text-decoration:none;border:1px solid var(--hair-strong);border-radius:8px;padding:6px 12px;transition:color .15s,border-color .15s,background .15s}
+.euzoom-x:hover,.euzoom-x:focus-visible{color:var(--accent-txt);border-color:rgba(var(--accent-rgb),.5);background:rgba(var(--accent-rgb),.06)}
+.euzoom-hint{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.03em;line-height:1.6;margin-top:14px}
+@media(prefers-reduced-motion:reduce){.euzoom-scrim{-webkit-backdrop-filter:none;backdrop-filter:none}}
 
 /* background landmass — faint steel */
 .map-bg{fill:var(--steel);opacity:.10;stroke:none}
@@ -102,6 +130,13 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
 @keyframes jflash{0%,100%{box-shadow:none}22%{box-shadow:-14px 0 0 -10px var(--accent)}}
 
 .jhead{display:flex;align-items:center;flex-wrap:wrap;gap:14px}
+/* consistent, visible "back to map" pill at every jurisdiction heading (same spot each time) */
+.jback{order:9;margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);
+  font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent-txt);text-decoration:none;
+  border:1px solid rgba(var(--accent-rgb),.45);border-radius:20px;padding:6px 13px;
+  transition:border-color .15s,background .15s,color .15s;white-space:nowrap}
+.jback:hover,.jback:focus-visible{background:rgba(var(--accent-rgb),.10);border-color:var(--accent);color:var(--accent-txt)}
+.jback .ar{font-size:12px;line-height:1}
 .jname{font-family:var(--disp);font-weight:700;color:var(--ink);font-size:clamp(26px,4vw,42px);letter-spacing:-.02em;line-height:1}
 .jst{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:4px 11px;border-radius:20px;border:1px solid var(--hair-strong);color:var(--dim)}
 .jst.subject{color:var(--accent-txt);border-color:rgba(var(--accent-rgb),.55);background:rgba(var(--accent-rgb),.10)}
@@ -144,8 +179,7 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
 .jx a:hover{color:var(--ink);border-color:rgba(var(--accent-rgb),.5);background:rgba(var(--accent-rgb),.06)}
 .jx.none{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.02em;max-width:60ch;line-height:1.5}
 .jfoot .provpill{margin-top:0}
-.backmap{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-left:auto;text-decoration:none;transition:color .15s}
-.backmap:hover{color:var(--accent-txt)}
+.jfoot .provpill{margin-left:auto}
 </style>
 </head>
 <body data-accent="violet">
@@ -218,13 +252,13 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="boot" id="boot" data-boot="› the atlas · 19 jurisdictions · 1 subject · 14 comparators · 4 expansion †"></div>
     <div class="cat rv">◇ Interactive · the field behind the report <span class="tag-new" title="Newly built page — for Carlo's review">NEW — for review</span></div>
     <h1 class="rv d1">Where the playbook comes from.</h1>
-    <div class="tag rv d1">Every mechanism this report recommends was borrowed from somewhere. <strong>The Atlas is the map of where.</strong> Canada is the subject; fourteen peer economies and four fainter expansion comparators complete the field. Click any country — on the world map or the enlarged European inset — to open its panel: the key metrics the vault tracks, and the initiatives it runs to support <em>public and private markets, growth companies, domestic scaling and innovation.</em></div>
+    <div class="tag rv d1">Every mechanism this report recommends was borrowed from somewhere. <strong>The Atlas is the map of where.</strong> Canada is the subject; fourteen peer economies and four fainter expansion comparators complete the field. Click any country — on the world map, or open the <em>Zoom: Europe</em> overlay for the crowded European cluster — to open its panel: the key metrics the vault tracks, and the initiatives it runs to support <em>public and private markets, growth companies, domestic scaling and innovation.</em></div>
 
     <div class="mapstage rv d2" id="atlas-map">
       <div class="mapgrid">
         <div class="mapcard">
-          <div class="cap">The field · 19 jurisdictions</div>
-          <svg viewBox="0 0 980 500" id="worldmap" role="img" aria-label="World map of the 19 atlas jurisdictions. Canada is highlighted as the subject; fourteen comparators and four fainter expansion comparators are marked. Each country links to its detail panel below.">
+          <div class="cap caprow">The field · 19 jurisdictions<a class="euzoom-open" id="euzoomOpen" href="#eu-zoom" role="button" aria-haspopup="dialog" aria-controls="eu-zoom" aria-expanded="false"><span class="z" aria-hidden="true">⤢</span> Zoom: Europe</a></div>
+          <svg viewBox="45 6 858 398" id="worldmap" role="img" aria-label="World map of the 19 atlas jurisdictions. Canada is highlighted as the subject; fourteen comparators and four fainter expansion comparators are marked. Each country links to its detail panel below.">
 <defs>
   <linearGradient id="g-ca" x1="0" y1="0" x2="1" y2="1">
     <stop offset="0" stop-color="var(--accent-deep)"/>
@@ -251,8 +285,10 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
 <a href="#jd-no" class="jlink" aria-label="Norway — jump to detail"><path id="j-no" class="map-j exp" data-j="no" d="M549.9,46.3L546.9,47.3L545.4,47.5L545.8,45.8L543.2,44.8L540.3,45.6L539.7,47.4L538.1,48.5L535.9,47.9L533.4,48.1L531.0,46.7L530.0,47.4L528.8,47.5L528.7,49.2L525.0,48.7L524.7,50.2L522.8,50.1L520.0,54.8L517.2,58.4L518.1,59.3L517.4,60.3L515.4,60.3L514.3,62.7L514.7,66.3L516.1,67.6L515.7,70.8L514.0,72.6L513.2,74.2L511.7,72.5L507.7,75.6L504.9,76.3L502.0,74.9L501.1,72.0L500.3,65.8L502.1,64.1L507.4,61.9L511.2,59.2L518.9,50.7L526.9,45.6L530.9,44.5L534.1,44.7L536.7,42.6L540.2,42.7L543.5,42.2L549.8,44.0L547.5,44.7L549.9,46.3Z"/></a>
 <a href="#jd-ee" class="jlink" aria-label="Estonia — jump to detail"><path id="j-ee" class="map-j exp" data-j="ee" d="M548.7,72.5L549.1,73.0L547.8,74.5L548.8,77.1L548.1,77.9L546.3,77.9L544.3,76.9L543.3,76.6L541.6,77.1L541.6,75.4L540.9,75.8L539.4,74.8L539.0,73.3L541.6,72.5L544.2,72.1L546.5,72.6L548.7,72.5Z"/></a>
 
+<a href="#eu-zoom" class="inset-a" id="euzoomFrame" role="button" aria-controls="eu-zoom" aria-expanded="false" aria-label="Zoom in on the European comparator cluster">
 <rect class="inset-frame" x="462" y="37" width="99" height="94" rx="7"/>
-<text class="inset-tag" x="462" y="30">Europe ▸ enlarged in the inset</text>
+<text class="inset-tag" x="462" y="30">Europe ▸ tap to enlarge</text>
+</a>
 <g class="markers">
 <a href="#jd-au" class="mklink" aria-label="Australia — jump to detail"><circle class="mk" cx="822.4" cy="321.8" r="3.1"/><text class="mk-lab" x="827.9" y="325.2">AU</text></a>
 <a href="#jd-ca" class="mklink" aria-label="Canada — jump to detail"><circle class="mk subject" cx="307.6" cy="113.3" r="3.1"/><text class="mk-lab" x="313.1" y="116.7">CA</text></a>
@@ -276,8 +312,13 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
 </g>
 </svg>
         </div>
-        <div class="mapcard">
-          <div class="cap">Europe · the comparator cluster, enlarged</div>
+        <div class="euzoom" id="eu-zoom" role="dialog" aria-modal="true" aria-labelledby="euzoomTitle">
+          <a class="euzoom-scrim" href="#atlas-map" tabindex="-1" aria-label="Close the Europe zoom overlay"></a>
+          <div class="euzoom-panel" role="document">
+            <div class="euzoom-head">
+              <div class="cap" id="euzoomTitle">Europe · the comparator cluster, enlarged</div>
+              <a class="euzoom-x" id="euzoomClose" href="#atlas-map" aria-label="Close the Europe zoom overlay">✕ Close</a>
+            </div>
           <svg viewBox="0 0 420 360" id="europemap" role="img" aria-label="Enlarged inset of the eleven European atlas jurisdictions, each linking to its detail panel below.">
 <path class="map-bg" d="M41.9,347.5L45.2,340.2L52.3,340.3L57.8,345.3L66.9,344.5L76.7,347.1L80.9,347.2L90.3,340.7L100.7,338.7L106.9,333.8L116.1,330.2L132.3,328.1L148.1,327.2L152.8,328.9L161.9,324.3L172.0,324.2L175.8,326.9L182.3,326.2L192.7,321.4L199.3,322.9L199.1,328.8L207.1,324.5L207.8,326.8L203.0,332.5L203.0,338.0L206.3,340.9L205.2,349.2L40.9,349.2L41.9,347.5ZM403.8,329.8L393.5,329.4L391.6,334.3L385.1,335.7L375.5,329.4L365.1,329.6L358.9,317.9L351.6,311.3L355.8,302.2L349.5,296.5L359.3,285.3L373.7,284.8L377.0,275.9L394.9,277.5L402.5,272.1L406.8,332.1L403.8,329.8ZM395.5,216.4L394.5,212.1L386.3,213.5L383.4,219.8L377.0,228.4L377.4,231.4L373.2,233.9L370.3,232.8L368.7,246.8L364.3,251.7L361.4,260.0L364.8,266.7L366.2,271.2L374.6,275.0L373.1,277.8L362.1,278.5L358.3,282.1L350.8,288.4L347.6,283.0L347.6,280.6L341.9,280.2L336.9,279.1L325.8,282.2L332.6,288.8L327.9,290.7L322.7,290.7L317.4,284.6L315.8,287.2L318.2,294.2L323.1,299.8L319.7,302.3L325.1,307.8L330.0,311.2L330.4,317.8L321.5,314.7L324.5,320.7L318.6,322.0L322.6,332.4L316.2,332.5L308.3,327.4L304.4,318.0L302.5,310.1L293.6,298.0L292.8,294.6L291.2,293.8L290.9,291.2L285.6,287.3L284.6,281.7L285.2,273.7L286.3,270.1L284.7,268.2L282.7,267.3L280.0,263.5L275.9,261.2L267.1,256.8L261.7,252.6L253.1,249.2L245.2,240.6L247.1,239.7L242.8,234.8L242.6,230.9L236.7,229.1L233.9,234.1L231.2,230.2L231.3,226.2L233.7,224.9L226.4,223.3L219.0,227.4L219.5,233.1L218.4,236.4L221.5,242.4L230.2,248.2L234.9,257.9L245.4,267.3L252.6,267.2L255.0,269.8L252.4,272.1L267.8,279.9L275.9,286.1L277.0,288.2L275.3,292.5L270.0,287.0L261.8,285.0L258.0,292.6L264.9,297.0L263.9,303.1L260.0,303.8L255.1,313.9L251.2,314.8L251.2,311.2L253.0,304.9L255.0,302.4L251.2,295.6L248.2,289.7L244.3,288.2L241.5,283.1L235.5,281.0L231.4,276.3L224.5,275.5L217.1,270.2L208.6,262.6L202.3,255.9L199.5,244.4L194.9,243.0L187.4,239.2L183.2,240.7L177.8,246.1L174.0,247.0L175.1,241.9L170.1,240.5L167.9,231.5L171.1,227.9L168.5,223.6L169.0,220.3L172.8,222.8L177.3,222.2L182.4,218.3L184.0,220.2L188.3,219.8L190.3,215.1L197.0,216.6L201.1,214.6L201.8,209.9L197.2,209.6L193.1,207.5L194.5,204.7L194.1,202.6L196.9,202.0L201.4,205.2L202.7,202.1L210.7,202.6L217.2,200.6L221.5,200.9L224.3,203.3L225.1,201.3L223.8,193.8L227.0,192.4L230.1,187.1L225.0,182.2L220.4,179.4L219.5,174.6L217.9,171.3L224.3,168.8L227.6,165.9L233.9,163.7L236.1,161.6L238.5,162.9L242.4,161.7L238.6,154.5L239.3,150.6L237.0,144.6L233.7,140.6L236.1,137.6L234.0,131.9L239.9,128.6L253.3,123.5L264.1,119.7L272.8,121.6L273.5,124.3L281.9,124.4L283.6,119.5L295.4,115.9L293.0,106.7L292.9,98.4L296.7,91.5L304.4,87.8L311.7,95.9L318.5,95.7L319.5,87.3L326.6,85.4L330.4,86.8L338.0,90.8L345.0,90.8L348.4,87.4L344.9,77.2L350.3,71.0L348.8,69.1L357.7,63.2L348.5,58.1L364.6,44.5L371.5,38.4L373.9,33.0L361.0,25.8L363.5,19.0L355.3,11.3L355.5,10.8L374.9,10.8L397.9,216.8L395.5,216.4ZM123.7,275.8L111.7,278.3L110.7,282.3L104.7,288.8L100.7,298.3L104.1,305.1L98.5,310.3L96.1,318.0L88.9,320.3L81.8,329.4L69.7,329.6L60.7,329.4L54.5,333.5L50.6,338.0L46.0,337.0L42.7,333.0L40.4,326.2L31.6,324.4L27.6,327.5L22.7,325.8L17.7,327.1L19.8,317.9L19.3,310.6L15.2,309.5L13.2,305.1L14.5,297.4L18.6,293.1L19.6,288.4L22.0,281.3L22.2,276.3L20.6,272.1L20.5,268.2L21.6,259.8L18.2,254.8L31.9,246.4L43.0,248.5L55.4,248.4L65.1,250.4L72.8,249.8L87.7,250.2L91.2,254.7L108.0,260.0L111.5,257.5L121.7,262.8L132.5,261.2L132.8,268.0L123.7,275.8ZM138.9,159.0L145.4,159.9L153.6,157.5L159.1,162.5L163.9,165.1L162.7,172.8L164.4,175.4L163.8,180.4L161.2,180.6L159.3,179.6L151.6,174.4L147.0,175.3L140.9,170.0L137.0,165.4L132.9,165.2L131.7,161.2L138.9,159.0ZM249.6,311.0L246.3,320.3L247.8,324.0L245.8,330.1L238.5,325.6L233.7,324.3L220.4,318.3L221.7,312.3L232.8,313.4L249.6,311.0ZM190.1,276.0L195.7,284.4L194.3,299.9L190.0,299.2L186.2,303.1L182.6,300.0L182.4,285.8L180.3,279.1L185.4,279.7L190.1,276.0ZM353.0,345.7L352.0,349.1L351.2,349.2L338.3,349.2L338.3,348.2L326.5,345.9L328.1,340.9L333.5,344.8L340.9,344.2L348.0,345.0L347.9,347.1L353.0,345.7Z"/>
 <a href="#jd-uk" class="jlink" aria-label="United Kingdom — jump to detail"><path id="je-uk" class="map-j" data-j="uk" d="M50.9,128.4L45.5,128.5L47.9,122.5L46.7,116.6L53.9,116.1L62.6,123.0L57.3,130.7L50.9,128.4ZM83.9,135.8L85.6,129.4L80.2,122.3L69.9,120.4L68.1,117.4L71.6,112.4L69.1,109.4L64.0,114.6L64.4,104.0L60.6,98.4L64.8,87.1L72.1,78.3L78.8,79.1L89.0,78.2L79.0,90.0L87.8,88.5L97.1,88.5L94.2,97.4L85.8,107.3L94.6,108.0L102.0,122.2L107.8,124.0L112.4,136.7L114.7,141.2L125.2,143.3L123.8,150.5L119.2,153.8L122.4,159.6L114.2,165.6L102.3,165.5L87.0,168.6L83.0,166.4L76.8,171.7L68.6,170.4L62.1,174.7L57.5,172.5L71.4,160.5L79.5,158.1L65.8,156.2L63.6,151.7L73.1,148.2L68.8,142.2L71.0,134.8L83.9,135.8Z"/></a>
@@ -306,6 +347,8 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
 <a href="#jd-uk" class="mklink" aria-label="United Kingdom — jump to detail"><circle class="mk" cx="93.1" cy="140.4" r="3.4"/><text class="mk-lab" x="98.6" y="144.0">UK</text></a>
 </g>
 </svg>
+          <p class="euzoom-hint">Eleven European comparators, enlarged. Every marker and country links to its panel below — following one closes this overlay. Press <b>Esc</b> or ✕&nbsp;Close to return to the map.</p>
+          </div>
         </div>
       </div>
 
@@ -323,7 +366,7 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
         <span><i class="k-core"></i> Comparator (14)</span>
         <span><i class="k-exp"></i> Expansion comparator † (4)</span>
       </div>
-      <p class="maphint"><b>How to read it.</b> Canada glows as the subject; the fourteen comparators are tinted; the four expansion comparators are dashed and dim (thinner, ⚠️-flagged vault data). Singapore has no polygon at this map scale, so it appears as a marker only. Every country and marker is a link — it works with JavaScript off.</p>
+      <p class="maphint"><b>How to read it.</b> Canada glows as the subject; the fourteen comparators are tinted; the four expansion comparators are dashed and dim (thinner, ⚠️-flagged vault data). Singapore has no polygon at this map scale, so it appears as a marker only. The European cluster is crowded at world scale, so the dashed frame over Europe — or the <b>Zoom: Europe</b> control above — opens an enlarged overlay of all eleven European comparators. Every country and marker is a link — it all works with JavaScript off.</p>
       <a class="provpill" href="methodology.html#register" data-prov="atlas"><span class="o"></span>the map &amp; the data</a>
     </div>
 
@@ -335,7 +378,7 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
 <div class="regintro"></div>
 <section class="jsec subject" id="jd-ca" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Canada</h3>
       <span class="jst subject">◆ Subject</span>
     </div>
@@ -360,13 +403,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="financing-gap.html">The Financing Gap</a> <a href="growth-prize.html">The Growth Prize</a> <a href="public-markets.html">Public Markets</a> <a href="exchanges.html">The Exchanges</a> <a href="champions.html">The Champions</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-ca"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-us" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">United States</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -388,13 +430,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a> <a href="global-exchanges.html">Global Exchanges</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-us"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-uk" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">United Kingdom</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -416,13 +457,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-uk"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-se" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Sweden</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -445,13 +485,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a> <a href="cases/spotify.html">Case · Spotify</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-se"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-il" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Israel</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -473,13 +512,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-il"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-fr" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">France</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -501,13 +539,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a> <a href="cases/mistral.html">Case · Mistral</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-fr"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-kr" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">South Korea</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -529,13 +566,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a> <a href="global-exchanges.html">Global Exchanges</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-kr"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-jp" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Japan</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -557,13 +593,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a> <a href="global-exchanges.html">Global Exchanges</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-jp"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-tw" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Taiwan</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -586,13 +621,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-tw"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-au" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Australia</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -613,13 +647,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a> <a href="cases/canva.html">Case · Canva</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-au"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-sg" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Singapore</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -641,13 +674,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-sg"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-nl" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Netherlands</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -668,13 +700,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-nl"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-dk" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Denmark</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -695,13 +726,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-dk"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-fi" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Finland</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -721,13 +751,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-fi"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec" id="jd-de" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Germany</h3>
       <span class="jst core">Comparator</span>
     </div>
@@ -747,7 +776,6 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx"><a href="comparators.html">The Comparators</a> <a href="what-works.html">What Works Abroad</a></div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-de"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
@@ -760,7 +788,7 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
 </div>
 <section class="jsec exp" id="jd-ch" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Switzerland</h3>
       <span class="jst exp">† Expansion comparator</span>
     </div>
@@ -780,13 +808,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx none">Not charted on the site — held back for its ⚠️ unreconciled bases (see the source panel).</div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-ch"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec exp" id="jd-ie" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Ireland</h3>
       <span class="jst exp">† Expansion comparator</span>
     </div>
@@ -807,13 +834,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx none">Not charted on the site — held back for its ⚠️ unreconciled bases (see the source panel).</div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-ie"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec exp" id="jd-ee" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Estonia</h3>
       <span class="jst exp">† Expansion comparator</span>
     </div>
@@ -834,13 +860,12 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx none">Not charted on the site — held back for its ⚠️ unreconciled bases (see the source panel).</div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-ee"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
 <section class="jsec exp" id="jd-no" data-rev>
   <div class="wrap">
-    <div class="jhead rv">
+    <div class="jhead rv"><a class="jback" href="#atlas-map" aria-label="Back to the map to choose another jurisdiction"><span class="ar" aria-hidden="true">↑</span> Back to map</a>
       <h3 class="jname">Norway</h3>
       <span class="jst exp">† Expansion comparator</span>
     </div>
@@ -861,7 +886,6 @@ html[data-theme="light"] .map-j.exp{opacity:.22}
     <div class="jfoot rv d2">
       <div class="jx none">Not charted on the site — held back for its ⚠️ unreconciled bases (see the source panel).</div>
       <a class="provpill" href="methodology.html#register" data-prov="jd-no"><span class="o"></span>sources &amp; confidence</a>
-      <a class="backmap" href="#atlas-map">↑ back to the map</a>
     </div>
   </div>
 </section>
@@ -939,6 +963,44 @@ window.PROV = {
     };
     window.addEventListener("hashchange",flash,false);
     if(location.hash) setTimeout(flash,60);
+  }catch(e){}
+})();
+</script>
+<script>
+/* Europe-zoom overlay enhancement — vanilla, try/catch, no external scripts, no storage.
+   The overlay is fully functional with JS OFF: the "Zoom: Europe" control and the on-map
+   dashed frame are SVG/HTML <a href="#eu-zoom"> links; CSS .euzoom:target reveals it; the
+   ✕/scrim links (href="#atlas-map") and every European jurisdiction link (href="#jd-xx")
+   close it natively by changing :target. This layer only adds aria-expanded mirroring,
+   Esc-to-close and focus handling. */
+(function(){
+  try{
+    var ov=document.getElementById("eu-zoom");
+    if(!ov) return;
+    var openers=[document.getElementById("euzoomOpen"),document.getElementById("euzoomFrame")];
+    var closeBtn=document.getElementById("euzoomClose");
+    var lastOpener=null;
+    var isOpen=function(){ return (location.hash||"").replace("#","")==="eu-zoom"; };
+    var setExp=function(v){ for(var i=0;i<openers.length;i++){ try{ if(openers[i]) openers[i].setAttribute("aria-expanded",v?"true":"false"); }catch(e){} } };
+    var focusSafe=function(el){ try{ if(el) el.focus({preventScroll:true}); }catch(e){ try{ if(el) el.focus(); }catch(e2){} } };
+    for(var i=0;i<openers.length;i++){ (function(o){ if(!o) return; try{ o.addEventListener("click",function(){ lastOpener=o; },false); }catch(e){} })(openers[i]); }
+    var sync=function(){
+      try{
+        if(isOpen()){ setExp(true); setTimeout(function(){ focusSafe(closeBtn); },30); }
+        else{ setExp(false); }
+      }catch(e){}
+    };
+    window.addEventListener("hashchange",sync,false);
+    document.addEventListener("keydown",function(e){
+      try{
+        if((e.key==="Escape"||e.key==="Esc"||e.keyCode===27) && isOpen()){
+          e.preventDefault();
+          location.hash="atlas-map";
+          setTimeout(function(){ focusSafe(lastOpener||openers[0]); },30);
+        }
+      }catch(e){}
+    },false);
+    sync();
   }catch(e){}
 })();
 </script>

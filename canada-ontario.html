@@ -13,7 +13,10 @@
 <style>
 /* Page-scoped components (token-driven only — no literal hex; every colour a var()).
    1. .sctgrid — the compact 9-sector row (§03), names + one figure each; growth-sectors owns detail.
-   2. .invgrid / .invcol / .invside / .prog — the typed policy-scaffolding inventory (§07),
+   2. .invgrid / .invcol / .invside / .invprog — the typed policy-scaffolding inventory (§07).
+      NB: the program block is .invprog (NOT .prog) — .prog is the shared shell's fixed
+      scroll-progress bar in styles.css; reusing it here would fixed-position every block to
+      the top-left corner. Keep these namespaced.
       federal|provincial columns × capital-side|innovation-side subheads.
    3. .sidetag — the capital-side (accent) vs innovation-side (grey) type chip. Accent = capital
       MOVING money through the system; grey = R&D / IP / talent / regulatory infrastructure — the
@@ -28,11 +31,11 @@
 .invcol{min-width:0}
 .invhead{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);padding:22px 0 4px;font-weight:700}
 .invside{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:22px;padding-bottom:6px;border-bottom:1px solid var(--hair)}
-.prog{padding:16px 0 15px;border-bottom:1px solid var(--hair)}
-.prog .pn{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:16.5px;letter-spacing:-.01em}
-.prog .pm{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--accent-txt);margin-top:5px;text-transform:uppercase}
-.prog .pd{font-size:13.5px;color:var(--body);line-height:1.56;margin-top:8px;max-width:52ch}
-.prog .pd b{color:var(--ink)}
+.invprog{padding:16px 0 15px;border-bottom:1px solid var(--hair)}
+.invprog .pn{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:16.5px;letter-spacing:-.01em}
+.invprog .pm{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--accent-txt);margin-top:5px;text-transform:uppercase}
+.invprog .pd{font-size:13.5px;color:var(--body);line-height:1.56;margin-top:8px;max-width:52ch}
+.invprog .pd b{color:var(--ink)}
 .sidetag{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:1px 7px;border-radius:20px;vertical-align:middle;margin-left:8px}
 .sidetag.cap{color:var(--accent-txt);border:1px solid rgba(var(--accent-rgb),.4)}
 .sidetag.inn{color:var(--dim);border:1px solid var(--hair-strong)}
@@ -336,49 +339,49 @@
         <div class="invhead rv d1">Federal</div>
 
         <div class="invside rv d1">Capital-side</div>
-        <div class="prog rv d1">
+        <div class="invprog rv d1">
           <div class="pn">VCAP → VCCI → VCCI 4.0 <span class="sidetag cap">capital</span></div>
           <div class="pm">BDC · 2013 / 2017 / 2021 / 2026-27</div>
           <div class="pd">The federal venture fund-of-funds lineage — <b>C$1.4B</b> (VCAP, 3.7:1), <b>C$1.9B</b> (VCCI 2017, 5.1:1), C$450M (VCCI 2021), <b>C$1B/3yr</b> (VCCI 4.0). Mobilises pension and institutional VC.</div>
         </div>
-        <div class="prog rv d1">
+        <div class="invprog rv d1">
           <div class="pn">BDC Capital — LP role <span class="sidetag cap">capital</span></div>
           <div class="pm">Federal · 2023 snapshot</div>
           <div class="pd">LP in funds representing <b>62% of capital actively invested in Canada</b>; AUM CAD 6.9bn (2024) from CAD 0.8bn (2011). The single most important "who backs Canadian VC" fact.</div>
         </div>
-        <div class="prog rv d2">
+        <div class="invprog rv d2">
           <div class="pn">Early Growth-Stage Strategy <span class="sidetag cap">capital</span></div>
           <div class="pm">Federal · C$750M over 3 years</div>
           <div class="pd">Explicitly aimed at the scale-up funding gap; programme details due in 2026.</div>
         </div>
-        <div class="prog rv d2">
+        <div class="invprog rv d2">
           <div class="pn">Flow-Through Shares <span class="sidetag cap">capital</span></div>
           <div class="pm">Federal · since 1972 · METC 2000 · CMETC 2022</div>
           <div class="pd">A uniquely Canadian tax-based financing tool letting resource explorers monetise exploration-expense deductions through investors. (Three FTS fiscal-envelope figures exist across the vault, measuring different things — cited here structurally, not as a single dollar number.)</div>
         </div>
-        <div class="prog rv d2">
+        <div class="invprog rv d2">
           <div class="pn">Capital Pool Company (CPC) <span class="sidetag cap">capital</span></div>
           <div class="pm">TSXV structural · 161 live (May 2026)</div>
           <div class="pd">A shell-company listing vehicle unique to the TSXV; 79 former CPCs have graduated to the TSX (median cap C$398M).</div>
         </div>
 
         <div class="invside rv d1">Innovation-side</div>
-        <div class="prog rv d1">
+        <div class="invprog rv d1">
           <div class="pn">SR&amp;ED enhancements <span class="sidetag inn">innovation</span></div>
           <div class="pm">Budget 2025</div>
           <div class="pd">Canada's foundational R&amp;D tax credit, expanded — 35% refundable-credit limit raised to <b>C$6M</b> (from C$3M) for CCPCs; capital-expenditure eligibility restored.</div>
         </div>
-        <div class="prog rv d1">
+        <div class="invprog rv d1">
           <div class="pn">AI for All <span class="sidetag inn">innovation</span> <span class="sidetag cap">capital</span></div>
           <div class="pm">Federal · launched Jun 4, 2026 · ~C$2.3B</div>
           <div class="pd">The national AI strategy (6 pillars) succeeding the 2017 Pan-Canadian strategy. Pillar 5 is the capital-formation pillar: a <b>C$500M Canadian Tech Growth Fund</b> (federal equity stakes in AI scale-ups) + C$130M commercialisation + C$700M compute-access expansion.</div>
         </div>
-        <div class="prog rv d2">
+        <div class="invprog rv d2">
           <div class="pn">Sovereign AI Compute Strategy <span class="sidetag inn">innovation</span></div>
           <div class="pm">Federal · Budgets 2024–25 · ~C$2B/5yr</div>
           <div class="pd">Domestic AI-compute buildout — SCIP, the AI Compute Challenge, and a Compute Access Fund.</div>
         </div>
-        <div class="prog rv d2">
+        <div class="invprog rv d2">
           <div class="pn">Quantum Champions (CQCP) <span class="sidetag inn">innovation</span></div>
           <div class="pm">Budget 2025 · C$334.3M/5yr</div>
           <div class="pd">Phase 1 = C$92M to four firms (Anyon, Nord Quantique, Photonic, Xanadu). Explicit Canadian-HQ and hiring-retention conditions attached — a retention-conditionality template.</div>
@@ -390,29 +393,29 @@
         <div class="invhead rv d1">Provincial (Ontario) &amp; regulatory</div>
 
         <div class="invside rv d1">Capital-side</div>
-        <div class="prog rv d1">
+        <div class="invprog rv d1">
           <div class="pn">Invest Ontario <span class="sidetag cap">capital</span></div>
           <div class="pm">Ontario · Fund C$1.3B (after +C$600M, Budget 2025)</div>
           <div class="pd">The province's flagship FDI / manufacturing-attraction capital tool — e.g. Element5 mass-timber (C$8M toward ~C$107M), Ranovus and VueReal co-investments.</div>
         </div>
 
         <div class="invside rv d1">Innovation-side</div>
-        <div class="prog rv d1">
+        <div class="invprog rv d1">
           <div class="pn">O-AMP / AMIC <span class="sidetag inn">innovation</span></div>
           <div class="pm">Ontario · O-AMP renewed +3yr, C$12M (Budget 2025)</div>
           <div class="pd">SME manufacturing productivity and technology-adoption grants.</div>
         </div>
-        <div class="prog rv d2">
+        <div class="invprog rv d2">
           <div class="pn">OSC Strategic Plan 2024–2030 <span class="sidetag inn">innovation</span></div>
           <div class="pm">Ontario regulator · May 3, 2024</div>
           <div class="pd"><b>Capital formation is now a statutory OSC mandate item</b> (2022 CMMT-driven expansion); a new <b>Office of Economic Growth and Innovation</b> (a partial SEC-Advocate counterpart); Goal 5 commits to capital-formation pilots — and the plan explicitly diagnoses the stay-private / IPO-decline trend, a regulator-level endorsement of this report's own thesis.</div>
         </div>
-        <div class="prog rv d2">
+        <div class="invprog rv d2">
           <div class="pn">Kanata North cluster <span class="sidetag inn">innovation</span></div>
           <div class="pm">Ottawa · ~C$17.9B output · 800+ firms</div>
           <div class="pd">A second national tech cluster anchored by federal defence/security proximity and Nortel-lineage photonics depth. The Strengths page owns the full treatment. <a href="strengths.html" style="border-bottom:1px solid rgba(var(--accent-rgb),.4)">Strengths §06 →</a></div>
         </div>
-        <div class="prog rv d2">
+        <div class="invprog rv d2">
           <div class="pn">CSA Self-Certified Investor Exemption <span class="sidetag cap">capital</span></div>
           <div class="pm">CSA · proposed Sep 2025 · C$50k/yr cap</div>
           <div class="pd">Would widen private-placement access for non-accredited investors meeting education/employment criteria. <b>Proposed, not yet enacted</b> — the one forward-looking item, flagged as such.</div>

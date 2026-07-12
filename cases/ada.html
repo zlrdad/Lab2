@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ada — Case Study · Canada's Champions</title>
+<meta name="description" content="Ada case study: Toronto's applied-AI customer-service champion — HQ, founders and brand still Canadian, but every growth-stage dollar came from US funds. Retained for now; flight-exposed by its cap table, customer base and exit options.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+/* ============================================================================
+   CASE-STUDY REGISTER — scoped, shared across cases/*.html (duplicated verbatim; see
+   cases/README-cases.md §7). Descends from the Waabi / Xanadu POCs. Tokens only —
+   no literal hex except the four reserved semantic status colours below.
+   ============================================================================ */
+body{--st-stay:#2fe6cd;--st-left:#ffb454;--st-acq:#9d8bff;--st-fail:#ff5d6c}
+html[data-theme="light"] body{--st-stay:#0e8a79;--st-left:#8f5400;--st-acq:#5b3fd0;--st-fail:#c62839}
+body.v-stay{--sc:var(--st-stay)}body.v-left{--sc:var(--st-left)}body.v-acq{--sc:var(--st-acq)}body.v-fail{--sc:var(--st-fail)}
+.topbar .back{color:var(--dim);text-decoration:none}
+.topbar .back:hover{color:var(--accent-txt)}
+.statusbadge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sc);border:1px solid var(--sc);border-radius:22px;padding:6px 15px;line-height:1;margin:6px 0 0}
+.statusbadge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sc);box-shadow:0 0 10px var(--sc);flex:0 0 auto}
+.hero-verdict{font-size:clamp(17px,2.3vw,22px);color:var(--body);max-width:60ch;line-height:1.5;margin-top:22px}
+.hero-verdict b{color:var(--ink)}
+.casefig{margin-top:48px;display:flex;flex-direction:column;gap:8px}
+.casefig .n{font-family:var(--disp);font-weight:700;color:var(--accent);font-size:clamp(52px,10vw,116px);line-height:.9;letter-spacing:-.035em;font-variant-numeric:tabular-nums;text-shadow:var(--numeral-glow)}
+.casefig .cap{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.casefig .l{font-size:14.5px;color:var(--body);max-width:54ch;line-height:1.55;margin-top:4px}
+html[data-theme="light"] .casefig .n{text-shadow:none}
+.captl{margin-top:34px;position:relative;padding-left:30px}
+.captl::before{content:"";position:absolute;left:6px;top:10px;bottom:10px;width:2px;background:linear-gradient(var(--accent),rgba(var(--accent-rgb),.12))}
+.capitem{position:relative;padding:0 0 30px}
+.capitem:last-child{padding-bottom:2px}
+.capitem::before{content:"";position:absolute;left:-30px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);box-shadow:0 0 10px rgba(var(--accent-rgb),.5)}
+.capitem.term::before{background:var(--sc);border-color:var(--sc);box-shadow:0 0 12px var(--sc)}
+.capitem .d{font-family:var(--mono);font-size:12px;color:var(--accent-txt);letter-spacing:.06em}
+.capitem .r{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:16.5px;margin:3px 0;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.capitem .a{font-family:var(--disp);font-weight:700;color:var(--accent);font-size:19px;font-variant-numeric:tabular-nums}
+.capitem.term .a{color:var(--sc)}
+.capitem .v{font-family:var(--mono);font-size:11.5px;color:var(--dim);margin-top:2px}
+.capitem .i{font-size:13.5px;color:var(--body);margin-top:8px;line-height:1.55;max-width:62ch}
+.capitem .i b{color:var(--ink)}
+.reported{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--left);border:1px solid var(--conf-soft-bd);border-radius:20px;padding:1px 7px}
+.moment{border-left:3px solid var(--accent);padding:6px 0 6px 26px;margin-top:16px;max-width:68ch}
+.moment .mt{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(20px,2.8vw,30px);line-height:1.22;letter-spacing:-.015em}
+.moment .mw{font-size:15.5px;color:var(--body);margin-top:16px;line-height:1.7}
+.moment .mw b{color:var(--ink)}
+.moment .ms{font-size:14.5px;color:var(--body);margin-top:14px;line-height:1.65}
+.moment .ms b{color:var(--accent-txt)}
+.vbox{border:1px solid var(--hair-strong);border-left:3px solid var(--sc);border-radius:14px;padding:26px 30px;margin-top:22px;background:linear-gradient(180deg,var(--band),transparent);max-width:72ch}
+.vbox .vb{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sc);border:1px solid var(--sc);border-radius:22px;padding:5px 14px;line-height:1;margin-bottom:16px}
+.vbox .vb::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sc);flex:0 0 auto}
+.vbox .vh{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(18px,2.3vw,24px);line-height:1.32;margin-bottom:12px}
+.vbox .vd{font-size:14.5px;color:var(--body);line-height:1.7}
+.vbox .vd b{color:var(--ink)}
+</style>
+</head>
+<body data-accent="violet" class="v-stay">
+<div class="prog" id="prog"></div>
+
+<div class="topbar">
+  <span class="tb-l brand"><span class="dot"></span><a class="back" href="../champions.html">← The Champions</a> · <b>Ada</b></span>
+    <span class="tb-r">
+    <span class="links">
+      <a href="../index.html">Overview</a>
+      <a href="../champions.html">The Champions</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+    <details class="navsheet" id="navSheet">
+      <summary class="navtrigger" aria-haspopup="dialog" aria-controls="navSheetPanel" aria-expanded="false" aria-label="Open navigation menu">
+      <svg class="nic nic-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg class="nic nic-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+        <span class="ntl"></span>
+      </summary>
+      <nav class="sheet" id="navSheetPanel" aria-label="Report navigation">
+        <div class="sheet-inner">
+          <a class="allcases" href="../champions.html"><span class="sn">‹</span><span class="st">All case studies</span></a>
+          <p class="sheet-lab">Chapters</p>
+          <a href="../index.html"><span class="sn">◇</span><span class="st">Overview</span></a>
+          <a href="../canada-ontario.html"><span class="sn">◇</span><span class="st">Profile</span></a>
+          <a href="../growth-prize.html"><span class="sn">01</span><span class="st">The Prize</span></a>
+          <a href="../strengths.html"><span class="sn">02</span><span class="st">Strengths</span></a>
+          <a href="../growth-sectors.html"><span class="sn">03</span><span class="st">Sectors</span></a>
+          <a href="../public-markets.html"><span class="sn">04</span><span class="st">Public Markets</span></a>
+          <a href="../financing-gap.html"><span class="sn">05</span><span class="st">The Gap</span></a>
+          <a href="../what-works.html"><span class="sn">06</span><span class="st">What Works</span></a>
+          <a href="../comparators.html"><span class="sn">07</span><span class="st">Comparators</span></a>
+          <a href="../champions.html"><span class="sn">08</span><span class="st">Champions</span></a>
+          <a href="../recommendations.html"><span class="sn">09</span><span class="st">Recommendations</span></a>
+          <a href="../methodology.html"><span class="sn">10</span><span class="st">Methodology</span></a>
+          <p class="sheet-lab">Data</p>
+          <a href="../exchanges.html"><span class="sn">·</span><span class="st">Exchanges</span></a>
+          <a href="../global-exchanges.html"><span class="sn">·</span><span class="st">Global</span></a>
+          <a href="../atlas.html"><span class="sn">·</span><span class="st">Atlas</span></a>
+        </div>
+      </nav>
+    </details>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› case file · ada · applied-ai champion · us-led growth capital · sources verified"></div>
+    <div class="cat rv">◇ Case study · At risk · Applied AI / customer-service automation</div>
+    <h1 class="rv d1">Ada</h1>
+    <div class="statusbadge rv d1">Retained · flight-exposed</div>
+    <div class="hero-verdict rv d1">Toronto's <b>applied-AI</b> champion — an enterprise customer-service platform that reached unicorn status on <b>US growth capital</b>. HQ, founders and brand are still Canadian; the money, the customer base and the plausible exits all point south.</div>
+    <div class="casefig rv d2">
+      <div class="n">~US$1.2B</div>
+      <div class="cap">valuation · May 2021 Series C</div>
+      <div class="l">Last priced mark, 2021 — no primary round reported since, so the US$1.2–1.5B range is an estimate, not a confirmed valuation. ~US$200M raised seed → Series C · ~US$70M ARR (2024, indicative) · 350+ enterprise customers · Toronto HQ · private.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="scale"><span class="o"></span>source</a>
+    <div class="scrollcue rv d3"><span class="arr"></span>the capital journey</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE CAPITAL JOURNEY ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> The capital journey</div>
+    <h2 class="rv d1">Canadian at the seed — then every growth dollar came from the US.</h2>
+    <p class="lede rv d1">Ada disclosed roughly US$200M across seed to Series C. Canadian funds were present early (Version One, Leaders Fund), but from the Series B onward the lead cheques are entirely American — Accel, then Spark Capital and Tiger Global at the US$130M unicorn round.</p>
+    <div class="captl rv d2">
+      <div class="capitem">
+        <div class="d">2016 · Founded · Toronto</div>
+        <div class="r">Founders</div>
+        <div class="i">Founded by <b>Mike Murchison</b> (CEO) and <b>David Hariri</b> as Ada Support Inc. (trading as <b>Ada CX</b>) — an enterprise customer-service automation platform, HQ in Toronto.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">2017 · Seed</div>
+        <div class="r">Seed round</div>
+        <div class="i"><b>Bessemer Venture Partners</b> (US) with <b>Version One Ventures</b> (Canadian) and Burst Capital. Domestic capital is present at the earliest stage.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Dec 2018 · Series A</div>
+        <div class="r">Series A</div>
+        <div class="i"><b>FirstMark Capital</b> (US, lead) with <b>Leaders Fund</b> (Canadian). The last round in which a Canadian fund sits at the table — after this, domestic capital drops out of the lead.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Mar 2020 · Series B</div>
+        <div class="r">Series B</div>
+        <div class="i"><b>Accel</b> (US, lead). The growth stage arrives and the lead capital is now entirely American.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">May 2021 · Series C · the unicorn round</div>
+        <div class="r">Raise <span class="a">US$130M</span></div>
+        <div class="v">US$1.2B valuation (~C$1.7B) — joined the "unicorn club"</div>
+        <div class="i"><b>Spark Capital</b> (US, lead) and <b>Tiger Global</b>, with Accel, Bessemer and FirstMark. The value-defining round is 100% US-led.</div>
+      </div>
+      <div class="capitem term">
+        <div class="d">2021 → 2026 · Still Toronto, still private</div>
+        <div class="r">No new priced round</div>
+        <div class="v">2021 mark now stale; ~US$70M ARR (2024) <span class="reported">indicative</span></div>
+        <div class="i">No primary round reported since 2021; the 2021–22 SaaS reset likely compressed the mark. In 2024 Ada rebranded around an <b>LLM-native "AI Agent"</b> on its Ada Reasoning Engine. HQ, founders and brand remain Canadian — <b>retained, but on a US cap table</b>.</div>
+      </div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="journey"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 02 · THE DEFINING MOMENT ============ -->
+<section class="band alt tight" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> The defining moment</div>
+    <div class="moment rv d1">
+      <div class="mt">The growth-stage handoff.</div>
+      <div class="mw">Ada is a clean picture of the vault's <b>scale hypothesis</b>. It was seeded with Canadian participation — Version One at the seed, Leaders Fund at the Series A — but when it reached the value-defining rounds, <b>every growth-stage dollar came from US funds</b>: Accel at the Series B, then Spark Capital and Tiger Global leading the US$130M Series C that minted the US$1.2B unicorn. Canadian angels and seed capital exist; Canadian <em>growth</em> equity does not, so a scaling company imports US capital — and, with it, US influence over the timing and venue of an exit.</div>
+      <div class="ms"><b>Why it mattered:</b> Ada has <em>not</em> relocated — HQ, founders and brand are still in Toronto, distinguishing it from a completed loss like <b>Element AI</b>. But a US-led cap table, a US-weighted enterprise customer base (Verizon, Square, Meta, Pinterest) and US strategic acquirers across the agentic-customer-service category together create the standing conditions for a US exit. Ada is the <b>live</b> version of the flight dynamic, not a finished one.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="moment"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 03 · THE POLICY LENS ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> The policy lens</div>
+    <h2 class="rv d1">What would keep the applied-AI layer Canadian.</h2>
+    <p class="lede rv d1">Ada is retained for now, so the lens is which levers would deepen the anchor before the exit conditions bind — and where the vulnerabilities already sit.</p>
+    <div class="evlist">
+      <div class="evrow rv d1"><div class="et">Growth equity is entirely foreign <span class="es">the core gap — supply-side</span></div><div class="ed">Domestic funds led the seed and A; every dollar from the Series B up was US. Fund-of-funds + matching and institutional mobilization are the direct fix — <b>Lever ① Supply</b> (H-S1 / H-S2), with an investor tax incentive to crowd in (H-C1).</div></div>
+      <div class="evrow rv d1"><div class="et">Applied AI is where AI monetizes <span class="es">replicable — demand-side</span></div><div class="ed">Ada is a <em>deployed</em>, revenue-generating AI product, not AI branding. Government-as-customer procurement of domestic applied AI deepens commercial embeddedness — a <b>demand-side lever</b>.</div></div>
+      <div class="evrow rv d2"><div class="et">Exit path routes offshore <span class="es">the standing risk</span></div><div class="ed">The most plausible exits — acquisition by a US CX/CRM incumbent, or a US listing — send value and control south. Retention conditionality and anti-take-private tools sit at <b>Lever ③ Retention</b>; a credible TSX venue at <b>Lever ④ Liquidity</b>.</div></div>
+      <div class="evrow rv d2"><div class="et">Stale mark, no domestic anchor <span class="es">the open vulnerability</span></div><div class="ed">No priced round since 2021 and no domestic public-market holder mean nothing embeds Canadian institutions in the cap table. Category margin pressure (Sierra, Decagon, Intercom, Salesforce) sharpens the timing.</div></div>
+    </div>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="../recommendations.html"><div class="n">LEVER ① · SUPPLY (+ DEMAND)</div><div><div class="t">Domestic growth capital at Series B / C</div><div class="d">Fund-of-funds and institutional mobilization that can lead the growth rounds US funds now fill, plus procurement of domestic applied AI — the two levers Ada's cap table points straight at.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · REPLICABILITY VERDICT ============ -->
+<section class="band" data-rev>
+  <div class="wrap narrow">
+    <div class="kicker rv"><span class="l">04</span> Replicability verdict</div>
+    <h2 class="rv d1">Retained for now — but flight-exposed by design of the cap table.</h2>
+    <div class="vbox rv d1">
+      <span class="vb">Retained · flight-exposed</span>
+      <div class="vh">Seeded in Canada, scaled on American money.</div>
+      <div class="vd">Ada kept its HQ, founders and brand in Toronto and has <b>not</b> relocated — unlike Element AI, the applied-AI champion that was lost to ServiceNow. It fills the layer where AI actually monetizes, alongside <b>Cohere</b> (frontier) and <b>Waabi</b> (autonomy). But its growth equity is <b>entirely US-led</b>, its enterprise base is US-weighted, and the plausible exits — a US CX/CRM acquirer or a US listing — route control offshore. The replicable lever is domestic growth capital at the Series B/C stage; the risk is that with a stale 2021 mark and no domestic anchor, the standing conditions all point south.</div>
+    </div>
+    <div class="pull rv d2" style="margin-top:34px">
+      <div class="q">Ada was seeded in Canada and scaled on American money. Where it lists — or sells — will decide whether it stays.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="verdict"><span class="o"></span>source</a>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="../champions.html"><div class="n">← BACK</div><div><div class="t">The roster</div><div class="d">All ~34 champions, sorted by outcome.</div></div></a>
+      <a class="nextrow rv d1" href="element-ai.html"><div class="n">SIBLING · APPLIED-AI, LOST</div><div><div class="t">Element AI</div><div class="d">The applied-AI champion that took US capital and was lost — Ada's cautionary mirror, acquired by ServiceNow in 2020.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">Case study · Ada</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="../methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">ADA · CASE STUDY · AT RISK · static-first · opens from file:// · fully readable offline</p>
+</footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<script>
+window.PROV = {
+  scale:{
+    t:"Scale — the applied-AI champion",
+    meta:'<b>Ada case study</b> (Overview; Scale &amp; Trajectory).<ul>'
+      +'<li>Reached <b>unicorn status May 2021</b>: a US$130M Series C at a <b>US$1.2B</b> valuation (~C$1.7B).</li>'
+      +'<li>No priced primary round reported since — the US$1.2–1.5B framing is an <b>estimate</b>, not a confirmed current mark.</li>'
+      +'<li>ARR near <b>~US$70M</b> (~C$101M, 2024) per aggregators — indicative, not company-confirmed; <b>350+ enterprise customers</b> (Verizon, Square, Meta, Pinterest, YETI, Wealthsimple); Toronto HQ; private.</li>'
+      +'</ul>Sources cited: Ada blog / Bloomberg (May 2021, US$1.2B); Latka (ARR estimate); Tracxn / Contrary Research (customers). ARR/headcount are aggregator figures, treated as indicative.',
+    conf:"medium"
+  },
+  journey:{
+    t:"The capital journey",
+    meta:'<b>Ada case study</b> — Ownership &amp; Capital History (~US$200M disclosed, seed → Series C).<ul>'
+      +'<li><b>Seed (2017):</b> Bessemer (US), Version One Ventures (Canadian), Burst Capital.</li>'
+      +'<li><b>Series A (Dec 2018):</b> FirstMark Capital (US, lead), Leaders Fund (Canadian) — the last round with a Canadian fund.</li>'
+      +'<li><b>Series B (Mar 2020):</b> Accel (US, lead) — growth-stage capital turns entirely US.</li>'
+      +'<li><b>Series C (May 2021):</b> US$130M, Spark Capital (US, lead) &amp; Tiger Global, at US$1.2B — the value-defining round is 100% US-led.</li>'
+      +'</ul>Domicile tags: Spark, Tiger Global, Accel, Bessemer, FirstMark = US; Version One, Leaders Fund = Canadian. Seed/A/B round sizes are undisclosed. Sources cited: Crunchbase; CB Insights; RBCx; Private Capital Journal.',
+    conf:"medium"
+  },
+  moment:{
+    t:"The growth-stage handoff",
+    meta:'<b>Ada case study</b> — Significance for the scale/retain thesis. Ada was seeded with Canadian participation (Version One, Leaders Fund) but every growth-stage dollar (Series B Accel; Series C Spark / Tiger Global) came from US funds — the precise gap the vault\'s <b>scale hypothesis</b> identifies (angels/seed exist; domestic growth equity does not). It has not relocated (HQ, founders, brand in Toronto), but a US-led cap table, a US-weighted customer base and US strategic acquirers create the standing conditions for a US exit — the live version of the <b>Flight to the US</b> dynamic, not a completed loss like Element AI. An analytic reading grounded in the study\'s round data.',
+    conf:"medium"
+  },
+  verdict:{
+    t:"Replicability verdict",
+    meta:'<b>Ada case study</b> — retained-for-now / flight-exposed assessment, cross-referenced to <b>Flight to the US</b>, <b>Pension &amp; Institutional Capital Mobilization</b> and the <b>Canadian Champion Candidates — Scale &amp; Retention Watchlist</b> (vault). Replicable lever: domestic growth capital at the Series B/C stage (Lever ① Supply — H-S1 / H-S2, with H-C1 crowd-in); plus demand-side procurement of domestic applied AI. Open vulnerabilities: no priced round since 2021 (stale mark), no domestic public-market anchor, and US CX/CRM incumbents as plausible acquirers. An analytic assessment, not a statistical claim.',
+    conf:"medium"
+  }
+};
+</script>
+<script src="../app.js"></script>
+</body>
+</html>

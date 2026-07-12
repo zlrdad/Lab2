@@ -525,7 +525,15 @@ html[data-theme="light"] body[data-accent="orange"] .sigwrap .provpill .o{border
 
 @media(max-width:939.98px){
   /* --- slim sticky bar: wordmark · current-page label · theme · Menu --- */
-  .topbar{flex-wrap:nowrap;gap:10px}
+  /* iOS-Safari containing-block fix (2026-07-12): ANY backdrop-filter / filter / transform
+     on an ancestor of a position:fixed descendant makes that ancestor the fixed element's
+     containing block, so the "full-screen" .sheet gets confined to the slim bar's box — the
+     exact "black band that freezes scroll" Carlo saw on iPhone Safari. The .sheet lives
+     INSIDE this .topbar, which carries backdrop-filter:blur(6px) in the base rule. Below the
+     nav breakpoint we therefore DROP the blur and paint the bar with a fully-OPAQUE token
+     background instead (visually near-identical to the translucent+blur, and quirk-proof).
+     Desktop (>=940px) is untouched: it keeps the base rule's blur + translucent gradient. */
+  .topbar{flex-wrap:nowrap;gap:10px;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
   .topbar .links{display:none}                 /* desktop crumbs → replaced by the sheet */
   .topbar .tb-l{flex:0 0 auto}
   .topbar .tb-r{flex:0 0 auto;gap:8px}
@@ -548,13 +556,17 @@ html[data-theme="light"] body[data-accent="orange"] .sigwrap .provpill .o{border
   .navtrigger .nic-close{display:none}
   .ntl{display:inline-block}
   .ntl::after{content:"Menu"}
-  .navsheet[open] .navtrigger{color:var(--accent-txt);border-color:var(--accent);background:rgba(var(--accent-rgb),.08)}
+  /* keep the trigger (now labelled "Close") ABOVE the full-viewport sheet: the sheet is a
+     z-index:50 sibling inside the topbar's stacking context, so its opaque bg would otherwise
+     paint over this control. 51 > 50 floats the Close pill back on top so it stays tappable. */
+  .navsheet[open] .navtrigger{color:var(--accent-txt);border-color:var(--accent);background:rgba(var(--accent-rgb),.08);position:relative;z-index:51}
   .navsheet[open] .nic-menu{display:none}
   .navsheet[open] .nic-close{display:inline-block}
   .navsheet[open] .ntl::after{content:"Close"}
 
   /* --- the overlay sheet (Deep Indigo in dark · paper in Poster-OSC light) --- */
   .sheet{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;
+         height:100vh;height:100dvh;         /* explicit, fallback order — visibility never depends on JS measurement */
          padding:calc(var(--nav-bar-h,68px) + 8px) max(18px,env(safe-area-inset-right))
                  calc(30px + env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));
          animation:sheetIn .22s ease}

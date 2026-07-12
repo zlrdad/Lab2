@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>International Comparators Explorer · Scaling &amp; Retaining Canada's Champions</title>
-<meta name="description" content="An interactive international-comparators explorer for Ontario's capital-markets research report. Measure Canada against 14 peer economies across seven capital-markets and innovation dimensions — VC intensity, public-market depth, R&amp;D, innovation rank, corporate tax, and GDP.">
+<meta name="description" content="An interactive international-comparators explorer for Ontario's capital-markets research report. Measure Canada against 14 peer economies across eight capital-markets and innovation dimensions — VC intensity, public-market depth, R&amp;D, innovation rank, corporate tax, unicorn production, and GDP.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -148,10 +148,10 @@ html[data-theme="light"] .tag-new{color:var(--bg);background:var(--accent-deep)}
 <!-- ============ HERO ============ -->
 <section id="hero">
   <div class="wrap">
-    <div class="boot" id="boot" data-boot="› comparators · 14 peer economies + Canada · 7 capital-markets &amp; innovation dimensions"></div>
+    <div class="boot" id="boot" data-boot="› comparators · 14 peer economies + Canada · 8 capital-markets &amp; innovation dimensions"></div>
     <div class="cat rv">◇ Interactive · international comparison <span class="tag-new" title="Newly built page — for Carlo's review">NEW — for review</span></div>
     <h1 class="rv d1">Canada against the field.</h1>
-    <div class="tag rv d1">The vault's <em>International Comparator Data Compendium</em> benchmarks Canada against fourteen peer economies. This explorer opens on the whole field — <strong>all fifteen economies ranked</strong> on each of seven dimensions (venture capital, public-market depth, R&amp;D, innovation rank, corporate tax and the size of the economy itself) — then lets you focus on any peers you want to read closely. One diagnosis keeps recurring: <strong>Canada builds the capability but captures too little of the return.</strong></div>
+    <div class="tag rv d1">The vault's <em>International Comparator Data Compendium</em> benchmarks Canada against fourteen peer economies. This explorer opens on the whole field — <strong>all fifteen economies ranked</strong> on each of eight dimensions (venture capital, public-market depth, R&amp;D, innovation rank, corporate tax, unicorn production and the size of the economy itself) — then lets you focus on any peers you want to read closely. One diagnosis keeps recurring: <strong>Canada builds the capability but captures too little of the return.</strong></div>
     <div class="sigwrap">
       <div class="signum rv d1">13 → 20</div>
       <div>
@@ -597,6 +597,63 @@ html[data-theme="light"] .tag-new{color:var(--bg);background:var(--accent-deep)}
       <a href="methodology.html#register" class="provpill" data-prov="gdp"><span class="o"></span>data &amp; method</a>
     </div>
 
+    <!-- ==== DIMENSION 8: UNICORN PRODUCTION (per capita) ==== -->
+    <div class="dimblock rv d2">
+      <div class="dimhead">Unicorn production, per million population</div>
+      <div class="dimsub"><span>$1B+ companies per million · current-HQ basis, ~2026</span><span class="dimdir">▲ higher is better</span><span>Compendium §6.1</span></div>
+      <div class="svgwrap" id="wrap-unicorn" role="img" aria-label="Unicorn production per million population, current-HQ basis, all 15 economies ranked, higher is better. Singapore leads at 5.8 per million; Sweden 4.6; Finland 2.7; Israel about 2.6; the United States 2.4. Canada is 8th at 0.8 per million — the Netherlands edges it at the same rounded rate of about 0.8, and Australia is ahead at 1.1. Japan and Taiwan are lowest at about 0.1. It builds world-class companies, but few of them per head.">
+        <svg viewBox="0 0 680 220" id="chart-unicorn">
+<defs><linearGradient id="g_unicorn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-deep)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>
+<rect x="120" y="7.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="7.5" width="508" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="15.4" class="abar-lab">Singapore</text><text x="672" y="15.4" text-anchor="end" class="abar-val">5.8</text>
+<rect x="120" y="21.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="21.5" width="401.1" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="29.4" class="abar-lab">Sweden</text><text x="672" y="29.4" text-anchor="end" class="abar-val">4.6</text>
+<rect x="120" y="35.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="35.5" width="231.7" height="9" rx="2" class="ramp-1"/>
+<text x="0" y="43.4" class="abar-lab">Finland</text><text x="672" y="43.4" text-anchor="end" class="abar-val">2.7</text>
+<rect x="120" y="49.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="49.5" width="222.8" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="57.4" class="abar-lab">Israel</text><text x="672" y="57.4" text-anchor="end" class="abar-val">~2.6</text>
+<rect x="120" y="63.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="63.5" width="205" height="9" rx="2" class="ramp-2"/>
+<text x="0" y="71.4" class="abar-lab">United States</text><text x="672" y="71.4" text-anchor="end" class="abar-val">2.4</text>
+<rect x="120" y="77.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="77.5" width="89.1" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="85.4" class="abar-lab">Australia</text><text x="672" y="85.4" text-anchor="end" class="abar-val">~1.1</text>
+<rect x="120" y="91.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="91.5" width="65.1" height="9" rx="2" class="ramp-3"/>
+<text x="0" y="99.4" class="abar-lab">Netherlands</text><text x="672" y="99.4" text-anchor="end" class="abar-val">~0.8</text>
+<rect x="120" y="105.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="105.5" width="62.4" height="9" rx="2" fill="url(#g_unicorn)" class="subj-glow"/>
+<text x="0" y="113.4" class="abar-lab subj">Canada</text><text x="672" y="113.4" text-anchor="end" class="abar-val subj">0.8</text>
+<rect x="120" y="119.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="119.5" width="44.6" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="127.4" class="abar-lab">United Kingdom</text><text x="672" y="127.4" text-anchor="end" class="abar-val">~0.6</text>
+<rect x="120" y="133.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="133.5" width="35.6" height="9" rx="2" class="ramp-4"/>
+<text x="0" y="141.4" class="abar-lab">Denmark</text><text x="672" y="141.4" text-anchor="end" class="abar-val">0.5</text>
+<rect x="120" y="147.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="147.5" width="26.7" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="155.4" class="abar-lab">France</text><text x="672" y="155.4" text-anchor="end" class="abar-val">~0.4</text>
+<rect x="120" y="161.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="161.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="169.4" class="abar-lab">Germany</text><text x="672" y="169.4" text-anchor="end" class="abar-val">~0.3–0.4</text>
+<rect x="120" y="175.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="175.5" width="25.4" height="9" rx="2" class="ramp-5"/>
+<text x="0" y="183.4" class="abar-lab">South Korea</text><text x="672" y="183.4" text-anchor="end" class="abar-val">~0.3</text>
+<rect x="120" y="189.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="189.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="197.4" class="abar-lab">Japan</text><text x="672" y="197.4" text-anchor="end" class="abar-val">~0.1</text>
+<rect x="120" y="203.5" width="508" height="9" rx="2" fill="var(--hair)"/>
+<rect x="120" y="203.5" width="25.4" height="9" rx="2" class="ramp-6"/>
+<text x="0" y="211.4" class="abar-lab">Taiwan</text><text x="672" y="211.4" text-anchor="end" class="abar-val">~0.1</text>
+        </svg>
+      </div>
+      <a href="methodology.html#register" class="provpill" data-prov="unicorn"><span class="o"></span>data &amp; method</a>
+    </div>
+
     <div class="dashcap rv">Whether you read all fifteen at once or focus on a handful, the pattern holds. Canada is <b>big on aggregate size</b> and <b>thin on innovation intensity and venture capital</b> — the shape of the "builds the capability, captures too little" story below.</div>
   </div>
 </section>
@@ -606,9 +663,9 @@ html[data-theme="light"] .tag-new{color:var(--bg);background:var(--accent-deep)}
   <div class="wrap">
     <div class="kicker rv"><span class="l">02</span> Where Canada ranks</div>
     <h2 class="rv d1">Big by size. Thin on conversion.</h2>
-    <p class="lede rv d1">Ranked against all fourteen peers at once, Canada's position splits cleanly in two. On the <em>size</em> measures — its share of global equity, the scale of its economy — it sits near the top. On the <em>conversion</em> measures — R&amp;D intensity, innovation rank — it sits near the bottom. Venture capital and tax competitiveness fall in between. The gap between the top block and the bottom block <em>is</em> the growth prize.</p>
-    <div class="svgwrap rv d2" role="img" aria-label="Canada's rank across the seven dimensions, best to worst: global equity share 3rd of 15 on the end-2025 basis, and by mid-2026 between 3rd and 5th depending on the measurement basis — still 3rd on the WFE exchange-level count, about 5th on the Bloomberg country-level count after Taiwan and Korea closed the gap; domestic market size 6th of 15; VC investment per GDP 6th of 15; GDP per capita 8th of 15; corporate tax competitiveness 12th of 15; innovation rank 13th of 14; R&amp;D intensity 14th of 15.">
-      <svg viewBox="0 0 680 296" id="rankstrip">
+    <p class="lede rv d1">Ranked against all fourteen peers at once, Canada's position splits cleanly in two. On the <em>size</em> measures — its share of global equity, the scale of its economy — it sits near the top. On the <em>conversion</em> measures — R&amp;D intensity, innovation rank — it sits near the bottom. Venture capital, unicorn production per head and tax competitiveness fall in between. The gap between the top block and the bottom block <em>is</em> the growth prize.</p>
+    <div class="svgwrap rv d2" role="img" aria-label="Canada's rank across the eight dimensions, best to worst: global equity share 3rd of 15 on the end-2025 basis, and by mid-2026 between 3rd and 5th depending on the measurement basis — still 3rd on the WFE exchange-level count, about 5th on the Bloomberg country-level count after Taiwan and Korea closed the gap; domestic market size 6th of 15; VC investment per GDP 6th of 15; GDP per capita 8th of 15; unicorn production per capita 8th of 15; corporate tax competitiveness 12th of 15; innovation rank 13th of 14; R&amp;D intensity 14th of 15.">
+      <svg viewBox="0 0 680 336" id="rankstrip">
         <rect x="234" y="21" width="326" height="14" rx="3" fill="var(--hair)"/>
         <rect x="234" y="21" width="279.4" height="14" rx="3" class="ramp-1"/>
         <text x="0" y="32" class="rk-lab">Global equity share</text><text x="672" y="32" text-anchor="end" class="rk-badge">3rd → 3rd–5th</text>
@@ -622,14 +679,17 @@ html[data-theme="light"] .tag-new{color:var(--bg);background:var(--accent-deep)}
         <rect x="234" y="141" width="163.0" height="14" rx="3" class="ramp-4"/>
         <text x="0" y="152" class="rk-lab">GDP per capita</text><text x="672" y="152" text-anchor="end" class="rk-badge">8th / 15</text>
         <rect x="234" y="181" width="326" height="14" rx="3" fill="var(--hair)"/>
-        <rect x="234" y="181" width="69.9" height="14" rx="3" class="ramp-5"/>
-        <text x="0" y="192" class="rk-lab">Corporate tax competitiveness</text><text x="672" y="192" text-anchor="end" class="rk-badge">12th / 15</text>
+        <rect x="234" y="181" width="163.0" height="14" rx="3" class="ramp-4"/>
+        <text x="0" y="192" class="rk-lab">Unicorn production / capita</text><text x="672" y="192" text-anchor="end" class="rk-badge">8th / 15</text>
         <rect x="234" y="221" width="326" height="14" rx="3" fill="var(--hair)"/>
-        <rect x="234" y="221" width="25.1" height="14" rx="3" class="ramp-6"/>
-        <text x="0" y="232" class="rk-lab">Innovation rank (GII)</text><text x="672" y="232" text-anchor="end" class="rk-badge">13th / 14</text>
+        <rect x="234" y="221" width="69.9" height="14" rx="3" class="ramp-5"/>
+        <text x="0" y="232" class="rk-lab">Corporate tax competitiveness</text><text x="672" y="232" text-anchor="end" class="rk-badge">12th / 15</text>
         <rect x="234" y="261" width="326" height="14" rx="3" fill="var(--hair)"/>
-        <rect x="234" y="261" width="23.3" height="14" rx="3" class="ramp-6"/>
-        <text x="0" y="272" class="rk-lab">R&amp;D intensity (GERD)</text><text x="672" y="272" text-anchor="end" class="rk-badge">14th / 15</text>
+        <rect x="234" y="261" width="25.1" height="14" rx="3" class="ramp-6"/>
+        <text x="0" y="272" class="rk-lab">Innovation rank (GII)</text><text x="672" y="272" text-anchor="end" class="rk-badge">13th / 14</text>
+        <rect x="234" y="301" width="326" height="14" rx="3" fill="var(--hair)"/>
+        <rect x="234" y="301" width="23.3" height="14" rx="3" class="ramp-6"/>
+        <text x="0" y="312" class="rk-lab">R&amp;D intensity (GERD)</text><text x="672" y="312" text-anchor="end" class="rk-badge">14th / 15</text>
       </svg>
     </div>
     <p class="dashcap rv d2"><b>Equity-share rank is stamped on the end-2025 WFE-consistent basis</b> — as are all bars on this page. By mid-2026 Canada's standing is <b>basis-dependent</b>. On the <b>country-level</b> basis (Bloomberg) it slips to about <b>5th in this set</b>: Taiwan overtook Canada as the world's sixth-largest stock market on Apr 29, 2026, and Korea followed on May 7, 2026 — both AI- and semiconductor-driven. On the <b>exchange-level</b> basis (WFE, the vault's own monthly series) no crossover has yet occurred — TMX (US$5.00T, May 2026) still narrowly leads Korea (US$4.95T, +US$54bn) and sits well ahead of Taiwan (US$4.56T) — but the TMX–Korea gap has collapsed from ~US$1.3T in early 2024 to US$54bn. Both bases are true; they measure different universes, and on either the convergence is undeniable. An AI-weighted market closing fast on a commodities-and-financials one; it sharpens, rather than softens, the page's diagnosis.</p>
@@ -645,7 +705,7 @@ html[data-theme="light"] .tag-new{color:var(--bg);background:var(--accent-deep)}
   <div class="wrap">
     <div class="kicker rv"><span class="l">03</span> The full table</div>
     <h2 class="rv d1">Every jurisdiction, every dimension.</h2>
-    <p class="lede rv d1">The complete matrix behind the explorer — the 14 core comparators plus Canada, across all seven dimensions. This table is the honest backbone: it reads fully with JavaScript disabled, and it carries the figures the bars are scaled from.</p>
+    <p class="lede rv d1">The complete matrix behind the explorer — the 14 core comparators plus Canada, across all eight dimensions. This table is the honest backbone: it reads fully with JavaScript disabled, and it carries the figures the bars are scaled from.</p>
     <div style="overflow-x:auto" class="rv d2">
       <table class="dtable">
         <caption>International comparator matrix · Canada highlighted</caption>
@@ -659,29 +719,30 @@ html[data-theme="light"] .tag-new{color:var(--bg);background:var(--accent-deep)}
             <th scope="col">Corp. tax</th>
             <th scope="col">GDP / capita</th>
             <th scope="col">GDP</th>
+            <th scope="col">Unicorns / M</th>
           </tr>
         </thead>
         <tbody>
-          <tr><th scope="row" class="subj">Canada</th><td class="subj">0.35%</td><td class="subj">3.5%</td><td class="subj">1.8%</td><td class="subj">17</td><td class="subj">26.5%</td><td class="subj">$54.5k</td><td class="subj">$2.2T</td></tr>
-          <tr><th scope="row">United States</th><td>0.7%</td><td>51%</td><td>3.45%</td><td>3</td><td>25.77%</td><td>$83.6k</td><td>$28T</td></tr>
-          <tr><th scope="row">United Kingdom</th><td>0.28%</td><td>2.6%</td><td>2.7%</td><td>6</td><td>25%</td><td>$39.7k</td><td>$2.7T</td></tr>
-          <tr><th scope="row">Sweden</th><td>0.3%</td><td>0.9%</td><td>3.6%</td><td>2</td><td>20.6%</td><td>$57.1k</td><td>$0.6T</td></tr>
-          <tr><th scope="row">Israel</th><td>~2.0–2.3%</td><td>0.4%</td><td>6.35%</td><td>14</td><td>23%</td><td>$54.0k</td><td>$0.54T</td></tr>
-          <tr><th scope="row">Singapore</th><td>0.4%</td><td>0.7%</td><td>1.85%</td><td>5</td><td>17%</td><td>$91.2k</td><td>$0.55T</td></tr>
-          <tr><th scope="row">South Korea</th><td>0.5%</td><td>2.2%</td><td>4.96%</td><td>4</td><td>24.2%</td><td>$32.7k</td><td>$1.7T</td></tr>
-          <tr><th scope="row">Netherlands</th><td>~0.20–0.30%</td><td>1.3%</td><td>2.3%</td><td>8</td><td>25.8%</td><td>$67.5k</td><td>$1.2T</td></tr>
-          <tr><th scope="row">Denmark</th><td>0.14%</td><td>0.5%</td><td>2.99%</td><td>9</td><td>22%</td><td>$71.6k</td><td>$0.43T</td></tr>
-          <tr><th scope="row">Finland</th><td>0.08%</td><td>0.3%</td><td>3.09%</td><td>7</td><td>20%</td><td>$53.4k</td><td>$0.3T</td></tr>
-          <tr><th scope="row">Australia</th><td>0.1%</td><td>1.9%</td><td>1.7%</td><td>22</td><td>30%</td><td>$63.0k</td><td>$1.7T</td></tr>
-          <tr><th scope="row">France</th><td>0.14%</td><td>2.7%</td><td>2.2%</td><td>13</td><td>25.0%*</td><td>$46.5k</td><td>$3.2T</td></tr>
-          <tr><th scope="row">Germany</th><td>0.09%</td><td>2.2%</td><td>3.11%</td><td>11</td><td>29.83%</td><td>$55.8k</td><td>$4.7T</td></tr>
-          <tr><th scope="row">Japan</th><td>0.12%</td><td>5.7%</td><td>3.44%</td><td>12</td><td>29.74%</td><td>$34.4k</td><td>$4.3T</td></tr>
-          <tr><th scope="row">Taiwan</th><td>0.36%</td><td>2.8%</td><td>3.8%</td><td>n/a</td><td>20%</td><td>$32.6k</td><td>$0.78T</td></tr>
+          <tr><th scope="row" class="subj">Canada</th><td class="subj">0.35%</td><td class="subj">3.5%</td><td class="subj">1.8%</td><td class="subj">17</td><td class="subj">26.5%</td><td class="subj">$54.5k</td><td class="subj">$2.2T</td><td class="subj">0.8</td></tr>
+          <tr><th scope="row">United States</th><td>0.7%</td><td>51%</td><td>3.45%</td><td>3</td><td>25.77%</td><td>$83.6k</td><td>$28T</td><td>2.4</td></tr>
+          <tr><th scope="row">United Kingdom</th><td>0.28%</td><td>2.6%</td><td>2.7%</td><td>6</td><td>25%</td><td>$39.7k</td><td>$2.7T</td><td>~0.6</td></tr>
+          <tr><th scope="row">Sweden</th><td>0.3%</td><td>0.9%</td><td>3.6%</td><td>2</td><td>20.6%</td><td>$57.1k</td><td>$0.6T</td><td>4.6</td></tr>
+          <tr><th scope="row">Israel</th><td>~2.0–2.3%</td><td>0.4%</td><td>6.35%</td><td>14</td><td>23%</td><td>$54.0k</td><td>$0.54T</td><td>~2.6</td></tr>
+          <tr><th scope="row">Singapore</th><td>0.4%</td><td>0.7%</td><td>1.85%</td><td>5</td><td>17%</td><td>$91.2k</td><td>$0.55T</td><td>5.8</td></tr>
+          <tr><th scope="row">South Korea</th><td>0.5%</td><td>2.2%</td><td>4.96%</td><td>4</td><td>24.2%</td><td>$32.7k</td><td>$1.7T</td><td>~0.3</td></tr>
+          <tr><th scope="row">Netherlands</th><td>~0.20–0.30%</td><td>1.3%</td><td>2.3%</td><td>8</td><td>25.8%</td><td>$67.5k</td><td>$1.2T</td><td>~0.8</td></tr>
+          <tr><th scope="row">Denmark</th><td>0.14%</td><td>0.5%</td><td>2.99%</td><td>9</td><td>22%</td><td>$71.6k</td><td>$0.43T</td><td>0.5</td></tr>
+          <tr><th scope="row">Finland</th><td>0.08%</td><td>0.3%</td><td>3.09%</td><td>7</td><td>20%</td><td>$53.4k</td><td>$0.3T</td><td>2.7</td></tr>
+          <tr><th scope="row">Australia</th><td>0.1%</td><td>1.9%</td><td>1.7%</td><td>22</td><td>30%</td><td>$63.0k</td><td>$1.7T</td><td>~1.1</td></tr>
+          <tr><th scope="row">France</th><td>0.14%</td><td>2.7%</td><td>2.2%</td><td>13</td><td>25.0%*</td><td>$46.5k</td><td>$3.2T</td><td>~0.4</td></tr>
+          <tr><th scope="row">Germany</th><td>0.09%</td><td>2.2%</td><td>3.11%</td><td>11</td><td>29.83%</td><td>$55.8k</td><td>$4.7T</td><td>~0.3–0.4</td></tr>
+          <tr><th scope="row">Japan</th><td>0.12%</td><td>5.7%</td><td>3.44%</td><td>12</td><td>29.74%</td><td>$34.4k</td><td>$4.3T</td><td>~0.1</td></tr>
+          <tr><th scope="row">Taiwan</th><td>0.36%</td><td>2.8%</td><td>3.8%</td><td>n/a</td><td>20%</td><td>$32.6k</td><td>$0.78T</td><td>~0.1</td></tr>
         </tbody>
       </table>
     </div>
 
-    <div class="caveat rv d2"><b>Bases &amp; years.</b> VC/GDP: 2024 approximations (Compendium §3.1) — Israel is a range (~2.0–2.3%) and the Netherlands a range (~0.20–0.30%); the bar uses the midpoint. Equity share: shares of a ~US$120T domestic base, various dates 2025–early 2026 (§2.1) — Canada's <b>3rd</b> place is on the end-2025 basis and measures <b>aggregate</b> market size, not depth or per-capita listing (the top 25 TSX names hold 51.8% of operating market cap). By mid-2026 the reading is basis-dependent: on the country-level basis (Bloomberg) Canada had slipped to ~5th in this set after AI-driven Taiwan (Apr 29, 2026) and Korea (May 7, 2026) passed it; on the exchange-level basis (WFE monthly) TMX still narrowly led Korea (+US$54bn, May 2026) and Taiwan, with the gap collapsing to near-parity. The bar and rank are kept on the end-2025 basis for consistency with every other dimension on this page. R&amp;D: GERD 2023, OECD MSTI (§5.2); Canada's business-funded component (BERD) is weaker still (~0.9%, ~21st of 38 in the OECD). Corporate tax: combined statutory 2025 (§10.1); <b>*France</b> shows the 25% base rate — its large-company surtax runs 30.98–36.30%. GDP figures: IMF 2024 estimates (§1.1), nominal US$.</div>
+    <div class="caveat rv d2"><b>Bases &amp; years.</b> VC/GDP: 2024 approximations (Compendium §3.1) — Israel is a range (~2.0–2.3%) and the Netherlands a range (~0.20–0.30%); the bar uses the midpoint. Equity share: shares of a ~US$120T domestic base, various dates 2025–early 2026 (§2.1) — Canada's <b>3rd</b> place is on the end-2025 basis and measures <b>aggregate</b> market size, not depth or per-capita listing (the top 25 TSX names hold 51.8% of operating market cap). By mid-2026 the reading is basis-dependent: on the country-level basis (Bloomberg) Canada had slipped to ~5th in this set after AI-driven Taiwan (Apr 29, 2026) and Korea (May 7, 2026) passed it; on the exchange-level basis (WFE monthly) TMX still narrowly led Korea (+US$54bn, May 2026) and Taiwan, with the gap collapsing to near-parity. The bar and rank are kept on the end-2025 basis for consistency with every other dimension on this page. R&amp;D: GERD 2023, OECD MSTI (§5.2); Canada's business-funded component (BERD) is weaker still (~0.9%, ~21st of 38 in the OECD). Corporate tax: combined statutory 2025 (§10.1); <b>*France</b> shows the 25% base rate — its large-company surtax runs 30.98–36.30%. GDP figures: IMF 2024 estimates (§1.1), nominal US$. <b>Unicorns/M:</b> privately-held $1B+ companies per million population on the committed <b>current-HQ</b> basis, ~2026 (§6.1) — Germany is a range (~0.3–0.4) charted at midpoint; <b>Canada 0.8/M</b> is the canonical figure (33 unicorns / Tracxn; broader founder-basis trackers cite higher, e.g. ~4.2/M, not used); Israel ~2.6 is the current-HQ read (the Israel Innovation Authority's broader count gives ~3.9). Canada is 8th of 15, edged by the Netherlands at the same rounded ~0.8/M.</div>
     <div class="caveat rv d2"><b>What's excluded, and why.</b> Only rows with clean, unflagged cross-jurisdiction coverage are charted. The Compendium's four <b>expansion comparators</b> (Ireland, Switzerland, Norway, Estonia) are deliberately left out — their coverage carries ⚠️ flags and unreconciled bases (e.g. Ireland's GDP-vs-GNI* distortion, Estonia's cumulative-not-current unicorn counts). Taiwan's GII rank (~16th, "Chinese Taipei") is unconfirmed by WIPO, so it is shown as <b>n/a</b> and excluded from the innovation ranking. Capital-gains treatment is not charted here to avoid range-vs-effective apples-to-oranges — the innovation-specific CGT-relief lattice lives on <a href="what-works.html">What Works</a> §04b.</div>
   </div>
 </section>
@@ -752,15 +813,20 @@ window.PROV = {
     meta:'Nominal GDP, US$ trillions, 2024 estimates, from <b>Compendium §1.1</b> (IMF World Economic Outlook). US ~$28.0T; Germany ~$4.7T; Japan ~$4.3T; France ~$3.2T; UK ~$2.7T; <b>Canada $2.2T</b> (6th of 15); Korea/Australia ~$1.7T; Netherlands ~$1.2T; Taiwan ~$0.78T; Sweden ~$0.6T; Singapore ~$0.55T; Israel ~$0.54T; Denmark ~$0.43T; Finland ~$0.30T.<br><br>Domestic-market size is the "small open economy" backdrop to the capital-markets story — a thinner home market than the US/EU peers. Grade: High.',
     conf:"high"
   },
+  unicorn:{
+    t:"Data & method — Unicorn production (per capita)",
+    meta:'Privately-held $1B+ companies per million population on the committed <b>current-HQ</b> basis (~2026), from <b>Compendium §6.1</b>. Singapore ~5.8 (leader); Sweden 4.6; Finland 2.7; Israel ~2.6; US 2.4; Australia ~1.1; Netherlands ~0.8; <b>Canada 0.8 — 8th of 15</b> (33 unicorns, Tracxn; the Netherlands edges it at the same rounded rate); UK ~0.6; Denmark 0.5; France ~0.4; Germany ~0.3–0.4; South Korea ~0.3; Japan/Taiwan ~0.1.<br><br><b>Counting basis:</b> current-HQ, currently-$1B+ (committed July 2026, aligned to the vault Middle Powers scoreboard). <b>Honest caveats:</b> Tier-8 trackers vary by methodology and vintage — per-capita figures are approximate. <b>Canada 0.8/M is the canonical figure</b>; broader founder-basis trackers cite higher (e.g. ~4.2/M) and are not used. Israel\'s ~2.6 is the current-HQ read (CB Insights/WIPO Sept 2025); the Israel Innovation Authority\'s broader ~39 count gives ~3.9/M. Ranges (Germany ~0.3–0.4) are charted at midpoint, matching how VC/GDP handles Israel and the Netherlands. The four <b>expansion comparators</b> (Estonia ~7.1, Switzerland ~1.7, Ireland ~1.9, Norway ~0.9) are <b>⚠️ held out</b> of the chart — their Tracxn counts are cumulative/founder-basis, not yet reconciled to the current-HQ basis. Sources: Tracxn · CB Insights/WIPO · Beauhurst. Grade: Medium.',
+    conf:"medium"
+  },
   ranks:{
     t:"Data & method — Where Canada ranks",
-    meta:'Canada\'s rank on each dimension, computed across the 14 core comparators + Canada from the figures cited on the dimension pills. Best to worst: <b>global equity share 3rd/15</b> (end-2025 basis; by mid-2026 <b>between 3rd and 5th, basis-dependent</b> — still 3rd on the WFE exchange-level count, where TMX at US$5.00T still led Korea US$4.95T (+US$54bn, May 2026) and Taiwan US$4.56T; ~5th on the Bloomberg country-level count after Taiwan overtook Canada on Apr 29 2026 and Korea on May 7 2026, both AI-driven — the bar is kept on the end-2025 basis) · domestic market size (GDP) 6th/15 · VC/GDP 6th/15 · GDP per capita 8th/15 · corporate-tax competitiveness 12th/15 (lower = better) · <b>innovation rank (GII) 13th/14</b> (Taiwan excluded, unconfirmed) · <b>R&D intensity 14th/15</b>.<br><br>The strip encodes goodness (best rank = fullest bar, brightest accent). It is a derived composite of the underlying dimensions — graded Medium because it depends on the several bases and approximations noted per dimension.',
+    meta:'Canada\'s rank on each dimension, computed across the 14 core comparators + Canada from the figures cited on the dimension pills. Best to worst: <b>global equity share 3rd/15</b> (end-2025 basis; by mid-2026 <b>between 3rd and 5th, basis-dependent</b> — still 3rd on the WFE exchange-level count, where TMX at US$5.00T still led Korea US$4.95T (+US$54bn, May 2026) and Taiwan US$4.56T; ~5th on the Bloomberg country-level count after Taiwan overtook Canada on Apr 29 2026 and Korea on May 7 2026, both AI-driven — the bar is kept on the end-2025 basis) · domestic market size (GDP) 6th/15 · VC/GDP 6th/15 · GDP per capita 8th/15 · unicorn production per capita 8th/15 (the Netherlands edges Canada at the same rounded ~0.8/M rate) · corporate-tax competitiveness 12th/15 (lower = better) · <b>innovation rank (GII) 13th/14</b> (Taiwan excluded, unconfirmed) · <b>R&D intensity 14th/15</b>.<br><br>The strip encodes goodness (best rank = fullest bar, brightest accent). It is a derived composite of the underlying dimensions — graded Medium because it depends on the several bases and approximations noted per dimension.',
     conf:"medium"
   }
 };
 
 /* ---- BAKED COMPARATOR DATA (harvested from the vault International Comparator
-   Data Compendium; 14 core comparators + Canada across 7 dimensions).
+   Data Compendium; 14 core comparators + Canada across 8 dimensions).
    null = value withheld (unflagged coverage rule; e.g. Taiwan GII). ---- */
 window.CMP = {
   order:["CA","US","UK","SE","IL","SG","KR","NL","DK","FI","AU","FR","DE","JP","TW"],
@@ -775,7 +841,8 @@ window.CMP = {
     {k:"gii",    label:"Global Innovation Index — overall rank",        unit:"rank", dir:"low"},
     {k:"corptax",label:"Combined corporate income tax rate",            unit:"pct",  dir:"low"},
     {k:"gdppc",  label:"GDP per capita",                                unit:"kusd", dir:"high"},
-    {k:"gdp",    label:"Domestic market size (nominal GDP)",            unit:"tusd", dir:"high"}
+    {k:"gdp",    label:"Domestic market size (nominal GDP)",            unit:"tusd", dir:"high"},
+    {k:"unicorn",label:"Unicorn production (per million population)",   unit:"permil", dir:"high"}
   ],
   vals:{
     vcgdp:  {CA:0.35,US:0.70,UK:0.28,SE:0.30,IL:2.15,SG:0.40,KR:0.50,NL:0.25,DK:0.14,FI:0.08,AU:0.10,FR:0.14,DE:0.09,JP:0.12,TW:0.36},
@@ -784,11 +851,13 @@ window.CMP = {
     gii:    {CA:17,US:3,UK:6,SE:2,IL:14,SG:5,KR:4,NL:8,DK:9,FI:7,AU:22,FR:13,DE:11,JP:12,TW:null},
     corptax:{CA:26.5,US:25.77,UK:25.0,SE:20.6,IL:23.0,SG:17.0,KR:24.2,NL:25.8,DK:22.0,FI:20.0,AU:30.0,FR:25.0,DE:29.83,JP:29.74,TW:20.0},
     gdppc:  {CA:54531,US:83600,UK:39700,SE:57100,IL:54000,SG:91200,KR:32700,NL:67500,DK:71600,FI:53400,AU:63000,FR:46500,DE:55800,JP:34400,TW:32600},
-    gdp:    {CA:2.2,US:28.0,UK:2.7,SE:0.6,IL:0.54,SG:0.55,KR:1.7,NL:1.2,DK:0.43,FI:0.30,AU:1.7,FR:3.2,DE:4.7,JP:4.3,TW:0.78}
+    gdp:    {CA:2.2,US:28.0,UK:2.7,SE:0.6,IL:0.54,SG:0.55,KR:1.7,NL:1.2,DK:0.43,FI:0.30,AU:1.7,FR:3.2,DE:4.7,JP:4.3,TW:0.78},
+    unicorn:{CA:0.8,US:2.4,UK:0.6,SE:4.6,IL:2.6,SG:5.8,KR:0.3,NL:0.83,DK:0.5,FI:2.7,AU:1.1,FR:0.4,DE:0.35,JP:0.1,TW:0.1}
   },
   disp:{
     vcgdp:{IL:"~2.0–2.3%",NL:"~0.20–0.30%"},
-    corptax:{FR:"25.0% (base)"}
+    corptax:{FR:"25.0% (base)"},
+    unicorn:{UK:"~0.6",IL:"~2.6",KR:"~0.3",NL:"~0.8",AU:"~1.1",FR:"~0.4",DE:"~0.3–0.4",JP:"~0.1",TW:"~0.1"}
   }
 };
 </script>
@@ -836,6 +905,7 @@ window.CMP = {
         if(u==="rank") return ""+v;
         if(u==="kusd") return "$"+(v/1000).toFixed(1)+"k";
         if(u==="tusd") return "$"+(+v)+"T";
+        if(u==="permil") return (+v).toFixed(1);
         return ""+v;
       }catch(e){ return ""; }
     }
