@@ -59,6 +59,42 @@
 .boardcol .bl b{color:var(--ink);font-weight:600}
 .boardcol.flight .bt{color:var(--steel)}
 @media(max-width:760px){.boardmap{grid-template-columns:1fr 1fr}.boardcol:nth-child(3)::before,.boardcol:nth-child(1)::before{display:none}}
+
+/* 5. .ovcount / .ovsum — the public-market-presence overview chart labels + summary line.
+   .t10 — the top-10-issuers table (JS re-render). .ipolist — the recent-true-IPO list.
+   All token-driven; page-scoped (interactive re-render / page-unique). */
+.ovcount{font-family:var(--mono);font-size:11px;fill:var(--dim);font-variant-numeric:tabular-nums}
+.ovsum{font-family:var(--mono);font-size:12.5px;color:var(--body);letter-spacing:.03em;line-height:1.7;margin-top:20px;max-width:74ch}
+.ovsum b{color:var(--ink);font-weight:600}.ovsum .g{color:var(--accent-txt)}
+
+.t10wrap{margin-top:30px;overflow-x:auto}
+.t10{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:560px}
+.t10 th{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);font-weight:400;text-align:left;padding:0 16px 11px 0;border-bottom:1px solid var(--hair-strong);white-space:nowrap}
+.t10 th.num{text-align:right}
+.t10 td{padding:12px 16px 12px 0;border-bottom:1px solid var(--hair);font-size:13.5px;color:var(--body);vertical-align:baseline;line-height:1.4}
+.t10 td.rk{font-family:var(--mono);font-size:12px;color:var(--dim);width:1%;white-space:nowrap}
+.t10 td.nm{color:var(--ink)}
+.t10 td.tk{font-family:var(--mono);font-size:12px;color:var(--accent-txt);white-space:nowrap}
+.t10 td.num{text-align:right;font-family:var(--mono);color:var(--ink);white-space:nowrap}
+.t10 td.hq{font-family:var(--mono);font-size:12px;color:var(--dim);white-space:nowrap}
+.t10 td.il{white-space:nowrap}
+.t10 .ilv{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--accent-txt);border:1px solid rgba(var(--accent-rgb),.34);border-radius:20px;padding:1px 8px}
+.t10 .ilnone{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.t10cap{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.03em;margin-top:16px;line-height:1.65;max-width:74ch}
+.t10cap b{color:var(--body);font-weight:500}.t10cap em{color:var(--accent-txt);font-style:normal}
+
+.ipowrap{margin-top:48px;border-top:1px solid var(--hair-strong);padding-top:36px}
+.ipohead{font-family:var(--disp);font-weight:600;font-size:clamp(20px,2.6vw,28px);color:var(--ink);letter-spacing:-.012em;margin-top:8px;margin-bottom:0;line-height:1.1}
+.ipolist{margin-top:26px;border-top:1px solid var(--hair)}
+.iporow{display:grid;grid-template-columns:112px 1fr auto;gap:22px;padding:15px 0;border-bottom:1px solid var(--hair);align-items:baseline}
+.iporow .dt{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.02em}
+.iporow .co{font-size:14px;color:var(--ink);line-height:1.35}
+.iporow .co .tk{font-family:var(--mono);font-size:11.5px;color:var(--accent-txt);margin-left:9px}
+.iporow .co .se{font-family:var(--mono);font-size:10.5px;color:var(--dim);display:block;margin-top:3px;letter-spacing:.05em;text-transform:uppercase}
+.iporow .cp{font-family:var(--mono);font-size:12.5px;color:var(--body);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.iporow.growth{border-left:2px solid rgba(var(--accent-rgb),.55);padding-left:16px;margin-left:-18px}
+.iporow.growth .co .se{color:var(--accent-txt)}
+@media(max-width:640px){.iporow{grid-template-columns:1fr auto;gap:8px 14px}.iporow .dt{grid-column:1/-1;order:-1}}
 </style>
 </head>
 <body data-accent="cyan">
@@ -295,9 +331,9 @@
       <div class="secstats" id="secStats">
         <div class="secstat"><div class="kn">$42&ndash;52B</div><div class="kc">AI GDP</div><div class="kl">Plus a projected $139B quantum opportunity by 2045.</div></div>
         <div class="secstat"><div class="kn">C$38.7B</div><div class="kc">Info &amp; Culture real GDP</div><div class="kl">Ontario's tech &amp; telecom output &mdash; up 16.5% since 2019 (OEA, 2025).</div></div>
-        <div class="secstat"><div class="kn">185</div><div class="kc">listed tech issuers</div><div class="kl">52 on the TSX (C$385B) and 133 on the TSXV (C$21B).</div></div>
+        <div class="secstat"><div class="kn">186</div><div class="kc">listed tech issuers</div><div class="kl">57 on the TSX (C$435B) and 129 on the TSXV (C$20B).</div></div>
       </div>
-      <div class="capfact" id="secCap">ICT drew <strong>C$5.1B &mdash; 64% of all Canadian VC</strong> in 2025, yet <strong>Shopify (C$202B) is the lone technology name in the TSX's top 10</strong>. Only 10 TSXV tech firms have cleared the C$100M graduation mark, against 212 miners &mdash; the scale-up and liquidity gap in a single statistic.</div>
+      <div class="capfact" id="secCap">ICT drew <strong>C$5.1B &mdash; 64% of all Canadian VC</strong> in 2025, and Ontario firms took <strong>all four of the year's largest ICT venture rounds</strong> &mdash; Waabi (C$1.03B), Cohere (C$689M), Wealthsimple (C$550M) and Beacon Software (C$352M). Yet <strong>Shopify (C$201B) is the lone technology name in the TSX's top 10</strong>, and only 10 TSXV tech firms have cleared the C$100M mark against 212 miners &mdash; private champions with almost no public-market home.</div>
     </div>
     <a href="methodology.html#register" class="provpill rv d2" data-prov="sectors" style="margin-top:18px"><span class="o"></span>sector pages</a>
     <a href="methodology.html#register" class="provpill rv d2" data-prov="framework" style="margin-top:18px;margin-left:10px"><span class="o"></span>selection logic</a>
@@ -337,10 +373,157 @@
   </div>
 </section>
 
-<!-- ============ 05 · THE READ / OUTRO ============ -->
+<!-- ============ 05 · PUBLIC-MARKET PRESENCE BY SECTOR ============ -->
 <section class="band" data-rev>
   <div class="wrap">
-    <div class="kicker rv"><span class="l">05</span> The read</div>
+    <div class="kicker rv"><span class="l">05</span> Public-market presence</div>
+    <h2 class="rv d1">Each sector, on the boards.</h2>
+    <p class="lede rv d1">How much public-market weight does each sector actually carry? Here are the <strong>operating-issuer counts and market caps by TMX sector</strong> &mdash; the companies themselves, with ETFs, closed-end funds, SPACs and capital-pool shells stripped out. Switch between the senior <strong>TSX</strong> and the venture <strong>TSXV</strong>, then pick a sector to name its ten largest listed companies. <em>As at May 31, 2026; the five sectors shaded in cyan map cleanly onto the report's growth sectors.</em></p>
+
+    <!-- board toggle (drives both the overview chart and the top-10 table) -->
+    <div class="invtoggle rv d1" role="group" aria-label="Choose exchange board">
+      <span class="grouplab">Board</span>
+      <button type="button" class="invchip" id="pmTSX" data-board="tsx" aria-pressed="true">TSX (senior)</button>
+      <button type="button" class="invchip" id="pmTSXV" data-board="tsxv" aria-pressed="false">TSXV (venture)</button>
+    </div>
+
+    <div class="chart-head rv d2" style="margin-top:26px">
+      <h3 id="pmTitle">Operating issuers &amp; market cap by TMX sector &mdash; TSX, May 2026</h3>
+      <div class="sub" id="pmSub">Bar length = number of operating issuers &middot; figure at right = total sector market cap</div>
+    </div>
+    <div class="svgwrap rv d2" id="pmWrap" role="img" aria-label="Operating issuers and total market capitalisation by TMX sector on the TSX, May 31 2026. Mining has the most operating issuers at 181 (market cap C$1,199B); Financial Services the most value at C$1,897B across 63 issuers; then Industrial Products C$645B across 102, Oil and Gas C$552B across 51, Utilities and Pipelines C$490B across 17, Technology C$435B across 57, Consumer Products C$398B across 58, Communications and Media C$164B across 19, Real Estate C$100B across 56, Clean Technology C$56.5B across 28, and Life Sciences C$24.0B across 40. The five growth sectors — Mining, Financial Services, Technology, Life Sciences and Clean Technology — are highlighted in the page accent; the other sectors are grey.">
+      <!-- Build-time DEFAULT: TSX. Re-rendered by JS on the board toggle. All colours are var() tokens. -->
+      <svg viewBox="0 0 900 473" id="pmChart">
+        <line x1="250" y1="34" x2="250" y2="447" stroke="var(--hair-strong)" stroke-width="1"/>
+        <g stroke="var(--hair)" stroke-width="1">
+          <line x1="368.8" y1="34" x2="368.8" y2="447"/>
+          <line x1="487.6" y1="34" x2="487.6" y2="447"/>
+          <line x1="606.4" y1="34" x2="606.4" y2="447"/>
+        </g>
+        <text x="892" y="26" text-anchor="end" class="ovcount">market cap &rarr;</text>
+        <!-- Mining 181 -->
+        <text x="238" y="54" text-anchor="end" class="hbar-lab">Mining</text>
+        <rect class="ramp-1" x="250" y="40" width="430.0" height="19" rx="4"/>
+        <text x="688.0" y="54" class="ovcount">181</text>
+        <text x="892" y="54" text-anchor="end" class="hbar-val subj">C$1,199B</text>
+        <!-- Industrial P&S 102 (proxy) -->
+        <text x="238" y="92" text-anchor="end" class="hbar-lab">Industrial P&amp;S&#8224;</text>
+        <rect x="250" y="78" width="242.3" height="19" rx="4" fill="var(--steel)" opacity=".5"/>
+        <text x="500.3" y="92" class="ovcount">102</text>
+        <text x="892" y="92" text-anchor="end" class="hbar-val">C$645B</text>
+        <!-- Financial Services 63 -->
+        <text x="238" y="130" text-anchor="end" class="hbar-lab">Financial Services</text>
+        <rect class="ramp-2" x="250" y="116" width="149.7" height="19" rx="4"/>
+        <text x="407.7" y="130" class="ovcount">63</text>
+        <text x="892" y="130" text-anchor="end" class="hbar-val subj">C$1,897B</text>
+        <!-- Consumer P&S 58 -->
+        <text x="238" y="168" text-anchor="end" class="hbar-lab">Consumer P&amp;S</text>
+        <rect x="250" y="154" width="137.8" height="19" rx="4" fill="var(--steel)" opacity=".5"/>
+        <text x="395.8" y="168" class="ovcount">58</text>
+        <text x="892" y="168" text-anchor="end" class="hbar-val">C$398B</text>
+        <!-- Technology 57 -->
+        <text x="238" y="206" text-anchor="end" class="hbar-lab">Technology</text>
+        <rect class="ramp-3" x="250" y="192" width="135.4" height="19" rx="4"/>
+        <text x="393.4" y="206" class="ovcount">57</text>
+        <text x="892" y="206" text-anchor="end" class="hbar-val subj">C$435B</text>
+        <!-- Real Estate 56 -->
+        <text x="238" y="244" text-anchor="end" class="hbar-lab">Real Estate</text>
+        <rect x="250" y="230" width="133.0" height="19" rx="4" fill="var(--steel)" opacity=".5"/>
+        <text x="391.0" y="244" class="ovcount">56</text>
+        <text x="892" y="244" text-anchor="end" class="hbar-val">C$100B</text>
+        <!-- Oil & Gas 51 -->
+        <text x="238" y="282" text-anchor="end" class="hbar-lab">Oil &amp; Gas</text>
+        <rect x="250" y="268" width="121.2" height="19" rx="4" fill="var(--steel)" opacity=".5"/>
+        <text x="379.2" y="282" class="ovcount">51</text>
+        <text x="892" y="282" text-anchor="end" class="hbar-val">C$552B</text>
+        <!-- Life Sciences 40 -->
+        <text x="238" y="320" text-anchor="end" class="hbar-lab">Life Sciences</text>
+        <rect class="ramp-4" x="250" y="306" width="95.0" height="19" rx="4"/>
+        <text x="353.0" y="320" class="ovcount">40</text>
+        <text x="892" y="320" text-anchor="end" class="hbar-val subj">C$24.0B</text>
+        <!-- Clean Tech 28 -->
+        <text x="238" y="358" text-anchor="end" class="hbar-lab">Clean Tech</text>
+        <rect class="ramp-5" x="250" y="344" width="66.5" height="19" rx="4"/>
+        <text x="324.5" y="358" class="ovcount">28</text>
+        <text x="892" y="358" text-anchor="end" class="hbar-val subj">C$56.5B</text>
+        <!-- Comm. & Media 19 -->
+        <text x="238" y="396" text-anchor="end" class="hbar-lab">Comm. &amp; Media</text>
+        <rect x="250" y="382" width="45.1" height="19" rx="4" fill="var(--steel)" opacity=".5"/>
+        <text x="303.1" y="396" class="ovcount">19</text>
+        <text x="892" y="396" text-anchor="end" class="hbar-val">C$164B</text>
+        <!-- Utilities 17 (proxy) -->
+        <text x="238" y="434" text-anchor="end" class="hbar-lab">Utilities&#8224;</text>
+        <rect x="250" y="420" width="40.4" height="19" rx="4" fill="var(--steel)" opacity=".5"/>
+        <text x="298.4" y="434" class="ovcount">17</text>
+        <text x="892" y="434" text-anchor="end" class="hbar-val">C$490B</text>
+        <!-- count axis -->
+        <text x="250" y="463" class="ovcount">0</text>
+        <text x="368.8" y="463" text-anchor="middle" class="ovcount">50</text>
+        <text x="487.6" y="463" text-anchor="middle" class="ovcount">100</text>
+        <text x="606.4" y="463" text-anchor="middle" class="ovcount">150</text>
+        <text x="680" y="463" text-anchor="middle" class="ovcount">operating issuers</text>
+      </svg>
+    </div>
+    <div class="legendline rv d2"><span class="sw" style="background:var(--accent)"></span>growth sector<span class="sw" style="background:var(--steel)"></span>other TMX sector<span style="color:var(--dim)">&nbsp;&nbsp;&#8224; partial proxy only (Advanced Mfg &rarr; Industrial; Infrastructure &rarr; Utilities)</span></div>
+    <div class="ovsum rv d2" id="pmSum"><b>TSX:</b> 672 operating issuers &middot; <b>C$5,961B</b> combined market cap. <span class="g">Financial Services</span> leads by value (~C$1.9T across just 63 issuers); <span class="g">Mining</span> leads by count (181). The growth sectors that dominate the venture board barely register in senior-board value.</div>
+
+    <!-- sector picker -> top 10 issuers -->
+    <div class="secswitch rv d1" role="group" aria-label="Choose a sector to list its ten largest issuers" style="margin-top:42px">
+      <span class="grouplab">Top 10</span>
+      <button type="button" class="invchip" data-pm="tech" aria-pressed="true">Technology</button>
+      <button type="button" class="invchip" data-pm="fin" aria-pressed="false">Financial Services</button>
+      <button type="button" class="invchip" data-pm="mining" aria-pressed="false">Mining</button>
+      <button type="button" class="invchip" data-pm="life" aria-pressed="false">Life Sciences</button>
+      <button type="button" class="invchip" data-pm="clean" aria-pressed="false">Cleantech</button>
+    </div>
+
+    <div class="chart-head rv d2" style="margin-top:24px">
+      <h3 id="t10Title">Technology &mdash; ten largest TSX issuers by market cap</h3>
+      <div class="sub" id="t10Sub">Company &middot; ticker &middot; market cap (C$) &middot; head-office province &middot; interlisting</div>
+    </div>
+    <div class="t10wrap rv d2">
+      <table class="t10">
+        <thead><tr><th>#</th><th>Company</th><th>Ticker</th><th class="num">Market cap</th><th>HQ</th><th>Also listed</th></tr></thead>
+        <tbody id="t10Body" aria-live="polite">
+          <tr><td class="rk">1</td><td class="nm">Shopify Inc.</td><td class="tk">SHOP</td><td class="num">C$201B</td><td class="hq">ON</td><td class="il"><span class="ilv">NasdaqGS</span></td></tr>
+          <tr><td class="rk">2</td><td class="nm">Celestica Inc.</td><td class="tk">CLS</td><td class="num">C$61.3B</td><td class="hq">ON</td><td class="il"><span class="ilv">NYSE</span></td></tr>
+          <tr><td class="rk">3</td><td class="nm">Constellation Software</td><td class="tk">CSU</td><td class="num">C$60.4B</td><td class="hq">ON</td><td class="il"><span class="ilnone">&mdash;</span></td></tr>
+          <tr><td class="rk">4</td><td class="nm">Hut 8 Corp.</td><td class="tk">HUT</td><td class="num">C$19.4B</td><td class="hq">ON</td><td class="il"><span class="ilv">NasdaqGS</span></td></tr>
+          <tr><td class="rk">5</td><td class="nm">CGI Inc.</td><td class="tk">GIB</td><td class="num">C$18.0B</td><td class="hq">QC</td><td class="il"><span class="ilv">NYSE</span></td></tr>
+          <tr><td class="rk">6</td><td class="nm">CAE Inc.</td><td class="tk">CAE</td><td class="num">C$11.5B</td><td class="hq">QC</td><td class="il"><span class="ilv">NYSE</span></td></tr>
+          <tr><td class="rk">7</td><td class="nm">Descartes Systems Group</td><td class="tk">DSG</td><td class="num">C$8.74B</td><td class="hq">ON</td><td class="il"><span class="ilv">NasdaqGS</span></td></tr>
+          <tr><td class="rk">8</td><td class="nm">MDA Space Ltd.</td><td class="tk">MDA</td><td class="num">C$8.53B</td><td class="hq">ON</td><td class="il"><span class="ilv">NYSE</span></td></tr>
+          <tr><td class="rk">9</td><td class="nm">Open Text Corp.</td><td class="tk">OTEX</td><td class="num">C$7.95B</td><td class="hq">ON</td><td class="il"><span class="ilv">NasdaqGS</span></td></tr>
+          <tr><td class="rk">10</td><td class="nm">BlackBerry Ltd.</td><td class="tk">BB</td><td class="num">C$7.26B</td><td class="hq">ON</td><td class="il"><span class="ilv">NYSE</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="t10cap rv d2" id="t10Cap"><b>Shopify</b> alone is <em>46%</em> of the sector's C$435B public value on the TSX &middot; <em>9 of these 10</em> also list in the US or abroad. The named champions are here; the mid-cap tier that should sit beneath them is not.</div>
+    <a href="methodology.html#register" class="provpill rv d2" data-prov="tmxsec"><span class="o"></span>data &amp; method</a>
+
+    <!-- recent IPOs / new listings -->
+    <div class="ipowrap rv">
+      <div class="kicker rv"><span class="l">05&middot;b</span> Recent listings</div>
+      <h3 class="ipohead rv d1">Ten true IPOs in twenty-four months.</h3>
+      <p class="lede rv d1" style="margin-top:16px">Strip out the ETF and fund launches that dominate the raw &ldquo;new listings&rdquo; tally and the corporate IPO pipeline is nearly dry: across the two years to May 2026 there were just <strong>6 genuine operating-company IPOs on the TSX and 4 on the TSXV</strong>. Only <strong>one</strong> &mdash; Metatek, a technology name &mdash; landed in a mapped growth sector; the rest were mining, consumer and real estate. This is the sector-level face of the IPO drought.</p>
+      <div class="ipolist rv d2">
+        <div class="iporow"><div class="dt">2026-04-30</div><div class="co">Lumina Metals Corp.<span class="tk">LMCU</span><span class="se">Mining &middot; TSX</span></div><div class="cp">C$1.29B</div></div>
+        <div class="iporow growth"><div class="dt">2026-03-19</div><div class="co">Metatek-Group Ltd.<span class="tk">MTEK</span><span class="se">Technology &middot; TSX &middot; growth sector</span></div><div class="cp">C$221M</div></div>
+        <div class="iporow"><div class="dt">2026-03-03</div><div class="co">AGT Food and Ingredients<span class="tk">AGTF</span><span class="se">Consumer P&amp;S &middot; TSX</span></div><div class="cp">C$1.13B</div></div>
+        <div class="iporow"><div class="dt">2025-10-09</div><div class="co">Rockpoint Gas Storage<span class="tk">RGSI</span><span class="se">Industrial P&amp;S &middot; TSX</span></div><div class="cp">C$1.57B</div></div>
+        <div class="iporow"><div class="dt">2025-07-25</div><div class="co">GO Residential REIT<span class="tk">GO</span><span class="se">Real Estate &middot; TSX</span></div><div class="cp">C$370M</div></div>
+        <div class="iporow"><div class="dt">2024-11-26</div><div class="co">Groupe Dynamite Inc.<span class="tk">GRGD</span><span class="se">Consumer P&amp;S &middot; TSX</span></div><div class="cp">C$1.56B</div></div>
+      </div>
+      <div class="t10cap rv d2" style="margin-top:18px">The four true <b>TSXV</b> IPOs were all mining juniors (Axo Metals C$186M the largest; then Saga Metals, River Road Resources, Essex Resources). On the TSX, <em>Listing Type = &ldquo;IPO&rdquo;</em> also tags 200-plus ETF and closed-end-fund creations in the same window &mdash; the six above are what survive once those are removed. <em>Continue to <a href="public-markets.html">Public Markets</a> for the full drought.</em></div>
+      <a href="methodology.html#register" class="provpill rv d2" data-prov="tmxsec"><span class="o"></span>data &amp; method</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 · THE READ / OUTRO ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">06</span> The read</div>
     <h2 class="rv d1">Great sectors, mis-wired capital.</h2>
     <p class="lede rv d1">Read across the nine sectors and one pattern repeats: Ontario has world-class research and genuine sectoral strength, but the capital that scales it is either <strong>going into buildings instead of intangibles</strong>, <strong>arriving from foreign investors</strong>, or <strong>routing through FDI and grants rather than domestic equity markets</strong>. The productive-capital mix (2.76&#215; housing over IP), the industry divergence (knowledge up, goods down), and the board mismatch (champions with no domestic home) are three views of the same problem. The next chapters diagnose it.</p>
     <div class="nextlist">
@@ -378,7 +561,7 @@ window.PROV = {
   },
   sectors:{
     t:"The nine core-sector research pages",
-    meta:'Per-sector scale figures and the single capital-markets fact on each explorer card are drawn from the vault\'s nine core-sector pages, each of which carries its own inline citations: <b>Technology</b> (ICT VC C$5.1B / 64% of Canadian VC 2025, CVCA; 185 listed issuers, TMX Feb 2026), <b>Life Sciences</b> (VC C$837M / 129 deals 2025, CVCA), <b>Cleantech</b> (green-bond and project-finance structure; C$4B sovereign green bond incl. nuclear), <b>Advanced Manufacturing</b> ($28B EV/battery FDI announced 2022&ndash;24, much paused), <b>Mining &amp; Critical Minerals</b> (~1,073 TSX/TSXV miners; 11% critical-minerals capital, RBC), <b>Defense</b> ($180B procurement; BDC C$4B platform), <b>Financial Services</b> (~C$1.9T TSX cap; fintech VC C$1.7B/82 deals, KPMG), <b>Agri-Food</b> (AgTech VC ~C$270M; FCC C$7B coalition), <b>Infrastructure &amp; Construction</b> (C$51B Build Communities Strong Fund; OMERS C$30B+ infra). OEA industry ties are cross-referenced to Table 16.',
+    meta:'Per-sector scale figures and the single capital-markets fact on each explorer card are drawn from the vault\'s nine core-sector pages, each of which carries its own inline citations: <b>Technology</b> (ICT VC C$5.1B / 64% of Canadian VC 2025, CVCA &mdash; the four largest ICT deals were all Ontario-based: Waabi C$1.034B, Cohere C$689M, Wealthsimple C$550M primary, Beacon Software C$352M, per CVCA 2025; Wealthsimple\'s round was C$750M all-in incl. up to C$200M secondary, the figure carried on the Financial Services card; 186 listed issuers, TMX May 2026), <b>Life Sciences</b> (VC C$837M / 129 deals 2025, CVCA), <b>Cleantech</b> (green-bond and project-finance structure; C$4B sovereign green bond incl. nuclear), <b>Advanced Manufacturing</b> ($28B EV/battery FDI announced 2022&ndash;24, much paused), <b>Mining &amp; Critical Minerals</b> (~1,080 TSX/TSXV miners; 11% critical-minerals capital, RBC), <b>Defense</b> ($180B procurement; BDC C$4B platform), <b>Financial Services</b> (~C$1.9T TSX cap; fintech VC C$1.7B/82 deals, KPMG), <b>Agri-Food</b> (AgTech VC ~C$270M; FCC C$7B coalition), <b>Infrastructure &amp; Construction</b> (C$51B Build Communities Strong Fund; OMERS C$30B+ infra). OEA industry ties are cross-referenced to Table 16.',
     conf:"high"
   },
   framework:{
@@ -389,6 +572,15 @@ window.PROV = {
   boards:{
     t:"How the sectors map to the boards",
     meta:'<b>TMX Issuers List (May 31 2026)</b> + <b>CSE Listed Companies analysis (end-2025)</b>, the same canonical operating-issuer data behind the interactive Exchanges dashboard. <b>TSX</b>: Financial Services leads by capital (~C$1.9T, 63 issuers), Mining by count (181); Shopify is the lone scaled tech name. <b>TSXV</b>: 899 mining of 1,347 operating issuers (67%); Topicus &amp; Lumine (Constellation spin-offs) the largest tech; median issuer ~C$17M. <b>CSE</b>: 340 mining of 601 (57%); its largest "life-sciences" names are US cannabis multi-state operators; 89% of equities under C$50M. <b>US flight</b>: Xanadu listed via US SPAC; Tenstorrent re-domiciled its HQ to the US &mdash; the mid-cap champion tier is missing on all three domestic boards.',
+    conf:"high"
+  },
+  tmxsec:{
+    t:"TMX Issuers List — operating issuers by sector (May 31 2026)",
+    meta:'<b>TMX (2026) — TSX &amp; TSXV Listed Companies (Jun 2026 workbook), data as at May 31 2026.</b> Counts and market caps use the vault\'s canonical <b>operating-issuer</b> methodology: from the full issuer list we strip ETPs, CDRs, closed-end funds and SPACs on the TSX, and capital-pool companies (CPCs) on the TSXV, leaving the real operating companies. This reproduces the canonical <b>672 TSX / 1,347 TSXV</b> operating issuers (2,019 combined) exactly, verified twice in Python; per-sector counts sum to 672 (TSX, C$5,961.1B total cap) and 1,347 (TSXV, C$142.5B).<ul>'
+      +'<li><b>Growth-sector mapping caveat.</b> Five report sectors map 1:1 onto a TMX sector (Technology, Life Sciences, Cleantech = "Clean Technology &amp; Renewable Energy", Financial Services, Mining). Advanced Manufacturing and Infrastructure have only a partial TMX proxy (Industrial Products &amp; Services; Utilities &amp; Pipelines — both marked &#8224;). Defence, Agri-Food and Auto &amp; Batteries have <b>no</b> TMX sector and are deliberately not shown — this is a TMX-sector cut, not a forced nine-sector rollup.</li>'
+      +'<li><b>Top-10 fields.</b> Market cap point-in-time as at May 31 2026 (C$, no FX conversion); HQ = head-office province/state (foreign issuers show the country); "also listed" = interlisting venue(s) flagged in the workbook.</li>'
+      +'<li><b>Recent IPOs.</b> New listings of operating issuers over the 24 months to May 31 2026: 58 on the TSX / 126 on the TSXV all-in, but only <b>6 TSX + 4 TSXV true operating-company IPOs</b> once TSXV graduations, RTOs, QTs and (on the TSX) the 200-plus ETF/closed-end-fund "IPO" creations are removed. Just one — Metatek (Technology) — sits in a mapped growth sector.</li>'
+      +'</ul>Full provenance in the vault anchor page <em>TMX (2026) — TSX &amp; TSXV Listed Companies &amp; New Listings</em> and the June-2026 re-base appendix of <em>TMX Listed Companies — Analysis (Feb 2026)</em>.',
     conf:"high"
   }
 };
@@ -402,6 +594,110 @@ window.OEA = {
   ipp:[8.3,9.3,9.2,10.0,11.5,12.1,12.2,12.0,13.5,12.3,13.0,13.3,13.1,13.1,14.4,15.1,15.7,16.9,19.3,20.3,20.8,24.1,27.7,30.6,32.9,34.4],
   me:[29.0,27.7,25.4,25.3,26.1,28.0,29.2,28.0,28.4,23.0,22.8,22.8,22.8,20.2,24.4,28.5,25.2,26.6,29.0,32.0,28.5,31.9,33.7,36.0,38.8,37.4],
   ratio:[2.61,2.62,3.06,2.99,2.92,2.93,3.05,3.39,2.97,3.11,3.29,3.46,3.82,3.84,3.65,3.90,4.26,4.25,3.64,3.55,3.98,4.53,3.85,3.32,3.01,2.76]
+};
+
+/* ---- BAKED TMX-SECTOR DATA (operating issuers, May 31 2026; see PROV.tmxsec).
+   Reproduces the canonical 672 TSX / 1,347 TSXV operating-issuer cut exactly.
+   sectors[] = {l:label, n:issuer count, c:total market cap C$B, g:1 if a growth
+   sector, r:accent-ramp rank among growth sectors}. Sorted by issuer count desc.
+   top[key] = {cap: sector total cap C$B, rows:[name,ticker,mktcapC$M,HQ,interlist]}. ---- */
+window.TMXSEC = {
+  tsx:{
+    total_issuers:672, total_cap:5961.1,
+    sectors:[
+      {l:"Mining",n:181,c:1199.2,g:1,r:1},
+      {l:"Industrial P&S†",n:102,c:644.9,g:0,r:0},
+      {l:"Financial Services",n:63,c:1897.0,g:1,r:2},
+      {l:"Consumer P&S",n:58,c:397.8,g:0,r:0},
+      {l:"Technology",n:57,c:435.3,g:1,r:3},
+      {l:"Real Estate",n:56,c:100.2,g:0,r:0},
+      {l:"Oil & Gas",n:51,c:551.7,g:0,r:0},
+      {l:"Life Sciences",n:40,c:24.0,g:1,r:4},
+      {l:"Clean Tech",n:28,c:56.5,g:1,r:5},
+      {l:"Comm. & Media",n:19,c:164.5,g:0,r:0},
+      {l:"Utilities†",n:17,c:490.0,g:0,r:0}
+    ],
+    top:{
+      tech:{cap:435.3,rows:[
+        ["Shopify Inc.","SHOP",200555.3,"ON","NasdaqGS"],["Celestica Inc.","CLS",61281.8,"ON","NYSE"],
+        ["Constellation Software","CSU",60415.8,"ON",""],["Hut 8 Corp.","HUT",19404.5,"ON","NasdaqGS"],
+        ["CGI Inc.","GIB",18016.9,"QC","NYSE"],["CAE Inc.","CAE",11475.6,"QC","NYSE"],
+        ["Descartes Systems Group","DSG",8738.2,"ON","NasdaqGS"],["MDA Space Ltd.","MDA",8530.4,"ON","NYSE"],
+        ["Open Text Corp.","OTEX",7954.5,"ON","NasdaqGS"],["BlackBerry Ltd.","BB",7261.3,"ON","NYSE"]]},
+      fin:{cap:1897.0,rows:[
+        ["Royal Bank of Canada","RY",369979.4,"ON","NYSE"],["Toronto-Dominion Bank","TD",261905.1,"ON","NYSE"],
+        ["Brookfield Corporation","BN",158156.1,"ON","NYSE"],["Bank of Montreal","BMO",157269.1,"ON","NYSE"],
+        ["CIBC","CM",138137.1,"ON","NYSE"],["Bank of Nova Scotia","BNS",135707.2,"ON","NYSE"],
+        ["Brookfield Asset Mgmt","BAM",109230.7,"USA","NYSE"],["Manulife Financial","MFC",90477.3,"ON","NYSE·HKEx"],
+        ["National Bank of Canada","NA",79295.1,"QC",""],["Great-West Lifeco","GWO",75449.5,"MB",""]]},
+      mining:{cap:1199.2,rows:[
+        ["Agnico Eagle Mines","AEM",126864.0,"ON","NYSE"],["Barrick Mining","ABX",98687.4,"ON","NYSE·Lima"],
+        ["Wheaton Precious Metals","WPM",84176.6,"BC","NYSE·LSE"],["Cameco Corporation","CCO",67468.4,"SK","NYSE"],
+        ["Franco-Nevada","FNV",61590.3,"ON","NYSE"],["Kinross Gold","K",49946.1,"ON","NYSE"],
+        ["Nutrien Ltd.","NTR",45322.1,"SK","NYSE"],["Teck Resources","TECK",44774.2,"BC","NYSE"],
+        ["First Quantum Minerals","FM",35403.7,"BC",""],["Lundin Mining","LUN",35233.8,"ON","Nasdaq Nordic"]]},
+      life:{cap:24.0,rows:[
+        ["Bausch + Lomb","BLCO",7709.0,"ON","NYSE"],["Curaleaf Holdings","CURA",3386.9,"USA",""],
+        ["Bausch Health","BHC",2770.0,"QC","NYSE"],["Cronos Group","CRON",1470.1,"ON","NasdaqGM"],
+        ["WELL Health Technologies","WELL",1188.7,"BC",""],["DRI Healthcare Trust","DHT",940.2,"ON",""],
+        ["Knight Therapeutics","GUD",805.0,"QC",""],["Eupraxia Pharmaceuticals","EPRX",645.6,"BC","NasdaqCM"],
+        ["Canopy Growth","WEED",644.4,"ON","NasdaqGS"],["Fennec Pharmaceuticals","FRX",474.5,"USA","NasdaqCM"]]},
+      clean:{cap:56.5,rows:[
+        ["Brookfield Renewable Partners","BEP",15852.1,"QC","NYSE"],["Brookfield Renewable Corp.","BEPC",8164.2,"USA","NYSE"],
+        ["Algonquin Power & Utilities","AQN",6510.4,"ON","NYSE"],["Northland Power","NPI",6298.1,"ON",""],
+        ["5N Plus Inc.","VNP",3843.8,"QC",""],["Boralex Inc.","BLX",3788.6,"QC",""],
+        ["NFI Group","NFI",3101.8,"MB",""],["Ballard Power Systems","BLDP",2616.8,"BC","NasdaqGM"],
+        ["Cascades Inc.","CAS",1111.4,"QC",""],["Brookfield Renewable Pref.","BRF",802.1,"ON",""]]}
+    }
+  },
+  tsxv:{
+    total_issuers:1347, total_cap:142.5,
+    sectors:[
+      {l:"Mining",n:899,c:94.7,g:1,r:1},
+      {l:"Technology",n:129,c:20.3,g:1,r:2},
+      {l:"Life Sciences",n:70,c:1.8,g:1,r:3},
+      {l:"Oil & Gas",n:68,c:5.4,g:0,r:0},
+      {l:"Clean Tech",n:55,c:2.2,g:1,r:4},
+      {l:"Financial Services",n:38,c:14.9,g:1,r:5},
+      {l:"Consumer P&S",n:32,c:1.2,g:0,r:0},
+      {l:"Industrial P&S†",n:29,c:1.4,g:0,r:0},
+      {l:"Real Estate",n:21,c:0.6,g:0,r:0},
+      {l:"Comm. & Media",n:5,c:0.0339,g:0,r:0},
+      {l:"Utilities†",n:1,c:0.0069,g:0,r:0}
+    ],
+    top:{
+      tech:{cap:20.3,rows:[
+        ["Topicus.com Inc.","TOI",8311.4,"Neth.",""],["Lumine Group","LMN",5501.9,"ON",""],
+        ["Kraken Robotics","PNG",2635.8,"NL",""],["Quantum eMotion","QNC",989.4,"QC","NYSE Mkt"],
+        ["BuildDirect.com","BILD",148.9,"BC",""],["Enablence Technologies","ENA",138.6,"ON",""],
+        ["Neptune Digital Assets","NDA",137.3,"BC",""],["Gatekeeper Systems","GSI",135.5,"BC",""],
+        ["Ameritrust Financial Tech","AMT",111.9,"ON",""],["Paragon Advanced Labs","PALS",89.8,"ON",""]]},
+      fin:{cap:14.9,rows:[
+        ["Partners Value Investments","PVF",12745.3,"ON",""],["Westaim Corporation","WED",805.2,"ON",""],
+        ["Palisades Goldcorp","PALI",231.4,"BC",""],["Decisive Dividend","DE",198.8,"BC",""],
+        ["CoTec Holdings","CTH",178.4,"BC",""],["Northfield Capital","NFD",140.4,"ON",""],
+        ["Brookfield Investments","BRN",134.0,"ON",""],["Pender Growth Fund","PTF",103.5,"BC",""],
+        ["Bitcoin Treasury Corp.","BTCT",37.4,"ON",""],["Orecap Invest","OCI",33.5,"BC",""]]},
+      mining:{cap:94.7,rows:[
+        ["Artemis Gold","ARTG",7689.7,"BC",""],["Sigma Lithium","SGML",2604.6,"Brazil","NasdaqCM"],
+        ["Hemlo Mining","HMMC",1896.8,"ON",""],["OMAI Gold Mines","OMG",1814.5,"ON",""],
+        ["Alphamin Resources","AFM",1721.5,"Maur.","JSE"],["LunR Royalties","LUNR",1540.7,"ON",""],
+        ["Standard Lithium","SLI",1315.7,"BC","NYSE Mkt"],["Fuerte Metals","FMT",1269.1,"BC",""],
+        ["Osisko Development","ODV",1176.2,"QC","NYSE"],["New Found Gold","NFG",1075.4,"BC","NYSE Mkt"]]},
+      life:{cap:1.8,rows:[
+        ["Vector Science & Therap.","PAIN",259.0,"USA",""],["Hydreight Technologies","NURS",227.5,"USA",""],
+        ["BioSyent Inc.","RX",162.2,"ON",""],["PharmaCorp Rx","PCRX",88.8,"SK",""],
+        ["Ocumetics Technology","OTC",72.6,"BC",""],["Covalon Technologies","COV",59.9,"ON",""],
+        ["NurExone Biologic","NRX",59.8,"Israel",""],["Grey Wolf Animal Health","WOLF",58.3,"ON",""],
+        ["Theralase Technologies","TLT",57.8,"ON",""],["Eastwood Bio-Medical","EBM",53.0,"BC",""]]},
+      clean:{cap:2.2,rows:[
+        ["CVW Sustainable Royalties","CVW",326.9,"AB",""],["Graphene Manufacturing Grp","GMG",313.6,"Austl.",""],
+        ["SPARQ Systems","SPRQ",151.8,"ON",""],["NVRO Metals","NVRO",97.9,"BC",""],
+        ["BQE Water","BQE",97.6,"BC",""],["HPQ Silicon","HPQ",80.1,"QC",""],
+        ["NEO Battery Materials","NBM",61.7,"BC",""],["Green Impact Partners","GIP",56.7,"BC",""],
+        ["Biorem Inc.","BRM",50.9,"ON",""],["International Battery Metals","IBAT",49.1,"USA",""]]}
+    }
+  }
 };
 </script>
 <script>
@@ -522,9 +818,9 @@ window.OEA = {
         lead:"Ontario's AI, quantum, semiconductor and photonics cluster — deep research strength, thin domestic scale-up capital.",
         stats:[["$42–52B","AI GDP","Plus a projected $139B quantum opportunity by 2045."],
                ["C$38.7B","Info & Culture real GDP","Ontario's tech & telecom output — up 16.5% since 2019 (OEA, 2025)."],
-               ["185","listed tech issuers","52 on the TSX (C$385B) and 133 on the TSXV (C$21B)."]],
-        cap:"ICT drew <strong>C$5.1B — 64% of all Canadian VC</strong> in 2025, yet <strong>Shopify (C$202B) is the lone technology name in the TSX's top 10</strong>. Only 10 TSXV tech firms have cleared the C$100M graduation mark, against 212 miners — the scale-up and liquidity gap in a single statistic.",
-        src:"Technology.md · CVCA 2025 · TMX (Feb 2026)", conf:"high" },
+               ["186","listed tech issuers","57 on the TSX (C$435B) and 129 on the TSXV (C$20B)."]],
+        cap:"ICT drew <strong>C$5.1B — 64% of all Canadian VC</strong> in 2025, and Ontario firms took <strong>all four of the year's largest ICT venture rounds</strong> — Waabi (C$1.03B), Cohere (C$689M), Wealthsimple (C$550M) and Beacon Software (C$352M). Yet <strong>Shopify (C$201B) is the lone technology name in the TSX's top 10</strong>, and only 10 TSXV tech firms have cleared the C$100M mark against 212 miners — private champions with almost no public-market home.",
+        src:"Technology.md · CVCA 2025 · TMX (May 2026)", conf:"high" },
       lifesci:{ name:"Life Sciences", tier:"biotech · medtech · health AI",
         lead:"1,900 Ontario firms across biotech, medtech and health AI — strong science, cyclical and shrinking venture capital.",
         stats:[["1,900","Ontario firms","C$65.2B revenues; a US$206.8B market projected by 2030."],
@@ -549,7 +845,7 @@ window.OEA = {
       mining:{ name:"Mining & Critical Minerals", tier:"where our markets lead",
         lead:"The one sector where Ontario's public markets lead the world — but the capital flows to gold, not critical minerals.",
         stats:[["$10B+","Ontario mineral production","Against a C$72.4B national project pipeline."],
-               ["~1,073","TSX/TSXV mining issuers","About 40% of the world's public mining companies."],
+               ["~1,080","TSX/TSXV mining issuers","About 40% of the world's public mining companies."],
                ["48 of 50","2026 TSX Venture 50","Miners — combined C$19.9B market cap, +443% average share price."]],
         cap:"The TSX and TSXV are the <strong>world's leading mining-capital-formation venue</strong>, yet RBC finds Canada has channelled <strong>only 11% of mining capital into critical minerals over 25 years</strong> — Australia more than twice as much. Redirecting that listed-market capital is a direct capital-markets policy lever.",
         src:"Mining & Critical Minerals.md · TMX (2026) · RBC", conf:"high" },
@@ -594,7 +890,9 @@ window.OEA = {
       d.stats.forEach(function(s){ h+='<div class="secstat"><div class="kn">'+s[0]+'</div><div class="kc">'+s[1]+'</div><div class="kl">'+s[2]+'</div></div>'; });
       stats.innerHTML=h;
       cap.innerHTML=d.cap;
-      src.innerHTML='Source: '+d.src+'.<span class="conf '+d.conf+'">'+d.conf+'</span>';
+      // Source surface is the shared PROV drawer (provpill data-prov="sectors"), per the
+      // Mission Control design system — the sector card carries no inline source label.
+      // (Each S entry keeps a src/conf note as in-code provenance documentation only.)
     }
     chips.forEach(function(c){
       c.addEventListener("click",function(){
@@ -604,6 +902,103 @@ window.OEA = {
       });
     });
     // build-time default (Technology) already in the DOM; no initial re-render needed.
+  }catch(e){}
+})();
+
+/* ---------- 3 & 4. Public-market presence: board toggle (overview chart) + top-10 sector picker ---------- */
+(function(){
+  try{
+    var D=window.TMXSEC; if(!D) return;
+    var SVGNS="http://www.w3.org/2000/svg";
+    function el(t,a){var e=document.createElementNS(SVGNS,t);if(a)for(var k in a)e.setAttribute(k,a[k]);return e;}
+    function grp(n){var s=String(n),o="",i;for(i=0;i<s.length;i++){o+=(i>0&&(s.length-i)%3===0?",":"")+s[i];}return o;}
+    function fmtCapB(b){ if(b>=100)return "C$"+grp(Math.round(b))+"B"; if(b>=1)return "C$"+b.toFixed(1)+"B"; return "C$"+Math.round(b*1000)+"M"; }
+    function fmtCapM(m){ if(m>=100000)return "C$"+grp(Math.round(m/1000))+"B"; if(m>=10000)return "C$"+(m/1000).toFixed(1)+"B"; if(m>=1000)return "C$"+(m/1000).toFixed(2)+"B"; return "C$"+Math.round(m)+"M"; }
+    function niceStep(max){var raw=max/4,mag=Math.pow(10,Math.floor(Math.log(raw)/Math.LN10)),n=raw/mag,s=n<1.5?1:n<3?2:n<7?5:10;return s*mag;}
+
+    var chart=document.getElementById("pmChart"), title=document.getElementById("pmTitle"),
+        sum=document.getElementById("pmSum"), wrap=document.getElementById("pmWrap");
+    var X0=250,BARMAX=430,VALX=892,TOP=40,ROWH=38,BARH=19;
+
+    function renderOverview(board){
+      if(!chart) return;
+      var d=D[board], secs=d.sectors, max=0,i;
+      for(i=0;i<secs.length;i++){ if(secs[i].n>max) max=secs[i].n; }
+      while(chart.firstChild) chart.removeChild(chart.firstChild);
+      var bottomY=TOP+(secs.length-1)*ROWH+BARH+8;
+      // zero axis + gridlines
+      chart.appendChild(el("line",{x1:X0,y1:34,x2:X0,y2:bottomY,stroke:"var(--hair-strong)","stroke-width":1}));
+      var step=niceStep(max),t;
+      for(t=step;t<=max;t+=step){
+        var gx=X0+(t/max)*BARMAX;
+        chart.appendChild(el("line",{x1:gx.toFixed(1),y1:34,x2:gx.toFixed(1),y2:bottomY,stroke:"var(--hair)","stroke-width":1}));
+        var gl=el("text",{x:gx.toFixed(1),y:bottomY+16,"text-anchor":"middle","class":"ovcount"}); gl.textContent=t; chart.appendChild(gl);
+      }
+      var z=el("text",{x:X0,y:bottomY+16,"class":"ovcount"}); z.textContent="0"; chart.appendChild(z);
+      var mh=el("text",{x:VALX,y:26,"text-anchor":"end","class":"ovcount"}); mh.textContent="market cap →"; chart.appendChild(mh);
+      for(i=0;i<secs.length;i++){
+        var s=secs[i], barY=TOP+i*ROWH, w=max?s.n/max*BARMAX:0, tb=barY+14;
+        var lab=el("text",{x:238,y:tb,"text-anchor":"end","class":"hbar-lab"}); lab.textContent=s.l; chart.appendChild(lab);
+        var rect = s.g
+          ? el("rect",{"class":"ramp-"+s.r,x:X0,y:barY,width:w.toFixed(1),height:BARH,rx:4})
+          : el("rect",{x:X0,y:barY,width:w.toFixed(1),height:BARH,rx:4,fill:"var(--steel)",opacity:.5});
+        chart.appendChild(rect);
+        var cnt=el("text",{x:(X0+w+8).toFixed(1),y:tb,"class":"ovcount"}); cnt.textContent=s.n; chart.appendChild(cnt);
+        var cap=el("text",{x:VALX,y:tb,"text-anchor":"end","class":s.g?"hbar-val subj":"hbar-val"}); cap.textContent=fmtCapB(s.c); chart.appendChild(cap);
+      }
+      chart.setAttribute("viewBox","0 0 900 "+(bottomY+26));
+      title.textContent="Operating issuers & market cap by TMX sector — "+(board==="tsx"?"TSX":"TSXV")+", May 2026";
+      if(wrap){
+        var aria="Operating issuers and total market capitalisation by TMX sector on the "+(board==="tsx"?"TSX":"TSXV")+", May 31 2026. ";
+        aria+=secs.map(function(s){return s.l+" "+s.n+" issuers, "+fmtCapB(s.c);}).join(", ")+".";
+        wrap.setAttribute("aria-label",aria);
+      }
+    }
+    function updateSummary(board){
+      if(!sum) return;
+      sum.innerHTML = board==="tsx"
+        ? '<b>TSX:</b> 672 operating issuers &middot; <b>C$5,961B</b> combined market cap. <span class="g">Financial Services</span> leads by value (~C$1.9T across just 63 issuers); <span class="g">Mining</span> leads by count (181). The growth sectors that dominate the venture board barely register in senior-board value.'
+        : '<b>TSXV:</b> 1,347 operating issuers &middot; <b>C$142.5B</b> combined market cap. <span class="g">Mining</span> is the venture board — 899 issuers and C$94.7B, two-thirds of both count and value; the typical junior is a nano-cap near C$17M.';
+    }
+
+    var t10body=document.getElementById("t10Body"), t10title=document.getElementById("t10Title"), t10cap=document.getElementById("t10Cap");
+    var SECNAME={tech:"Technology",fin:"Financial Services",mining:"Mining",life:"Life Sciences",clean:"Cleantech"};
+    function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+    function renderTable(board,key){
+      if(!t10body) return;
+      var o=D[board].top[key], rows=o.rows, bl=board==="tsx"?"TSX":"TSXV", h="",il;
+      rows.forEach(function(r,idx){
+        il = r[4] ? '<span class="ilv">'+esc(r[4])+'</span>' : '<span class="ilnone">&mdash;</span>';
+        h+='<tr><td class="rk">'+(idx+1)+'</td><td class="nm">'+esc(r[0])+'</td><td class="tk">'+esc(r[1])+'</td><td class="num">'+fmtCapM(r[2])+'</td><td class="hq">'+esc(r[3])+'</td><td class="il">'+il+'</td></tr>';
+      });
+      t10body.innerHTML=h;
+      t10title.textContent=SECNAME[key]+" — ten largest "+bl+" issuers by market cap";
+      var top=rows[0], share=Math.round(top[2]/(o.cap*1000)*100), ilc=0;
+      rows.forEach(function(r){ if(r[4]) ilc++; });
+      t10cap.innerHTML='<b>'+esc(top[0])+'</b> alone is <em>'+share+'%</em> of the sector\'s '+fmtCapB(o.cap)+' public value on the '+bl+' &middot; <em>'+ilc+' of these 10</em> also list in the US or abroad.';
+    }
+
+    var curBoard="tsx", curSec="tech";
+    var bTSX=document.getElementById("pmTSX"), bTSXV=document.getElementById("pmTSXV");
+    function setBoard(b){
+      curBoard=b;
+      if(bTSX) bTSX.setAttribute("aria-pressed", b==="tsx"?"true":"false");
+      if(bTSXV) bTSXV.setAttribute("aria-pressed", b==="tsxv"?"true":"false");
+      renderOverview(b); updateSummary(b); renderTable(b,curSec);
+    }
+    if(bTSX) bTSX.addEventListener("click",function(){setBoard("tsx");});
+    if(bTSXV) bTSXV.addEventListener("click",function(){setBoard("tsxv");});
+    var secChips=document.querySelectorAll("[data-pm]");
+    secChips.forEach(function(c){
+      c.addEventListener("click",function(){
+        curSec=c.getAttribute("data-pm");
+        secChips.forEach(function(x){x.setAttribute("aria-pressed","false");});
+        c.setAttribute("aria-pressed","true");
+        renderTable(curBoard,curSec);
+      });
+    });
+    // normalise the static build-time default (TSX / Technology) to the JS layout
+    renderOverview("tsx"); updateSummary("tsx"); renderTable("tsx","tech");
   }catch(e){}
 })();
 </script>

@@ -101,7 +101,7 @@ html[data-theme="light"] .dtip{box-shadow:0 8px 30px rgba(46,77,96,.18)}
       <div class="signum rv d1">44 → 5</div>
       <div>
         <div class="sigpct rv d2">TMX IPO new listings · 2021 → 2025</div>
-        <div class="siglab rv d2">New listings through IPO on the TMX collapsed from 44 (2021) to 5 (2025) — an 89% fall. Korea held flat near 75; Hong Kong dipped and recovered to 114. The Canadian drought is not universal.</div>
+        <div class="siglab rv d2">New listings through IPO on the TMX collapsed from 44 (2021) to 5 (2025) — an 89% fall. Korea swung between 33 and 159 but never crashed, settling near 75; Hong Kong dipped and recovered to 114. The Canadian drought is not universal.</div>
         <a href="methodology.html#register" class="provpill rv d2" data-prov="wfe"><span class="o"></span>data &amp; method</a>
       </div>
     </div>
@@ -129,6 +129,12 @@ html[data-theme="light"] .dtip{box-shadow:0 8px 30px rgba(46,77,96,.18)}
       </div>
     </div>
 
+    <!-- BASIS NOTE — what the "Listed companies" indicator counts (WFE = all-in, not operating-only). -->
+    <div class="caveat rv d1" style="margin-top:20px">
+      <b>What "listed companies" counts.</b> WFE listing totals are <b>all-in</b> — they include ETFs, closed-end funds and other exchange-traded products wherever the exchange reports them (WFE's 2025 TMX total is <b>3,701</b>, TSX + TSXV combined). That is a <em>different universe</em> from this report's canonical <b>672 TSX operating issuers</b> (May 2026), which deliberately strips funds and products. Use the WFE count for internationally-comparable totals; use 672 for the operating-issuer decline story — the two are not meant to match.
+    </div>
+    <a href="methodology.html#register" class="provpill rv d1" data-prov="basis"><span class="o"></span>basis &amp; reconciliation</a>
+
     <!-- PRESETS -->
     <div class="picker rv d1" style="margin-top:22px">
       <div class="plab">TMX vs peers — quick presets</div>
@@ -151,7 +157,7 @@ html[data-theme="light"] .dtip{box-shadow:0 8px 30px rgba(46,77,96,.18)}
       <h3 id="chTitle">New listings through IPO (Total)</h3>
       <div class="sub" id="chSub">2010 → 2025 · TMX vs Korea, Hong Kong &amp; Nasdaq-US · count</div>
     </div>
-    <div class="svgwrap rv d2" id="wfeWrap" role="img" aria-label="Line chart of new listings through IPO, 2010 to 2025, for four exchanges. TMX falls from 275 in 2010 and 44 in 2021 to 5 in 2025 — an 89 percent fall from the 2021 level. Korea Exchange holds roughly flat near 70 to 75. Hong Kong dips to 68 in 2023 then recovers to 114 in 2025. Nasdaq-US spikes to 319 in 2021 before falling back to 157. The Canadian IPO drought is the steepest of the four.">
+    <div class="svgwrap rv d2" id="wfeWrap" role="img" aria-label="Line chart of new listings through IPO, 2010 to 2025, for four exchanges. TMX falls from 275 in 2010 and 44 in 2021 to 5 in 2025 — an 89 percent fall from the 2021 level. Korea Exchange swings between 33 and 159 across the period with no sustained collapse, settling near 75 by 2025. Hong Kong dips to 68 in 2023 then recovers to 114 in 2025. Nasdaq-US spikes to 319 in 2021 before falling back to 157. The Canadian IPO drought is the steepest of the four.">
       <!-- Build-time DEFAULT view: the IPO-drought preset, rendered static. Rebuilt by JS on interaction. -->
       <svg viewBox="0 0 920 440" id="wfeChart">
         <!-- gridlines: 0,80,160,240,320 -->
@@ -200,7 +206,7 @@ html[data-theme="light"] .dtip{box-shadow:0 8px 30px rgba(46,77,96,.18)}
       <span class="keyitem"><span class="kl" style="border-top-color:var(--sx-hkex)"></span>Hong Kong</span>
       <span class="keyitem"><span class="kl" style="border-top-color:var(--steel)"></span>Nasdaq (US)</span>
     </div>
-    <div class="dashcap rv d2" id="dashCap"><b>The read:</b> The TMX line is the steep one. New IPO listings fell from 44 in 2021 to 5 in 2025 — an 89% collapse. Korea held near 75 the whole decade; Hong Kong recovered to 114 in 2025. Canada's on-ramp closed hardest, and it did not reopen.</div>
+    <div class="dashcap rv d2" id="dashCap"><b>The read:</b> The TMX line is the steep one. New IPO listings fell from 44 in 2021 to 5 in 2025 — an 89% collapse. Korea swung between 33 and 159 with no sustained collapse, settling near 75; Hong Kong recovered to 114 in 2025. Canada's on-ramp closed hardest, and it did not reopen.</div>
     <div class="wfeattr rv d2">Source: World Federation of Exchanges</div>
     <div class="caveat rv d2"><b>Data notes.</b> WFE annual statistics, 2010–2025, canonical 25-exchange USD file. The five newest venues — <b>Shanghai</b>, <b>Shenzhen</b>, <b>India's NSE</b>, <b>Singapore</b> and <b>Saudi's Tadawul</b> — carry full 2010–2025 coverage. Two exchange-level caveats: <b>China</b> is split across Shanghai and Shenzhen (combined they would rank second only to the two US venues), and <b>India's NSE understates</b> the country's true float because BSE India is not in the WFE set. <b>LSE Group</b> series ends in 2020 (WFE stopped publishing it) — London lines simply stop. Individual <b>Nordic venues</b> (Stockholm, Copenhagen, Helsinki, Tallinn) are partial; prefer the <em>Nasdaq Nordic</em> aggregate. Market-cap and value-traded coverage is thinner than listing counts for a few venues (lines drop where WFE has no figure). No 2026 annuals are published yet, so the series ends at 2025.</div>
     <a href="methodology.html#register" class="provpill rv d2" data-prov="wfe"><span class="o"></span>data &amp; method</a>
@@ -327,10 +333,10 @@ html[data-theme="light"] .dtip{box-shadow:0 8px 30px rgba(46,77,96,.18)}
   <div class="wrap">
     <div class="kicker rv"><span class="l">03</span> The drought is not universal</div>
     <h2 class="rv d1">Other markets kept their on-ramps open.</h2>
-    <p class="lede rv d1">Switch the indicator to <em>Listed companies</em> or step through the presets and a pattern emerges: the collapse in new listings is far steeper in Canada than in the Asian markets it likes to benchmark against. Korea ran a steady 60–160 IPOs a year through the whole window; Hong Kong swung with the cycle but recovered to 114 in 2025; even the volatile Nasdaq-US settled back at 157. The TMX went to single digits and stayed there.</p>
+    <p class="lede rv d1">Switch the indicator to <em>Listed companies</em> or step through the presets and a pattern emerges: the collapse in new listings is far steeper in Canada than in the Asian markets it likes to benchmark against. Korea's IPO count swung between 33 and 159 a year — cyclical, never collapsing — through the whole window; Hong Kong swung with the cycle but recovered to 114 in 2025; even the volatile Nasdaq-US settled back at 157. The TMX went to single digits and stayed there.</p>
     <div class="figrow">
       <div class="fig rv d1"><div class="fig-n" data-count="89" data-suffix="%">89%</div><div class="fig-cap">TMX IPO fall</div><div class="fig-q">2021 → 2025 (44 → 5)</div><div class="fig-l">The steepest new-listings collapse among the four benchmark exchanges.</div></div>
-      <div class="fig grey rv d1"><div class="fig-n" data-count="75">75</div><div class="fig-cap">Korea, 2025</div><div class="fig-q">flat all decade</div><div class="fig-l">Korea Exchange held its IPO count near 60–160 for fifteen years.</div></div>
+      <div class="fig grey rv d1"><div class="fig-n" data-count="75">75</div><div class="fig-cap">Korea, 2025</div><div class="fig-q">cyclical, not collapsing</div><div class="fig-l">Korea Exchange's IPO count ranged 33–159 across the same fifteen years — volatile, but it never crashed like TMX's.</div></div>
       <div class="fig grey rv d2"><div class="fig-n" data-count="114">114</div><div class="fig-cap">Hong Kong, 2025</div><div class="fig-q">dipped then recovered</div><div class="fig-l">HKEX fell to 68 in 2023 and rebounded — the cycle turned back for it.</div></div>
     </div>
     <div class="pull rv d2" style="margin-top:40px">
@@ -377,6 +383,11 @@ window.PROV = {
   wfe:{
     t:"Data & method — World Federation of Exchanges",
     meta:'<b>World Federation of Exchanges</b>, annual equity-market statistics 2010–2025, pulled from the WFE Statistics Portal as the canonical <b>25-exchange</b> × 13-indicator extract (USD). Anchored in the vault as <em>Data/WFE (2026) - Exchange Statistics 2010-2026 (Annual, USD, 25 exchanges).xlsx</em> (exported July 8 2026; supersedes the earlier 20-exchange file). The five added venues are Shanghai, Shenzhen, India\'s NSE, Singapore and Saudi\'s Tadawul.<br><br>Indicators surfaced: listed companies (total &amp; domestic), new listings through IPO (total), market capitalisation, capital raised through IPO (total), value traded (EOB total). All monetary figures in US dollars.<br><br><b>Quirks handled:</b> China is split across Shanghai + Shenzhen; India\'s NSE understates the country\'s float (BSE not in the set); Singapore market cap includes substantial foreign listings; LSE Group series ends 2020; individual Nordic venues (Stockholm, Copenhagen, Helsinki, Tallinn) are partial — the <b>Nasdaq Nordic and Baltics</b> aggregate is preferred; some venues lack market-cap / value-traded figures (lines drop where WFE has no value); 2026 annual rows are present but blank, so series end 2025.<br><br><b>Headline:</b> TMX IPO new listings 44 (2021) → 5 (2025), −89% — steeper than Korea (flat ~75), Hong Kong (68 → 114), and Nasdaq-US (319 → 157). The decline is not universal.',
+    conf:"high"
+  },
+  basis:{
+    t:"Basis — what a WFE “listed companies” count includes",
+    meta:'The WFE figure and the report\'s canonical TMX count <b>measure different universes</b> and should not be forced to agree.<br><br><b>WFE listed companies — TMX Group, 2025: 3,701</b> (Domestic 3,661 + Foreign 40). The exchange-reported total across <b>TSX + TSX Venture</b> on the WFE definition, which <b>includes investment funds / ETPs</b> where the exchange reports them under listed companies (cf. the WFE\'s ASX footnote, “including investment funds”; TMX reports on the same all-in convention). Year-end 2025.<br><br><b>TMX MiG all-in, May 2026: 3,744</b> (TSX 2,236 + TSXV 1,508) — the vault\'s own all-in issuer tally. WFE 3,701 and the MiG 3,744 <b>corroborate each other</b> (~1% apart, consistent with five months of drift Dec-2025 → May-2026); both are all-in, TSX + TSXV.<br><br><b>Canonical TSX operating issuers, May 2026: 672</b> (668 at Feb 2026). TSX <b>only</b>, operating companies <b>only</b> — strips ETFs, closed-end funds, CDRs, structured products and SPACs. This is the report\'s decline metric; it is an order of magnitude smaller <em>by design</em>, and there is no expectation it matches the WFE all-in count.<br><br><b>Bottom line:</b> use the WFE all-in figure for internationally-comparable listing counts (this explorer); use 672 for the operating-issuer decline story. The <a href="exchanges.html">Exchanges</a> dashboard makes the difference switchable via its operating-vs-products toggle; full definitions on the <a href="methodology.html#register">Methodology</a> page. Sources: World Federation of Exchanges Statistics; TMX MiG / Issuers List (vault anchors).',
     conf:"high"
   },
   wfemonthly:{
@@ -625,9 +636,9 @@ window.WFE = {
     }
     function capFor(active,meta){
       var tmx=W.series[state.ind]["TMX"];
-      if(state.ind==="ipo_count") return '<b>The read:</b> The TMX line is the steep one. New IPO listings fell from 44 in 2021 to 5 in 2025 — an 89% collapse. Korea held near 75 all decade; Hong Kong recovered to 114. Canada’s on-ramp closed hardest.';
+      if(state.ind==="ipo_count") return '<b>The read:</b> The TMX line is the steep one. New IPO listings fell from 44 in 2021 to 5 in 2025 — an 89% collapse. Korea swung between 33 and 159 with no sustained collapse; Hong Kong recovered to 114. Canada’s on-ramp closed hardest.';
       if(state.ind==="mktcap"){ var a=tmx[0],b=tmx[tmx.length-1]; return '<b>The read:</b> TMX market cap grew from '+fmt(a,"usd")+' (2010) to '+fmt(b,"usd")+' (2025) — but that is concentration and fund product, not a widening base of newly-public companies.'; }
-      if(state.ind==="listed_total"||state.ind==="listed_dom") return '<b>The read:</b> Listing counts move slowly and mask the churn beneath — the TMX total is buoyed by fund product; the IPO-count view (above) is the honest read of the on-ramp.';
+      if(state.ind==="listed_total"||state.ind==="listed_dom") return '<b>The read:</b> Listing counts move slowly and mask the churn beneath — and the WFE total is <b>all-in</b> (ETFs, closed-end funds and other ETPs, not just operating issuers), which buoys the TMX figure; the IPO-count view (above) is the honest read of the on-ramp. Beneath the flat total, TMX\'s foreign-listing draw eroded hard too — 87 foreign-domiciled companies in 2010 to 40 in 2025, more than halved.';
       if(state.ind==="ipo_raised") return '<b>The read:</b> IPO proceeds swing violently with a handful of large deals — read alongside the IPO-count series, where Canada’s drought is unambiguous.';
       if(state.ind==="value_traded") return '<b>The read:</b> Value traded is the liquidity signal — the Asian markets trade far more relative to their size, the retail-driven turnover that underpins their deeper listing pipelines.';
       return '';

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kinaxis — Case Study · Canada's Champions</title>
+<meta name="description" content="Kinaxis case study: an Ottawa enterprise-software company that IPO'd on the TSX in 2014, scaled into a global supply-chain category leader, and stayed single-listed, Canadian and independent — deflecting a 2024–26 activist push for a sale.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%23080a15'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='9'%20fill='none'%20stroke='%234da3ff'%20stroke-width='2.5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='3.5'%20fill='%234da3ff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
+<style>
+/* ============================================================================
+   CASE-STUDY REGISTER — scoped, shared across cases/*.html (duplicated verbatim; see
+   cases/README-cases.md §7). Descends from the Waabi / Xanadu POCs. Tokens only —
+   no literal hex except the four reserved semantic status colours below.
+   ============================================================================ */
+body{--st-stay:#2fe6cd;--st-left:#ffb454;--st-acq:#9d8bff;--st-fail:#ff5d6c}
+html[data-theme="light"] body{--st-stay:#0e8a79;--st-left:#8f5400;--st-acq:#5b3fd0;--st-fail:#c62839}
+body.v-stay{--sc:var(--st-stay)}body.v-left{--sc:var(--st-left)}body.v-acq{--sc:var(--st-acq)}body.v-fail{--sc:var(--st-fail)}
+.topbar .back{color:var(--dim);text-decoration:none}
+.topbar .back:hover{color:var(--accent-txt)}
+.statusbadge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--sc);border:1px solid var(--sc);border-radius:22px;padding:6px 15px;line-height:1;margin:6px 0 0}
+.statusbadge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--sc);box-shadow:0 0 10px var(--sc);flex:0 0 auto}
+.hero-verdict{font-size:clamp(17px,2.3vw,22px);color:var(--body);max-width:60ch;line-height:1.5;margin-top:22px}
+.hero-verdict b{color:var(--ink)}
+.casefig{margin-top:48px;display:flex;flex-direction:column;gap:8px}
+.casefig .n{font-family:var(--disp);font-weight:700;color:var(--accent);font-size:clamp(52px,10vw,116px);line-height:.9;letter-spacing:-.035em;font-variant-numeric:tabular-nums;text-shadow:var(--numeral-glow)}
+.casefig .cap{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.casefig .l{font-size:14.5px;color:var(--body);max-width:54ch;line-height:1.55;margin-top:4px}
+html[data-theme="light"] .casefig .n{text-shadow:none}
+.captl{margin-top:34px;position:relative;padding-left:30px}
+.captl::before{content:"";position:absolute;left:6px;top:10px;bottom:10px;width:2px;background:linear-gradient(var(--accent),rgba(var(--accent-rgb),.12))}
+.capitem{position:relative;padding:0 0 30px}
+.capitem:last-child{padding-bottom:2px}
+.capitem::before{content:"";position:absolute;left:-30px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);box-shadow:0 0 10px rgba(var(--accent-rgb),.5)}
+.capitem.term::before{background:var(--sc);border-color:var(--sc);box-shadow:0 0 12px var(--sc)}
+.capitem .d{font-family:var(--mono);font-size:12px;color:var(--accent-txt);letter-spacing:.06em}
+.capitem .r{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:16.5px;margin:3px 0;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.capitem .a{font-family:var(--disp);font-weight:700;color:var(--accent);font-size:19px;font-variant-numeric:tabular-nums}
+.capitem.term .a{color:var(--sc)}
+.capitem .v{font-family:var(--mono);font-size:11.5px;color:var(--dim);margin-top:2px}
+.capitem .i{font-size:13.5px;color:var(--body);margin-top:8px;line-height:1.55;max-width:62ch}
+.capitem .i b{color:var(--ink)}
+.reported{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--left);border:1px solid var(--conf-soft-bd);border-radius:20px;padding:1px 7px}
+.moment{border-left:3px solid var(--accent);padding:6px 0 6px 26px;margin-top:16px;max-width:68ch}
+.moment .mt{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(20px,2.8vw,30px);line-height:1.22;letter-spacing:-.015em}
+.moment .mw{font-size:15.5px;color:var(--body);margin-top:16px;line-height:1.7}
+.moment .mw b{color:var(--ink)}
+.moment .ms{font-size:14.5px;color:var(--body);margin-top:14px;line-height:1.65}
+.moment .ms b{color:var(--accent-txt)}
+.vbox{border:1px solid var(--hair-strong);border-left:3px solid var(--sc);border-radius:14px;padding:26px 30px;margin-top:22px;background:linear-gradient(180deg,var(--band),transparent);max-width:72ch}
+.vbox .vb{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sc);border:1px solid var(--sc);border-radius:22px;padding:5px 14px;line-height:1;margin-bottom:16px}
+.vbox .vb::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sc);flex:0 0 auto}
+.vbox .vh{font-family:var(--disp);font-weight:600;color:var(--ink);font-size:clamp(18px,2.3vw,24px);line-height:1.32;margin-bottom:12px}
+.vbox .vd{font-size:14.5px;color:var(--body);line-height:1.7}
+.vbox .vd b{color:var(--ink)}
+</style>
+</head>
+<body data-accent="cyan" class="v-stay">
+<div class="prog" id="prog"></div>
+
+<div class="topbar">
+  <span class="tb-l brand"><span class="dot"></span><a class="back" href="../champions.html">← The Champions</a> · <b>Kinaxis</b></span>
+  <span class="tb-r">
+    <span class="links">
+      <a href="../index.html">Overview</a>
+      <a href="../champions.html">The Champions</a>
+    </span>
+    <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark register">
+      <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+      <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span class="lab"></span>
+    </button>
+  </span>
+</div>
+
+<div class="stage">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap">
+    <div class="boot" id="boot" data-boot="› case file · kinaxis · the tsx ipo that stuck · sources verified"></div>
+    <div class="cat rv">◇ Case study · Stayed · Enterprise SaaS / Supply chain</div>
+    <h1 class="rv d1">Kinaxis</h1>
+    <div class="statusbadge rv d1">Stayed · TSX-only, independent</div>
+    <div class="hero-verdict rv d1">An Ottawa enterprise-software company that IPO'd on the TSX in 2014, scaled into a global supply-chain category leader, and — unlike most Canadian tech that follows growth capital to US exchanges — stayed <b>single-listed, Canadian and independent</b>.</div>
+    <div class="casefig rv d2">
+      <div class="n">~C$3.58B</div>
+      <div class="cap">market capitalisation · #10 technology issuer on the TSX (Feb 2026)</div>
+      <div class="l">TSX-only (KXS) since 2014 · never US-interlisted · ~US$433M ARR (FY2025, +20% YoY) · Kanata, Ottawa.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="scale"><span class="o"></span>source</a>
+    <div class="scrollcue rv d3"><span class="arr"></span>the capital journey</div>
+  </div>
+</section>
+
+<!-- ============ 01 · THE CAPITAL JOURNEY ============ -->
+<section class="band" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">01</span> The capital journey</div>
+    <h2 class="rv d1">Public on the TSX in 2014 — and never interlisted.</h2>
+    <p class="lede rv d1">Kinaxis is a rare thing in Canadian tech: a genuine TSX IPO that grew into a multi-billion-dollar global leader without decamping to Nasdaq. It has funded global growth, rewarded employees and accessed institutional capital while staying TSX-only.</p>
+    <div class="captl rv d2">
+      <div class="capitem">
+        <div class="d">1984 → 2005 · Roots · Ottawa</div>
+        <div class="r">Cadence → Kinaxis</div>
+        <div class="i">Traces to 1984 (founded as Cadence Computer Corporation); adopted the <b>Kinaxis</b> name in 2005 and pivoted to a SaaS subscription model, building supply-chain planning software (RapidResponse) for large global manufacturers.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Jun 10 2014 · TSX IPO (KXS)</div>
+        <div class="r">Raise <span class="a">~C$100.6M</span></div>
+        <div class="v">C$15.00/share · 6,900,000 shares · top-performing TSX IPO of 2014</div>
+        <div class="i">The first major Ottawa tech IPO in years — and the top-performing TSX IPO of 2014. Crucially, it was a <b>single TSX listing</b>: no Nasdaq/NYSE interlisting, with US-resident shares trading only over-the-counter (KXSCF).</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Nov 2021 · Pandemic-era peak</div>
+        <div class="r">Share price <span class="a">~C$230</span></div>
+        <div class="i">From the C$15 IPO, KXS compounded strongly to an all-time high around C$230 in late November 2021, before a multi-year derating across the software sector.</div>
+      </div>
+      <div class="capitem">
+        <div class="d">Jun 2024 → 2025 · Maestro &amp; transition</div>
+        <div class="r">Platform + CEO search</div>
+        <div class="i">Consolidated its products under the <b>Maestro</b> platform (Jun 2024) and pushed into agentic AI (Maestro Agents, Oct 2025). Long-serving CEO John Sicard retired Dec 31 2024; Robert Courteau served as Executive Chair through the search.</div>
+      </div>
+      <div class="capitem term">
+        <div class="d">2026 · TSX-only, independent</div>
+        <div class="r">Market cap <span class="a">~C$3.58B</span></div>
+        <div class="i">#10 Technology issuer on the TSX (Feb 28 2026); ARR ~US$433M (FY2025, +20% YoY), ~25% adjusted EBITDA margin. Razat Gaurav appointed CEO (Jan 12 2026) after the board deflected a sale push — still Kanata-based and single-TSX-listed.</div>
+      </div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="journey"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 02 · THE DEFINING MOMENT ============ -->
+<section class="band alt tight" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">02</span> The defining moment</div>
+    <div class="moment rv d1">
+      <div class="mt">The board that said no.</div>
+      <div class="mw">Through <b>2024–2026</b>, activist investors pressed the Kinaxis board to explore a sale: <b>Daventry Group</b> (~1.3%) and <b>Irenic Capital</b> publicly urged a strategic review, and <b>Elliott Investment Management</b> reportedly built an ~5% stake to push for a formal process. Facing a leadership vacancy at the same moment — Sicard's retirement — the board could have used the transition as an off-ramp to a transaction. Instead it <b>deflected the sale pressure</b> and recruited a permanent CEO, <b>Razat Gaurav</b> (ex-Planview, ex-Llamasoft), effective January 12, 2026.</div>
+      <div class="ms"><b>Why it mattered:</b> most Canadian retention stories fail at exactly this juncture — a scaled, mid-cap issuer with a leadership gap and an activist at the door usually ends in a sale to a foreign strategic or PE consolidator. Kinaxis is a live test of whether a successful Canadian issuer can <b>resist a forced sale</b>, and so far the board chose a leadership refresh over a transaction — keeping a strategic Ontario tech asset independent and TSX-listed.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="moment"><span class="o"></span>source</a>
+  </div>
+</section>
+
+<!-- ============ 03 · THE POLICY LENS ============ -->
+<section class="band alt" data-rev>
+  <div class="wrap">
+    <div class="kicker rv"><span class="l">03</span> The policy lens</div>
+    <h2 class="rv d1">What makes a TSX listing durable.</h2>
+    <p class="lede rv d1">Kinaxis is a positive case, so the lens inverts: of the things that kept it independent and Canadian-listed, which are idiosyncratic — and which are levers Ontario can build for the next issuer?</p>
+    <div class="evlist">
+      <div class="evrow rv d1"><div class="et">A board that resists a forced sale <span class="es">governance — partly replicable</span></div><div class="ed">Deflecting the activist push kept the company independent. Governance frameworks and board mandates that let strong issuers say no to opportunistic bids map to <b>Lever ③ · retention</b>.</div></div>
+      <div class="evrow rv d1"><div class="et">A single TSX listing that scaled <span class="es">the venue proof</span></div><div class="ed">Kinaxis shows a Canadian enterprise-software company can fund global growth and reward employees while staying TSX-only. A competitive, liquid, well-covered TSX is what makes single-listing viable — <b>Lever ④ · liquidity &amp; listing</b>.</div></div>
+      <div class="evrow rv d2"><div class="et">Deep domestic institutional bid <span class="es">the discount defence</span></div><div class="ed">Thin coverage and a valuation discount are what make activist and PE approaches hard to refuse. A deeper Canadian institutional bid tightens the discount that invites a bid — <b>Lever ① · supply</b>.</div></div>
+      <div class="evrow rv d2"><div class="et">Ottawa ecosystem &amp; US-executive pull <span class="es">idiosyncratic — watch</span></div><div class="ed">Kinaxis anchors Ottawa alongside Shopify and the Nortel/Mitel lineage — an ecosystem asset. But a US-heavy executive playbook is worth watching for whether it pulls talent, operations or a future listing toward the US.</div></div>
+    </div>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="../recommendations.html"><div class="n">LEVER ③ + ④ · RETENTION &amp; LIQUIDITY</div><div><div class="t">A listing worth defending</div><div class="d">Governance that lets a strong issuer refuse an opportunistic sale, plus the liquidity, coverage and institutional bid that keep a single TSX listing competitive.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 · REPLICABILITY VERDICT ============ -->
+<section class="band" data-rev>
+  <div class="wrap narrow">
+    <div class="kicker rv"><span class="l">04</span> Replicability verdict</div>
+    <h2 class="rv d1">A TSX IPO that stuck — and a board that held.</h2>
+    <div class="vbox rv d1">
+      <span class="vb">Stayed</span>
+      <div class="vh">A single-TSX-listed champion that scaled globally and resisted a sale.</div>
+      <div class="vd">Kinaxis is one of the clearest positive retention examples in Canadian tech: a genuine 2014 TSX IPO that grew into a multi-billion-dollar global category leader <b>without</b> interlisting or decamping to Nasdaq, and that — under activist pressure and a leadership transition — chose independence over a transaction. The replicable lessons are structural: governance that lets a board say no, and a TSX competitive enough that single-listing is a viable home for a scaled issuer. The overhang is that a renewed activist campaign could still end the story — retention here is chosen, not locked.</div>
+    </div>
+    <div class="pull rv d2" style="margin-top:34px">
+      <div class="q">A leadership gap and an activist at the door — the usual exit ramp. Kinaxis chose to stay.</div>
+    </div>
+    <a href="../methodology.html#register" class="provpill rv d2" data-prov="verdict"><span class="o"></span>source</a>
+    <div class="nextlist">
+      <a class="nextrow rv d1" href="../champions.html"><div class="n">← BACK</div><div><div class="t">The roster</div><div class="d">All ~34 champions, sorted by outcome.</div></div></a>
+      <a class="nextrow rv d1" href="constellation.html"><div class="n">SIBLING · STAYED</div><div><div class="t">Constellation Software</div><div class="d">The benchmark "stayed Canadian, scaled globally" TSX compounder.</div></div></a>
+    </div>
+  </div>
+</section>
+
+<footer id="sources">
+  <div class="ft-h">Case study · Kinaxis</div>
+  <p class="ft-src">Sources &amp; confidence: every figure carries a <span class="o"></span> source pill — tap it for the figure's provenance and confidence grade · full register on the <a href="../methodology.html#register">Methodology</a> page.</p>
+  <p class="footid">KINAXIS · CASE STUDY · STAYED · static-first · opens from file:// · fully readable offline</p>
+</footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+  <button class="x" id="drawerX" aria-label="Close source panel">✕</button>
+  <div id="drawerBody"></div>
+</aside>
+
+<script>
+window.PROV = {
+  scale:{
+    t:"Scale — #10 tech issuer on the TSX",
+    meta:'<b>Kinaxis case study</b> (Overview; Market Position &amp; Performance) + <b>Exchange Market-Cap Leaders — TSX, TSXV &amp; CSE (2026)</b> (vault, data Feb 28 2026).<ul>'
+      +'<li>Market cap <b>~C$3.58B</b> — #10 Technology issuer on the TSX (Feb 28 2026).</li>'
+      +'<li>ARR <b>~US$433M</b> at end of FY2025 (Q4), up ~20% YoY (~18% constant currency); ~25% adjusted EBITDA margin; ~C$624M ARR at ~US$1 = C$1.44.</li>'
+      +'<li>TSX-only (KXS) since 2014; never US-interlisted (US shares trade OTC as KXSCF).</li>'
+      +'</ul>Sources cited in the study: Kinaxis Q4 2025 results; vault Exchange Market-Cap Leaders dataset; TMX Money. Market caps move daily.',
+    conf:"high"
+  },
+  journey:{
+    t:"The capital-markets journey",
+    meta:'<b>Kinaxis case study</b> — Overview / Capital Markets Journey.<ul>'
+      +'<li><b>Roots 1984</b> (Cadence Computer Corp); Kinaxis name 2005 with the SaaS pivot (RapidResponse).</li>'
+      +'<li><b>IPO Jun 10 2014:</b> TSX (KXS) at C$15.00, 6,900,000 shares, ~C$100.6M gross — top-performing TSX IPO of 2014; single TSX listing.</li>'
+      +'<li><b>2024–25:</b> Maestro platform (Jun 2024), Maestro Agents (Oct 2025); Sicard retires Dec 31 2024; peak ~C$230 (Nov 2021) then derating.</li>'
+      +'</ul>Sources cited: Wikipedia; Globe and Mail (2015 IPO); Kinaxis press releases (Maestro, results); Macrotrends.',
+    conf:"high"
+  },
+  moment:{
+    t:"The board that said no (2024–2026)",
+    meta:'<b>Kinaxis case study</b> — Capital Markets Journey (leadership &amp; activist pressure) / Significance.<ul>'
+      +'<li>2024–2025: Daventry (~1.3%) and Irenic urged a strategic review; Elliott reportedly built ~5% to push for a sale process.</li>'
+      +'<li>The board <b>deflected</b> the sale pressure and recruited a permanent CEO — Razat Gaurav (ex-Planview, ex-Llamasoft), effective Jan 12 2026 — rather than transacting.</li>'
+      +'<li>A live test of whether a successful Canadian issuer can resist a forced sale; relevant to Corporate Governance &amp; Innovation Retention (vault).</li>'
+      +'</ul>Sources cited: BNN Bloomberg (Sep 2024); OBJ; Kinaxis / BetaKit (Gaurav appointment).',
+    conf:"medium"
+  },
+  verdict:{
+    t:"Replicability verdict",
+    meta:'<b>Kinaxis case study</b> — Significance for the Growth-Sectors Thesis / Risks &amp; Open Questions, cross-referenced to <b>Flight to the US</b>, <b>IPO Decline &amp; Private Markets</b>, <b>Growth &amp; Venture Exchanges</b> and <b>Corporate Governance &amp; Innovation Retention</b> (vault). A scaled TSX IPO that stuck, single-listed and independent, that deflected an activist sale push — with an activist overhang and US-executive pull worth watching. Replicable levers: retention governance (Lever ③) and a competitive, liquid TSX (Lever ④). An analytic assessment.',
+    conf:"medium"
+  }
+};
+</script>
+<script src="../app.js"></script>
+</body>
+</html>

@@ -114,7 +114,7 @@
     <div class="laylist">
       <div class="layrow rv d1">
         <div><div class="ln">TMX listed-companies &amp; financing</div></div>
-        <div class="ld">TSX / TSXV issuer counts, market caps, and equity-financing statistics — the backbone of the public-markets diagnosis. Canonical operating-issuer count re-based to <b>672 TSX / 1,347 TSXV</b> (May 31 2026).</div>
+        <div class="ld">TSX / TSXV issuer counts, market caps, and equity-financing statistics — the backbone of the public-markets diagnosis. Canonical operating-issuer count re-based to <b>672 TSX / 1,347 TSXV</b> (May 31 2026); the same workbook also carries the <b>interlisting cut</b> (206/672 = 30.7% interlisted, "Interlisted I" column, US venues consolidated) and the <b>per-sector cut</b> (11 TMX sectors, 5 mapping cleanly onto the report's growth sectors).</div>
         <div class="lv">as at <b>May 31 2026</b><br>(issuers) · <b>FY2025</b> (financing)</div>
       </div>
       <div class="layrow rv d1">
@@ -139,8 +139,13 @@
       </div>
       <div class="layrow rv d3">
         <div><div class="ln">CVCA / NACO / BDC reporting</div></div>
-        <div class="ld">Venture &amp; growth financing volumes, angel activity, and deal counts — the industry view of the private market.</div>
+        <div class="ld">Venture &amp; growth financing volumes, angel activity, and deal counts — the industry view of the private market. Also the source of the <b>BDC Index of New Entrepreneurial Activity</b> (BDC × Université de Montréal, Oct 2023) behind the formation-decline chart.</div>
         <div class="lv">reporting yrs <b>2024–2026</b></div>
+      </div>
+      <div class="layrow rv d4">
+        <div><div class="ln">StatCan national accounts &amp; household series</div></div>
+        <div class="ld">National Balance Sheet Accounts equity-ownership decomposition (table 36-10-0580), the 2023 Survey of Financial Security (table 11-10-0016), the RRSP contributors table (11-10-0044), the Labour Force Survey self-employment share, and CRA TFSA statistics — the household-capacity and formation-corroboration layer. National only; no Ontario ownership split exists.</div>
+        <div class="lv">Q1 <b>2026</b> (NBSA) · <b>2023</b> (SFS) · <b>2024</b> (TFSA)</div>
       </div>
       <div class="layrow rv d4">
         <div><div class="ln">Case studies &amp; secondary studies</div></div>
@@ -188,11 +193,14 @@
       <div class="cvrow rv d1"><div class="ct">Investor-domicile is indicative</div><div class="cd">"US-backed" / "Canadian-backed" tags reflect lead or notable investors, not full cap-table control or board math.</div></div>
       <div class="cvrow rv d2"><div class="ct">"AI company" is curated</div><div class="cd">The AI cohort is a curated list, not a bottom-up definition. Different definitions would shift counts at the margin.</div></div>
       <div class="cvrow rv d2"><div class="ct">The financing gap is a computation</div><div class="cd">Canada's VC/GDP vs. the comparator median and the US benchmark — a modelled estimate with a stated range, not an observed figure.</div></div>
-      <div class="cvrow rv d2"><div class="ct">Two VC/GDP figures, two bases</div><div class="cd">The report cites Canada's venture capital at <b>0.20% of GDP</b> on the diagnosis pages (OECD Entrepreneurship Financing DB, 2024 — the Ontario Financing Gap Landscape basis) and at <b>~0.35%</b> on the Comparators page (Compendium §3.1 — a CVCA / KPMG / NVCA / OECD blend on a broader deal definition and vintage). These are not in conflict: they measure venture activity on different bases. Each usage states its basis; they are never averaged.</div></div>
+      <div class="cvrow rv d2"><div class="ct">Two VC/GDP figures, two bases</div><div class="cd">The report cites Canada's venture capital at <b>0.20% of GDP</b> on the diagnosis pages (OECD Entrepreneurship Financing DB, 2024 — the Ontario Financing Gap Landscape basis) and at <b>~0.35%</b> on the Comparators page and the second, 15-economy chart on Financing Gap §01b (Compendium §3.1 — a CVCA / KPMG / NVCA / OECD blend on a broader deal definition and vintage). Both charts now sit side by side on the Financing Gap page. These are not in conflict: they measure venture activity on different bases. Each usage states its basis; they are never averaged.</div></div>
       <div class="cvrow rv d3"><div class="ct">Turnover velocity is on one WFE basis</div><div class="cd">The velocity chart (Canada TSX ~64%) is computed on a single basis — WFE 2024 annual value traded ÷ market cap — so every exchange is directly comparable. TSXV ~45% is a separate vault issuer-level figure (WFE does not split the junior board), labelled as such wherever it appears.</div></div>
       <div class="cvrow rv d2"><div class="ct">Korea KVIC figures are trade-press</div><div class="cd">The South Korea KVIC numbers are trade-press-sourced and should be read as indicative of scale, not audited.</div></div>
       <div class="cvrow rv d3"><div class="ct">Case studies are illustrative</div><div class="cd">The ~34 company studies illustrate mechanisms; they are not a statistical sample and don't support frequency claims.</div></div>
       <div class="cvrow rv d3"><div class="ct">CAD conversions are approximate</div><div class="cd">USD figures converted at ~US$1 = C$1.44. Cross-currency comparisons carry an FX margin.</div></div>
+      <div class="cvrow rv d4"><div class="ct">The TMX sector cut is partial, not a forced rollup</div><div class="cd">Only 5 of the 9 core sectors map 1:1 onto a TMX sector; 2 more (Advanced Manufacturing, Infrastructure) are marked † as partial proxies only (Industrial Products &amp; Services; Utilities &amp; Pipelines); Defence and Agri-Food, plus the Auto &amp; Batteries sub-sector, have no TMX sector and aren't shown. Trailing-24-month listing counts also mix true operating-company IPOs with TSXV graduations, RTOs, QTs and ETF/fund creations — only 6 TSX + 4 TSXV of the 58/126 all-in "new listings" are true IPOs.</div></div>
+      <div class="cvrow rv d4"><div class="ct">WFE "listed companies" is an all-in count</div><div class="cd">The Global Exchanges explorer's listed-company totals (TMX 2025: 3,701, ≈ the MiG all-in 3,744) include ETFs, closed-end funds and other products wherever the exchange reports them — a different universe from the report's canonical <b>672</b> TSX operating issuers, which strips those out by design. Use the WFE figure for international listing-count comparisons; use 672 for the operating-issuer decline story.</div></div>
+      <div class="cvrow rv d4"><div class="ct">Formation decline carries no international comparator</div><div class="cd">The BDC Index of New Entrepreneurial Activity (3.0 → 1.3 per 1,000, 2000–2022) has no defensible US / Israel counterpart on the chart: the only common cross-country metric, GEM's early-stage entrepreneurial-activity rate, measures a different construct and, for Canada, moves the opposite way. The omission is deliberate, not an oversight.</div></div>
     </div>
     <a href="#register" class="provpill rv d2" data-prov="caveats"><span class="o"></span>source</a>
   </div>
@@ -280,11 +288,11 @@
     <div class="reg-lead">The canonical source register. Every <span class="o" style="display:inline-block;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--accent);vertical-align:middle"></span> source pill in the report opens the figure's own provenance in a drawer; with JavaScript off, each pill jumps here. Grouped by the vault's eight authority tiers.</div>
     <div class="srcgrp">
       <div class="sgh">T1 · Government · regulator · international organisations</div>
-      <div class="srcitems"><b>TMX Group</b> (TSX / TSXV Listed Companies &amp; New Listings, Jun 2026 file, data as at May 31 2026) · <b>Canadian Securities Exchange (CSE)</b> (listed-companies API + annual market summary, end-2025) · <b>OECD</b> (Entrepreneurship Financing Database 2024; Growth-Markets study; Asia Capital Markets Report 2025; Benchmarking Government Support for VC 2025) · <b>Statistics Canada</b> (GDP-per-capita relative-to-US, Mar 2026; Ontario Economic Accounts to Q4-2025) · <b>IMF</b> (Canada Article IV 2026; WEO) · <b>OSFI</b> (LICAT 2025 + July-2025 infrastructure carve-out) · <b>Department of Finance Canada</b> (flow-through-shares envelope) · <b>HM Revenue &amp; Customs</b> (SEIS/EIS statistics 2025) · <b>OSC</b> (Strategic Plan 2024–2030).</div>
+      <div class="srcitems"><b>TMX Group</b> (TSX / TSXV Listed Companies &amp; New Listings, Jun 2026 file, data as at May 31 2026 — incl. the interlisting "Interlisted I" column and the per-sector cut) · <b>Canadian Securities Exchange (CSE)</b> (listed-companies API + annual market summary, end-2025) · <b>OECD</b> (Entrepreneurship Financing Database 2024; Growth-Markets study; Asia Capital Markets Report 2025; Benchmarking Government Support for VC 2025) · <b>Statistics Canada</b> (GDP-per-capita relative-to-US, Mar 2026; Ontario Economic Accounts to Q4-2025; National Balance Sheet Accounts table 36-10-0580, Q1 2026; Survey of Financial Security 2023, table 11-10-0016; RRSP contributors table 11-10-0044; Labour Force Survey self-employment share) · <b>Canada Revenue Agency (CRA)</b> (TFSA statistics, 2024 tax year) · <b>IMF</b> (Canada Article IV 2026; WEO) · <b>OSFI</b> (LICAT 2025 + July-2025 infrastructure carve-out) · <b>Department of Finance Canada</b> (flow-through-shares envelope) · <b>Bank of Canada</b> (King &amp; Segal — cross-listing valuation premium) · <b>US Government Accountability Office (GAO)</b> (2025 — SOX §404 compliance cost) · <b>HM Revenue &amp; Customs</b> (SEIS/EIS statistics 2025) · <b>OSC</b> (Strategic Plan 2024–2030).</div>
     </div>
     <div class="srcgrp">
       <div class="sgh">T2 · Academic / peer-reviewed</div>
-      <div class="srcitems"><b>Wilson</b> (public-VC design) · <b>Cumming</b> (2026 — pension-mandate critique) · <b>Demmou</b> (firm-growth / productivity) · <b>Gu &amp; Lesica</b> (StatCan Economic &amp; Social Reports, Dec 2025 — productivity gap).</div>
+      <div class="srcitems"><b>Wilson</b> (public-VC design) · <b>Cumming</b> (2026 — pension-mandate critique) · <b>Demmou</b> (firm-growth / productivity) · <b>Gu &amp; Lesica</b> (StatCan Economic &amp; Social Reports, Dec 2025 — productivity gap) · <b>Doidge, Karolyi &amp; Stulz</b> (cross-listing valuation premium).</div>
     </div>
     <div class="srcgrp">
       <div class="sgh">T3 · Industry / standards bodies</div>
@@ -292,7 +300,7 @@
     </div>
     <div class="srcgrp">
       <div class="sgh">T4 · Institutional research &amp; industry associations</div>
-      <div class="srcitems"><b>CVCA</b> (VC deal volume/counts; foreign-participation analysis) · <b>NACO</b> (Angel Investing 2026 — C$113.79M, 2025; &amp; Startup Genome early-stage shortfall) · <b>BDC</b> (VC Landscape 2026 — "a sovereignty issue") · <b>RBC</b> · <b>Deloitte</b> / <b>Vector Institute</b> (AI-talent share). Comparator programs: <b>KVIC</b> (Korea) · <b>Tesi</b> (Finland) · <b>NZ Growth Fund / NZGCP</b> · <b>Israel Innovation Authority</b> (Yozma; §19A) · <b>SBA</b> (SBIC) · <b>DG Trésor</b> (Initiative Tibi) · <b>ABI / Borsa Italiana</b> (STAR) · Sweden ISK; Japan NISA; UK PISCES &amp; Mansion House Accord; Australia Superannuation.</div>
+      <div class="srcitems"><b>CVCA</b> (VC deal volume/counts; foreign-participation analysis) · <b>KPMG</b> (Venture Pulse) · <b>NVCA</b> (2025 Yearbook) · <b>NACO</b> (Angel Investing 2026 — C$113.79M, 2025; &amp; Startup Genome early-stage shortfall) · <b>BDC</b> (VC Landscape 2026 — "a sovereignty issue"; Index of New Entrepreneurial Activity, with Université de Montréal, Oct 2023) · <b>RBC</b> · <b>Deloitte</b> / <b>Vector Institute</b> (AI-talent share). Comparator programs: <b>KVIC</b> (Korea) · <b>Tesi</b> (Finland) · <b>NZ Growth Fund / NZGCP</b> · <b>Israel Innovation Authority</b> (Yozma; §19A) · <b>SBA</b> (SBIC) · <b>DG Trésor</b> (Initiative Tibi) · <b>ABI / Borsa Italiana</b> (STAR) · Sweden ISK; Japan NISA; UK PISCES &amp; Mansion House Accord; Australia Superannuation.</div>
     </div>
     <div class="srcgrp">
       <div class="sgh">T5–T6 · Legal commentary · news &amp; trade press</div>
@@ -304,7 +312,7 @@
     </div>
     <div class="srcgrp">
       <div class="sgh">Vault working store</div>
-      <div class="srcitems">The four structured workbooks — <b>public-markets</b>, <b>financing-gaps</b>, <b>capital-mobilization</b>, <b>tax-incentives</b> · the <b>~34 company case studies</b> (Themes/Case Studies) + <b>Cross-Case Synthesis</b> · <b>Ontario Financing Gap Landscape</b> · <b>The Growth Prize — Ontario's Opportunity</b> · <b>Value Capture &amp; IP Loss</b> (Value Leakage Index) · <b>International Comparator Data Compendium</b> · <b>Domestic Champions — Policy Hypotheses</b>. All cross-checked against the primary sources above.</div>
+      <div class="srcitems">The four structured workbooks — <b>public-markets</b>, <b>financing-gaps</b>, <b>capital-mobilization</b>, <b>tax-incentives</b> · the <b>~34 company case studies</b> (Themes/Case Studies) + <b>Cross-Case Synthesis</b> · <b>Ontario Financing Gap Landscape</b> · <b>The Growth Prize — Ontario's Opportunity</b> · <b>Value Capture &amp; IP Loss</b> (Value Leakage Index) · <b>International Comparator Data Compendium</b> · <b>Domestic Champions — Policy Hypotheses</b> · <b>Canadian Investor &amp; Household Financial Profile — Data &amp; Sources</b>. All cross-checked against the primary sources above.</div>
     </div>
   </div>
 
@@ -327,13 +335,14 @@
 window.PROV = {
   layers:{
     t:"Data layers & vintages",
-    meta:'Every quantitative claim resolves to one of seven layers, each carrying an as-at / reporting date:<ul>'
-      +'<li><b>TMX listed-companies &amp; financing</b> — issuers as at May 31 2026 (canonical 672 TSX / 1,347 TSXV operating issuers), financing FY2025.</li>'
+    meta:'Every quantitative claim resolves to one of eight layers, each carrying an as-at / reporting date:<ul>'
+      +'<li><b>TMX listed-companies &amp; financing</b> — issuers as at May 31 2026 (canonical 672 TSX / 1,347 TSXV operating issuers), financing FY2025; also the source of the interlisting cut (206/672 interlisted) and the per-sector cut.</li>'
       +'<li><b>CSE listed-companies + market summary</b> — end-2025.</li>'
       +'<li><b>OECD Entrepreneurship Financing DB</b> — VC/GDP, vintage 2024.</li>'
       +'<li><b>WFE Exchange Statistics</b> — 20-exchange annual export (Jul 2026, data to 2025) — IPO new listings + turnover velocity.</li>'
       +'<li><b>The four vault workbooks</b> — public-markets, financing-gaps, capital-mobilization, tax-incentives.</li>'
-      +'<li><b>CVCA / NACO / BDC reporting</b> — reporting years 2024–2026.</li>'
+      +'<li><b>CVCA / NACO / BDC reporting</b> — reporting years 2024–2026; incl. the BDC Index of New Entrepreneurial Activity (Oct 2023).</li>'
+      +'<li><b>StatCan national accounts &amp; household series</b> — National Balance Sheet Accounts (36-10-0580, Q1 2026), Survey of Financial Security (11-10-0016, 2023), RRSP contributors (11-10-0044), Labour Force Survey self-employment, plus CRA TFSA statistics (2024). National only.</li>'
       +'<li><b>Case studies &amp; secondary studies</b> — ~34 company studies; WFE listings study (2025); OECD growth-markets &amp; Asia reports (2025). Illustrative, not sampled.</li>'
       +'</ul>Market data ages fast; several figures have moved since their snapshot.',
     conf:"high"
@@ -355,7 +364,12 @@ window.PROV = {
       +'<li><b>Investor-domicile is indicative</b> — "US-/Canadian-backed" = lead/notable investors, not control math.</li>'
       +'<li><b>"AI company" is curated</b> — a curated list, not a bottom-up definition.</li>'
       +'<li><b>The financing gap is a computation</b> — VC/GDP vs comparator-median and US, a modelled estimate with a stated range.</li>'
+      +'<li><b>Two VC/GDP figures, two bases</b> — 0.20% (OECD, diagnosis pages) vs ~0.35% (Compendium §3.1, Comparators + Financing Gap §01b); both charts now sit side by side on Financing Gap; never averaged.</li>'
+      +'<li><b>Turnover velocity is on one WFE basis</b> — Canada TSX ~64%, computed on a single WFE 2024 value-traded ÷ market-cap basis so every exchange is comparable; TSXV ~45% is a separate vault issuer-level figure, labelled as such.</li>'
       +'<li><b>Korea KVIC figures are trade-press</b> — indicative of scale, not audited.</li>'
+      +'<li><b>The TMX sector cut is partial</b> — 5 of 9 core sectors map cleanly; 2 are † partial proxies; Defence, Agri-Food and Auto &amp; Batteries have no TMX sector. Listing counts also mix true IPOs with graduations, RTOs, QTs and ETF creations (only 6 TSX + 4 TSXV of 58/126 all-in "new listings" are true IPOs).</li>'
+      +'<li><b>WFE "listed companies" is all-in</b> — TMX 2025: 3,701 (≈ MiG all-in 3,744) includes ETPs; the report\'s canonical 672 operating issuers strips them out. Different universes, not a discrepancy.</li>'
+      +'<li><b>Formation decline has no international comparator</b> — the BDC Index (3.0→1.3/1,000, 2000–2022) isn\'t benchmarked to the US/Israel; the only common cross-country metric (GEM TEA) is a different construct that moves the opposite way for Canada. Deliberate omission.</li>'
       +'<li><b>Case studies are illustrative</b> — mechanisms, not a statistical sample; no frequency claims.</li>'
       +'<li><b>CAD conversions are approximate</b> — ~US$1 = C$1.44; cross-currency comparisons carry an FX margin.</li>'
       +'</ul>',
