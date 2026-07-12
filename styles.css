@@ -504,8 +504,83 @@ html[data-theme="light"] body[data-accent="violet"] .sigwrap .provpill .o,
 html[data-theme="light"] body[data-accent="cyan"] .sigwrap .provpill .o,
 html[data-theme="light"] body[data-accent="orange"] .sigwrap .provpill .o{border-color:var(--accent)}
 
+/* ============================================================================
+   MOBILE NAVIGATION (added 2026-07-12) — sticky slim bar + full-screen disclosure
+   sheet. Above the breakpoint DESKTOP IS UNCHANGED: the horizontal .links show and
+   the two mobile-only elements below are display:none (they add nothing to desktop).
+   Below the breakpoint the .links (which at ~15 crumbs would wrap to several rows)
+   are swapped for a <details>/<summary> menu that WORKS WITH JS OFF (native browser
+   disclosure); app.js only enhances it (scroll-lock, Esc / outside-click / link-tap
+   close, focus return to the trigger, aria-expanded mirroring, current-page label).
+   Shared chrome uses the page's MASTER-ACCENT tokens (var(--accent…)) so the menu
+   matches the existing topbar dot / hover / .on pill on every page (the topbar is
+   already per-page accent-tinted, so the page accent genuinely works here — §4).
+   Breakpoint 940px = the point below which the full crumb row can no longer sit on
+   one line. Everything visual lives inside the media query; the only always-on rules
+   are the two display:none hides + the (inert-until-referenced) @keyframes.
+   ============================================================================ */
+.navsheet{display:none}
+.tb-here{display:none}
+@keyframes sheetIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+@media(max-width:939.98px){
+  /* --- slim sticky bar: wordmark · current-page label · theme · Menu --- */
+  .topbar{flex-wrap:nowrap;gap:10px}
+  .topbar .links{display:none}                 /* desktop crumbs → replaced by the sheet */
+  .topbar .tb-l{flex:0 0 auto}
+  .topbar .tb-r{flex:0 0 auto;gap:8px}
+  .tb-here{display:block;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;
+           white-space:nowrap;text-align:center;font-family:var(--mono);font-size:10px;
+           letter-spacing:.14em;text-transform:uppercase;color:var(--accent-txt)}
+
+  /* --- Menu affordance (the <summary>) --- */
+  .navsheet{display:inline-block}
+  .navtrigger{list-style:none;display:inline-flex;align-items:center;gap:7px;min-height:44px;
+              padding:5px 13px 5px 11px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+              text-transform:uppercase;color:var(--dim);background:transparent;border:1px solid var(--slate);
+              border-radius:20px;cursor:pointer;line-height:1;transition:color .2s,border-color .2s,background .2s;
+              -webkit-tap-highlight-color:transparent}
+  .navtrigger::-webkit-details-marker{display:none}
+  .navtrigger::marker{content:""}
+  .navtrigger:hover{color:var(--accent-txt);border-color:var(--accent)}
+  .navtrigger:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .navtrigger .nic{width:16px;height:16px;flex:0 0 auto;display:inline-block}
+  .navtrigger .nic-close{display:none}
+  .ntl{display:inline-block}
+  .ntl::after{content:"Menu"}
+  .navsheet[open] .navtrigger{color:var(--accent-txt);border-color:var(--accent);background:rgba(var(--accent-rgb),.08)}
+  .navsheet[open] .nic-menu{display:none}
+  .navsheet[open] .nic-close{display:inline-block}
+  .navsheet[open] .ntl::after{content:"Close"}
+
+  /* --- the overlay sheet (Deep Indigo in dark · paper in Poster-OSC light) --- */
+  .sheet{position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch;
+         padding:calc(var(--nav-bar-h,68px) + 8px) max(18px,env(safe-area-inset-right))
+                 calc(30px + env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));
+         animation:sheetIn .22s ease}
+  .sheet-inner{max-width:520px;margin:0 auto}
+  .sheet-lab{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
+             margin:20px 4px 6px;padding-top:14px;border-top:1px solid var(--hair)}
+  .sheet-lab:first-child{border-top:none;padding-top:2px;margin-top:4px}
+  .sheet a{display:flex;align-items:center;gap:14px;min-height:46px;padding:9px 12px;border-radius:10px;
+           text-decoration:none;color:var(--body);transition:background .15s,color .15s;
+           -webkit-tap-highlight-color:transparent}
+  .sheet a:hover{background:var(--band);color:var(--ink)}
+  .sheet a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+  .sheet a .sn{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--dim);
+               min-width:24px;flex:0 0 auto;text-align:left}
+  .sheet a .st{font-family:var(--disp);font-weight:600;font-size:17px;letter-spacing:-.01em}
+  .sheet a.on{background:rgba(var(--accent-rgb),.10)}
+  .sheet a.on .sn,.sheet a.on .st{color:var(--accent-txt)}
+  .sheet a.on::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);
+                     box-shadow:0 0 8px var(--accent);margin-left:auto;flex:0 0 auto}
+  .sheet a.allcases{color:var(--accent-txt);border:1px solid rgba(var(--accent-rgb),.30);margin-bottom:6px}
+  .sheet a.allcases .st{color:var(--accent-txt)}
+
+  body.nav-open{overflow:hidden}              /* scroll-lock (added by app.js) */
+}
+
 /* ===== RESPONSIVE + REDUCED MOTION ===== */
-@media(max-width:760px){.topbar .links{display:none}}
 @media(max-width:640px){
   .band{padding:80px 18px}.band.tight{padding:60px 18px}
   #hero{padding:96px 18px 60px}
@@ -516,7 +591,7 @@ html[data-theme="light"] body[data-accent="orange"] .sigwrap .provpill .o{border
 @media(prefers-reduced-motion:reduce){
   .rv{transition:none;opacity:1;transform:none}
   .cur,.dot{animation:none}.prog{transition:none}
-  .drawer,.scrim{transition:none}
+  .drawer,.scrim{transition:none}.sheet{animation:none}
   body,.themebtn,.step-inner,.step-inner .sn,.step-inner .hl,.ln,.anno,.anno text,.anno circle{transition:none}
 }
 

@@ -227,4 +227,59 @@
       }catch(e){}
     });
   }catch(e){ /* drawer failed: pills remain plain #sources anchors */ }
+
+  /* ---- mobile nav sheet (enhancement over the native <details> disclosure) ----
+     The menu is a real <details>/<summary>: with JS OFF it opens/closes natively and
+     every link works. Here we add: exact bar-height for the sheet's top padding,
+     scroll-lock while open, aria-expanded mirroring, current-page label in the slim
+     bar, and close-on link-tap / Esc / outside-click with focus returned to the trigger. */
+  try{
+    var navD=document.getElementById("navSheet");
+    if(navD){
+      var navSummary=navD.querySelector("summary.navtrigger"),
+          navPanel=document.getElementById("navSheetPanel"),
+          navBar=document.querySelector(".topbar"),
+          navHere=document.querySelector(".tb-here");
+
+      /* keep the sheet's top padding matched to the actual bar height */
+      var setBarH=function(){ try{ if(navBar){ document.documentElement.style.setProperty("--nav-bar-h",navBar.offsetHeight+"px"); } }catch(e){} };
+      setBarH();
+      window.addEventListener("resize",setBarH,{passive:true});
+
+      /* reflect the current page (the .on link) into the slim-bar label */
+      try{
+        var onlink=navD.querySelector(".sheet a.on .st");
+        if(onlink&&navHere){ navHere.textContent=onlink.textContent; }
+      }catch(e){}
+
+      var setExpanded=function(open){ try{ if(navSummary){ navSummary.setAttribute("aria-expanded",open?"true":"false"); } }catch(e){} };
+      setExpanded(navD.open);
+
+      var closeNav=function(returnFocus){
+        try{
+          if(!navD.open) return;
+          navD.open=false;                 /* fires the toggle handler below */
+          if(returnFocus&&navSummary&&navSummary.focus){ navSummary.focus(); }
+        }catch(e){}
+      };
+
+      navD.addEventListener("toggle",function(){
+        try{
+          if(navD.open){ document.body.classList.add("nav-open"); setExpanded(true); setBarH(); }
+          else{ document.body.classList.remove("nav-open"); setExpanded(false); }
+        }catch(e){}
+      });
+
+      if(navPanel){
+        /* close on any link tap (navigation, or same-page anchor) */
+        navPanel.querySelectorAll("a").forEach(function(a){ a.addEventListener("click",function(){ closeNav(false); }); });
+        /* tap on the sheet backdrop (not a link/label) closes and returns focus */
+        navPanel.addEventListener("click",function(ev){ if(ev.target===navPanel||ev.target===navPanel.firstElementChild){ closeNav(true); } });
+      }
+      /* Escape closes and returns focus to the trigger */
+      document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&navD.open){ closeNav(true); } });
+      /* click anywhere outside the open menu (e.g. the slim bar) also closes */
+      document.addEventListener("click",function(e){ try{ if(navD.open&&!navD.contains(e.target)){ closeNav(false); } }catch(err){} });
+    }
+  }catch(e){ /* nav sheet stays a native <details> disclosure */ }
 })();
