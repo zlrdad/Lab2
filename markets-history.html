@@ -407,6 +407,26 @@ a.brand{text-decoration:none}
 .pagehead .sharemeta{display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--dim)}
 .pagehead .sharemeta span{display:inline-flex;align-items:center;gap:6px}
 .pagehead .sharemeta span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent)}
+/* in-page jump-nav row under the page intro (boards + history) — non-sticky, quiet mono links, wraps at 390px */
+.jumpnav{display:flex;align-items:center;gap:7px 16px;flex-wrap:wrap;margin-top:20px;padding-top:15px;border-top:1px solid var(--hair);font-family:var(--mono)}
+.jumpnav .jl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.jumpnav a{font-size:11.5px;letter-spacing:.05em;color:var(--body);padding:2px 1px;border-bottom:1px solid transparent;transition:.15s}
+.jumpnav a:hover{color:var(--accent-txt);border-bottom-color:var(--accent)}
+.jumpnav a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+/* anchor targets that sit mid-section clear the fixed topbar on jump */
+#readout,#h-roster,#h-financings{scroll-margin-top:72px}
+/* collapsible issuer table — native <details open>; JS only enhances the live count + aria-expanded */
+.tblcollapse{margin-top:44px}
+.tblsummary{list-style:none;display:flex;align-items:center;gap:11px;flex-wrap:wrap;cursor:pointer;min-height:44px;padding:11px 15px;border:1px solid var(--slate);border-radius:10px;background:rgba(var(--accent-rgb),.05);font-family:var(--mono);transition:.15s;user-select:none}
+.tblsummary::-webkit-details-marker{display:none}.tblsummary::marker{content:""}
+.tblsummary:hover{border-color:var(--accent)}
+.tblsummary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tsum-caret{width:8px;height:8px;border-right:1.7px solid var(--accent);border-bottom:1.7px solid var(--accent);transform:rotate(-45deg);transition:transform .18s;flex:0 0 auto}
+.tblcollapse[open] .tsum-caret{transform:rotate(45deg)}
+.tsum-t{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.tsum-n{font-size:12px;letter-spacing:.06em;color:var(--dim)}
+.tsum-n b{color:var(--accent-txt);font-weight:600}
+.tsum-hint{margin-left:auto;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .hublegend .glt{color:var(--body);font-weight:500;text-transform:uppercase;letter-spacing:.08em}
 /* hub section tiles */
 .tilenav{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:26px}
@@ -488,6 +508,7 @@ td.c-deal{white-space:nowrap}
     <h1>Listings &amp; financings history.</h1>
     <div class="tag">Every new listing on the TSX and TSXV since 2008, stacked by how it came to market, with click-through to the companies and what became of them — plus the capital side: annual measures and a name-by-name deal search.</div>
     <div class="sharemeta"><span>Self-contained · opens from file://</span><span>Renders with JavaScript off</span><span>Dark / light · top-right</span></div>
+    <nav class="jumpnav" aria-label="Jump to a section on this page"><span class="jl">Jump to</span><a href="#history">Chart</a><a href="#h-roster">Roster</a><a href="#h-financings">Financings</a><a href="#method">Method</a></nav>
   </div>
 </section>
 
@@ -555,7 +576,7 @@ td.c-deal{white-space:nowrap}
     </div>
     <div class="pillrow"><a href="#method" class="provpill" data-prov="history"><span class="o"></span>data &amp; method</a></div>
 
-    <div class="chart-head" style="margin-top:44px"><h3 id="hRoTitle">Company roster — 2025</h3><div class="sub" id="hRoSub">445 listings · status computed by joining the archive panel to the May-2026 snapshot</div></div>
+    <div class="chart-head" id="h-roster" style="margin-top:44px"><h3 id="hRoTitle">Company roster — 2025</h3><div class="sub" id="hRoSub">445 listings · status computed by joining the archive panel to the May-2026 snapshot</div></div>
     <div class="controls">
       <div class="facetgrid">
         <div class="facet"><label for="hYear">Year</label><select id="hYear" aria-label="Choose listing year"><option value="2025" selected>2025</option>
@@ -1070,7 +1091,7 @@ td.c-deal{white-space:nowrap}
     </div>
     <div class="pillrow"><a href="#method" class="provpill" data-prov="history"><span class="o"></span>data &amp; method</a></div>
 
-    <div class="chart-head" style="margin-top:48px"><h3>Financings — total equity capital raised</h3><div class="sub">Combined TSX + TSXV, December-YTD · 2009–2026 (2026 is YTD, drawn dashed)</div></div>
+    <div class="chart-head" id="h-financings" style="margin-top:48px"><h3>Financings — total equity capital raised</h3><div class="sub">Combined TSX + TSXV, December-YTD · 2009–2026 (2026 is YTD, drawn dashed)</div></div>
     <div class="svgwrap" id="hFinWrap" role="img" aria-label="Bar chart of total equity capital raised on the TSX and TSXV combined by year 2009 to 2026, in C dollars. Peaks near C$65 billion in 2009, troughs near C$21 billion in 2024, recovering to C$33 billion in 2025."><svg viewBox="0 0 920 460" preserveAspectRatio="xMinYMin meet"><defs><linearGradient id="md-fin-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:var(--accent-deep)"/></linearGradient></defs><g stroke="var(--hair)" stroke-width="1"><line x1="62" y1="30.0" x2="902" y2="30.0"/><line x1="62" y1="125.0" x2="902" y2="125.0"/><line x1="62" y1="220.0" x2="902" y2="220.0"/><line x1="62" y1="315.0" x2="902" y2="315.0"/><line x1="62" y1="410.0" x2="902" y2="410.0"/></g><g fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" text-anchor="end"><text x="54" y="34.0">C$80B</text><text x="54" y="129.0">C$60B</text><text x="54" y="224.0">C$40B</text><text x="54" y="319.0">C$20B</text><text x="54" y="414.0">C$0B</text></g><text x="62" y="20" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">total equity capital raised · C$ · December-YTD</text><rect x="72.3" y="101.8" width="26.1" height="308.2" rx="2" fill="url(#md-fin-grad)"/><text x="85.3" y="97.8" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">65</text><text class="xlab" x="85.3" y="426" text-anchor="middle">'09</text><rect x="118.9" y="153.6" width="26.1" height="256.4" rx="2" fill="url(#md-fin-grad)"/><text x="132.0" y="149.6" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">54</text><text class="xlab" x="132.0" y="426" text-anchor="middle">'10</text><rect x="165.6" y="167.4" width="26.1" height="242.6" rx="2" fill="url(#md-fin-grad)"/><text x="178.7" y="163.4" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">51</text><text class="xlab" x="178.7" y="426" text-anchor="middle">'11</text><rect x="212.3" y="141.5" width="26.1" height="268.5" rx="2" fill="url(#md-fin-grad)"/><text x="225.3" y="137.5" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">57</text><text class="xlab" x="225.3" y="426" text-anchor="middle">'12</text><rect x="258.9" y="202.8" width="26.1" height="207.2" rx="2" fill="url(#md-fin-grad)"/><text x="272.0" y="198.8" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">44</text><text class="xlab" x="272.0" y="426" text-anchor="middle">'13</text><rect x="305.6" y="135.5" width="26.1" height="274.5" rx="2" fill="url(#md-fin-grad)"/><text x="318.7" y="131.5" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">58</text><text class="xlab" x="318.7" y="426" text-anchor="middle">'14</text><rect x="352.3" y="135.8" width="26.1" height="274.2" rx="2" fill="url(#md-fin-grad)"/><text x="365.3" y="131.8" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">58</text><text class="xlab" x="365.3" y="426" text-anchor="middle">'15</text><rect x="398.9" y="114.7" width="26.1" height="295.3" rx="2" fill="url(#md-fin-grad)"/><text x="412.0" y="110.7" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">62</text><text class="xlab" x="412.0" y="426" text-anchor="middle">'16</text><rect x="445.6" y="151.0" width="26.1" height="259.0" rx="2" fill="url(#md-fin-grad)"/><text x="458.7" y="147.0" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">55</text><text class="xlab" x="458.7" y="426" text-anchor="middle">'17</text><rect x="492.3" y="216.1" width="26.1" height="193.9" rx="2" fill="url(#md-fin-grad)"/><text x="505.3" y="212.1" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">41</text><text class="xlab" x="505.3" y="426" text-anchor="middle">'18</text><rect x="538.9" y="224.6" width="26.1" height="185.4" rx="2" fill="url(#md-fin-grad)"/><text x="552.0" y="220.6" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">39</text><text class="xlab" x="552.0" y="426" text-anchor="middle">'19</text><rect x="585.6" y="206.6" width="26.1" height="203.4" rx="2" fill="url(#md-fin-grad)"/><text x="598.7" y="202.6" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">43</text><text class="xlab" x="598.7" y="426" text-anchor="middle">'20</text><rect x="632.3" y="139.6" width="26.1" height="270.4" rx="2" fill="url(#md-fin-grad)"/><text x="645.3" y="135.6" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">57</text><text class="xlab" x="645.3" y="426" text-anchor="middle">'21</text><rect x="678.9" y="280.1" width="26.1" height="129.9" rx="2" fill="url(#md-fin-grad)"/><text x="692.0" y="276.1" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">27</text><text class="xlab" x="692.0" y="426" text-anchor="middle">'22</text><rect x="725.6" y="307.7" width="26.1" height="102.3" rx="2" fill="url(#md-fin-grad)"/><text x="738.7" y="303.7" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">22</text><text class="xlab" x="738.7" y="426" text-anchor="middle">'23</text><rect x="772.3" y="311.0" width="26.1" height="99.0" rx="2" fill="url(#md-fin-grad)"/><text x="785.3" y="307.0" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">21</text><text class="xlab" x="785.3" y="426" text-anchor="middle">'24</text><rect x="818.9" y="251.7" width="26.1" height="158.3" rx="2" fill="url(#md-fin-grad)"/><text x="832.0" y="247.7" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">33</text><text class="xlab" x="832.0" y="426" text-anchor="middle">'25</text><rect x="865.6" y="325.4" width="26.1" height="84.6" rx="2" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-dasharray="4 3"/><text x="878.7" y="321.4" text-anchor="middle" fill="var(--gann-val)" font-family="var(--mono)" font-size="9.5">18</text><text class="xlab" x="878.7" y="426" text-anchor="middle">'26</text><line x1="62" y1="410" x2="902" y2="410" stroke="var(--hair-strong)" stroke-width="1"/></svg></div>
     <div class="chart-head" style="margin-top:34px"><h3>Named financings — search by issuer</h3><div class="sub">The monthly Top-10 corporate financings the MiG named, per board · 2013 onward</div></div>
     <div class="controls">
@@ -1261,6 +1282,7 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
     var issBody=document.getElementById("issBody"),issTable=document.getElementById("issTable"),
         pgPrev=document.getElementById("pgPrev"),pgNext=document.getElementById("pgNext"),pgInfo=document.getElementById("pgInfo"),
         pager=document.getElementById("pager"),tblSub=document.getElementById("tblSub"),
+        issSumN=document.getElementById("issSumN"),
         tablewrap=issTable?issTable.closest(".tablewrap"):null;
     var PER=50;
 
@@ -1371,6 +1393,7 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
       cseBanner.style.display="";
       if(tablewrap) tablewrap.style.display="none"; if(pager) pager.style.display="none";
       tblSub.textContent="CSE publishes no per-issuer cap file — see the aggregates above.";
+      if(issSumN) issSumN.textContent=CSEd.issuers.toLocaleString();
       roCount.textContent=CSEd.issuers.toLocaleString();
       roCountL.textContent="active common-equity issuers (end-2025)";
       roCap.textContent=fmtCap(CSEd.cap_cm);
@@ -1398,6 +1421,7 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
         roMed.parentNode.querySelector(".rc").textContent="median cap";
         var list=filtered();
         roCount.textContent=list.length.toLocaleString();
+        if(issSumN) issSumN.textContent=list.length.toLocaleString();
         roCountL.textContent="matching the current filters";
         var totalcap=0; list.forEach(function(x){ totalcap+=x.c; });
         roCap.textContent=fmtCap(totalcap);
@@ -1985,6 +2009,17 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
       s.addEventListener("click",function(ev){ if(PROV[key]){ ev.preventDefault(); openProv(key,s); } });
       s.addEventListener("keydown",function(ev){ if(ev.key==="Enter"||ev.key===" "){ if(PROV[key]){ ev.preventDefault(); openProv(key,s); } } });
     }catch(e){} });
+  }catch(e){}
+
+  // collapsible issuer table — enhancement only (native <details open> works with JS off).
+  // Mirror aria-expanded on the summary and swap the collapse/expand hint (same pattern as the nav sheet).
+  try{ var issD=document.getElementById("issDetails");
+    if(issD){ var issSummary=issD.querySelector("summary.tblsummary"), issHint=issD.querySelector(".tsum-hint");
+      var setIssExp=function(o){ try{ if(issSummary) issSummary.setAttribute("aria-expanded",o?"true":"false");
+        if(issHint) issHint.textContent=o?"click to collapse":"click to expand"; }catch(e){} };
+      setIssExp(issD.open);
+      issD.addEventListener("toggle",function(){ setIssExp(issD.open); });
+    }
   }catch(e){}
 
   try{ var navD=document.getElementById("navSheet");

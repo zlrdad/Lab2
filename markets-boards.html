@@ -407,6 +407,26 @@ a.brand{text-decoration:none}
 .pagehead .sharemeta{display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--dim)}
 .pagehead .sharemeta span{display:inline-flex;align-items:center;gap:6px}
 .pagehead .sharemeta span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent)}
+/* in-page jump-nav row under the page intro (boards + history) — non-sticky, quiet mono links, wraps at 390px */
+.jumpnav{display:flex;align-items:center;gap:7px 16px;flex-wrap:wrap;margin-top:20px;padding-top:15px;border-top:1px solid var(--hair);font-family:var(--mono)}
+.jumpnav .jl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.jumpnav a{font-size:11.5px;letter-spacing:.05em;color:var(--body);padding:2px 1px;border-bottom:1px solid transparent;transition:.15s}
+.jumpnav a:hover{color:var(--accent-txt);border-bottom-color:var(--accent)}
+.jumpnav a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+/* anchor targets that sit mid-section clear the fixed topbar on jump */
+#readout,#h-roster,#h-financings{scroll-margin-top:72px}
+/* collapsible issuer table — native <details open>; JS only enhances the live count + aria-expanded */
+.tblcollapse{margin-top:44px}
+.tblsummary{list-style:none;display:flex;align-items:center;gap:11px;flex-wrap:wrap;cursor:pointer;min-height:44px;padding:11px 15px;border:1px solid var(--slate);border-radius:10px;background:rgba(var(--accent-rgb),.05);font-family:var(--mono);transition:.15s;user-select:none}
+.tblsummary::-webkit-details-marker{display:none}.tblsummary::marker{content:""}
+.tblsummary:hover{border-color:var(--accent)}
+.tblsummary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tsum-caret{width:8px;height:8px;border-right:1.7px solid var(--accent);border-bottom:1.7px solid var(--accent);transform:rotate(-45deg);transition:transform .18s;flex:0 0 auto}
+.tblcollapse[open] .tsum-caret{transform:rotate(45deg)}
+.tsum-t{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.tsum-n{font-size:12px;letter-spacing:.06em;color:var(--dim)}
+.tsum-n b{color:var(--accent-txt);font-weight:600}
+.tsum-hint{margin-left:auto;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 .hublegend .glt{color:var(--body);font-weight:500;text-transform:uppercase;letter-spacing:.08em}
 /* hub section tiles */
 .tilenav{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:26px}
@@ -488,6 +508,7 @@ td.c-deal{white-space:nowrap}
     <h1>Canada boards explorer.</h1>
     <div class="tag">Filter every issuer on the TSX, TSXV and CSE — by sector, size, interlisting, graduation, HQ region, index membership or free text. The readout, charts and table all re-render to your subset. Then a cross-listings deep-dive: venue mix, the turnover interlisted names carry, the interlisting trend and the cross-listed financings cut.</div>
     <div class="sharemeta"><span>Self-contained · opens from file://</span><span>Renders with JavaScript off</span><span>Dark / light · top-right</span></div>
+    <nav class="jumpnav" aria-label="Jump to a section on this page"><span class="jl">Jump to</span><a href="#readout">KPIs</a><a href="#boards">Explorer</a><a href="#xlist">Cross-listings</a><a href="#method">Method</a></nav>
   </div>
 </section>
 
@@ -594,20 +615,27 @@ td.c-deal{white-space:nowrap}
     <div class="chart-head" style="margin-top:40px"><h3 id="bandChTitle">TSX operating issuers, by cap band</h3><div class="sub" id="bandChSub">Bar length = number of issuers in each capitalisation band</div></div>
     <div class="svgwrap" id="bandWrap" role="img" aria-label="Cap-band distribution of the filtered subset. Default view: TSX operating issuers, C$150M–1B and C$1B–10B bands lead."><svg viewBox="0 0 900 320" preserveAspectRatio="xMinYMin meet"><defs><linearGradient id="md-band-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--accent-deep)"/><stop offset="1" style="stop-color:var(--accent)"/></linearGradient></defs><g><text x="196" y="43" text-anchor="end" class="hbar-lab">&lt;C$10M</text><rect class="ramp-1" x="210" y="26" width="49.5" height="24" rx="4"/><text x="858.0" y="43" text-anchor="end" class="hbar-val">17</text></g><g><text x="196" y="87" text-anchor="end" class="hbar-lab">C$10–50M</text><rect class="ramp-2" x="210" y="70" width="139.6" height="24" rx="4"/><text x="858.0" y="87" text-anchor="end" class="hbar-val">48</text></g><g><text x="196" y="131" text-anchor="end" class="hbar-lab">C$50–150M</text><rect class="ramp-3" x="210" y="114" width="206.5" height="24" rx="4"/><text x="858.0" y="131" text-anchor="end" class="hbar-val">71</text></g><g><text x="196" y="175" text-anchor="end" class="hbar-lab">C$150M–1B</text><rect class="ramp-4" x="210" y="158" width="628.4" height="24" rx="4"/><text x="826.4" y="175" text-anchor="end" class="hbar-val inbar">216</text></g><g><text x="196" y="219" text-anchor="end" class="hbar-lab subj">C$1B–10B</text><rect class="subj-glow" x="210" y="202" width="640.0" height="24" rx="4" fill="url(#md-band-grad)"/><text x="838.0" y="219" text-anchor="end" class="hbar-val subj inbar">220</text></g><g><text x="196" y="263" text-anchor="end" class="hbar-lab">≥C$10B</text><rect class="ramp-6" x="210" y="246" width="290.9" height="24" rx="4"/><text x="858.0" y="263" text-anchor="end" class="hbar-val">100</text></g><line x1="210" y1="294" x2="850" y2="294" stroke="var(--hair-strong)" stroke-width="1"/><text x="210" y="307" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">0</text><text x="850" y="307" text-anchor="end" fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5">operating issuers, by cap band (count)</text></svg></div>
 
-    <div class="chart-head" style="margin-top:44px"><h3>Filtered issuers</h3><div class="sub" id="tblSub">Top 50 by market cap · click a column to sort · 50 per page</div></div>
-    <div class="tablewrap">
-      <table class="issuers" id="issTable">
-        <thead><tr>
-          <th scope="col" data-sort="n" tabindex="0" aria-sort="none">Company</th>
-          <th scope="col" data-sort="t" tabindex="0" aria-sort="none">Ticker</th>
-          <th scope="col" data-sort="s" tabindex="0" aria-sort="none">Sector</th>
-          <th scope="col" data-sort="hq" tabindex="0" aria-sort="none">HQ</th>
-          <th scope="col" data-sort="il" tabindex="0" aria-sort="none" title="Interlisting venue(s): the foreign exchange(s) the issuer is also listed on. — = Canada-only.">Venue(s)</th>
-          <th scope="col" data-sort="c" class="num" tabindex="0" aria-sort="descending">Cap C$M</th>
-          <th scope="col" data-sort="ly" class="num" tabindex="0" aria-sort="none">Listed</th>
-          <th scope="col" data-sort="vt" class="num" tabindex="0" aria-sort="none">Value traded C$M</th>
-        </tr></thead>
-        <tbody id="issBody"><tr><td class="c-n"><a class="xl" href="https://finance.yahoo.com/quote/RY.TO" target="_blank" rel="noopener">Royal Bank of Canada</a></td><td class="c-t">RY</td><td class="c-s">Financial Services</td><td class="c-hq">ON</td><td class="c-ven">NYSE</td><td class="c-num">369,979</td><td class="c-num">1918</td><td class="c-num">91,870</td></tr>
+    <details class="tblcollapse" id="issDetails" open>
+      <summary class="tblsummary" id="issSummary">
+        <span class="tsum-caret" aria-hidden="true"></span>
+        <span class="tsum-t">Issuer table</span>
+        <span class="tsum-n">&mdash; <b id="issSumN">672</b> rows</span>
+        <span class="tsum-hint">click to collapse</span>
+      </summary>
+      <div class="chart-head" style="margin-top:16px"><div class="sub" id="tblSub">Top 50 by market cap · click a column to sort · 50 per page</div></div>
+      <div class="tablewrap">
+        <table class="issuers" id="issTable">
+          <thead><tr>
+            <th scope="col" data-sort="n" tabindex="0" aria-sort="none">Company</th>
+            <th scope="col" data-sort="t" tabindex="0" aria-sort="none">Ticker</th>
+            <th scope="col" data-sort="s" tabindex="0" aria-sort="none">Sector</th>
+            <th scope="col" data-sort="hq" tabindex="0" aria-sort="none">HQ</th>
+            <th scope="col" data-sort="il" tabindex="0" aria-sort="none" title="Interlisting venue(s): the foreign exchange(s) the issuer is also listed on. — = Canada-only.">Venue(s)</th>
+            <th scope="col" data-sort="c" class="num" tabindex="0" aria-sort="descending">Cap C$M</th>
+            <th scope="col" data-sort="ly" class="num" tabindex="0" aria-sort="none">Listed</th>
+            <th scope="col" data-sort="vt" class="num" tabindex="0" aria-sort="none">Value traded C$M</th>
+          </tr></thead>
+          <tbody id="issBody"><tr><td class="c-n"><a class="xl" href="https://finance.yahoo.com/quote/RY.TO" target="_blank" rel="noopener">Royal Bank of Canada</a></td><td class="c-t">RY</td><td class="c-s">Financial Services</td><td class="c-hq">ON</td><td class="c-ven">NYSE</td><td class="c-num">369,979</td><td class="c-num">1918</td><td class="c-num">91,870</td></tr>
 <tr><td class="c-n"><a class="xl" href="https://finance.yahoo.com/quote/TD.TO" target="_blank" rel="noopener">Toronto-Dominion Bank (The)</a></td><td class="c-t">TD</td><td class="c-s">Financial Services</td><td class="c-hq">ON</td><td class="c-ven">NYSE</td><td class="c-num">261,905</td><td class="c-num">1955</td><td class="c-num">83,646</td></tr>
 <tr><td class="c-n"><a class="xl" href="https://finance.yahoo.com/quote/SHOP.TO" target="_blank" rel="noopener">Shopify Inc.</a></td><td class="c-t">SHOP</td><td class="c-s">Technology</td><td class="c-hq">ON</td><td class="c-ven">NasdaqGS</td><td class="c-num">200,555</td><td class="c-num">2015</td><td class="c-num">35,529</td></tr>
 <tr><td class="c-n"><a class="xl" href="https://finance.yahoo.com/quote/ENB.TO" target="_blank" rel="noopener">Enbridge Inc.</a></td><td class="c-t">ENB</td><td class="c-s">Utilities &amp; Pipelines</td><td class="c-hq">AB</td><td class="c-ven">NYSE</td><td class="c-num">171,881</td><td class="c-num">1953</td><td class="c-num">66,307</td></tr>
@@ -657,13 +685,14 @@ td.c-deal{white-space:nowrap}
 <tr><td class="c-n"><a class="xl" href="https://finance.yahoo.com/quote/BBD.TO" target="_blank" rel="noopener">Bombardier Inc.</a></td><td class="c-t">BBD</td><td class="c-s">Industrial Products &amp; Services</td><td class="c-hq">QC</td><td class="c-ven">—</td><td class="c-num">31,608</td><td class="c-num">1946</td><td class="c-num">10,299</td></tr>
 <tr><td class="c-n"><a class="xl" href="https://finance.yahoo.com/quote/RCI.TO" target="_blank" rel="noopener">Rogers Communications Inc.</a></td><td class="c-t">RCI</td><td class="c-s">Comm. &amp; Media</td><td class="c-hq">ON</td><td class="c-ven">NYSE</td><td class="c-num">28,868</td><td class="c-num">1971</td><td class="c-num">9,936</td></tr>
 <tr><td class="c-n"><a class="xl" href="https://finance.yahoo.com/quote/RBA.TO" target="_blank" rel="noopener">RB Global, Inc.</a></td><td class="c-t">RBA</td><td class="c-s">Industrial Products &amp; Services</td><td class="c-hq">IL</td><td class="c-ven">NYSE</td><td class="c-num">27,270</td><td class="c-num">2004</td><td class="c-num">3,848</td></tr></tbody>
-      </table>
-    </div>
-    <div class="pager" id="pager">
-      <button type="button" id="pgPrev" disabled>‹ Prev</button>
-      <span id="pgInfo">Page 1 of 14 · 672 issuers</span>
-      <button type="button" id="pgNext">Next ›</button>
-    </div>
+        </table>
+      </div>
+      <div class="pager" id="pager">
+        <button type="button" id="pgPrev" disabled>‹ Prev</button>
+        <span id="pgInfo">Page 1 of 14 · 672 issuers</span>
+        <button type="button" id="pgNext">Next ›</button>
+      </div>
+    </details>
     <div class="pillrow"><a href="#method" class="provpill" data-prov="boards"><span class="o"></span>data &amp; method</a></div>
   </div>
 </section>
@@ -907,6 +936,7 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
     var issBody=document.getElementById("issBody"),issTable=document.getElementById("issTable"),
         pgPrev=document.getElementById("pgPrev"),pgNext=document.getElementById("pgNext"),pgInfo=document.getElementById("pgInfo"),
         pager=document.getElementById("pager"),tblSub=document.getElementById("tblSub"),
+        issSumN=document.getElementById("issSumN"),
         tablewrap=issTable?issTable.closest(".tablewrap"):null;
     var PER=50;
 
@@ -1017,6 +1047,7 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
       cseBanner.style.display="";
       if(tablewrap) tablewrap.style.display="none"; if(pager) pager.style.display="none";
       tblSub.textContent="CSE publishes no per-issuer cap file — see the aggregates above.";
+      if(issSumN) issSumN.textContent=CSEd.issuers.toLocaleString();
       roCount.textContent=CSEd.issuers.toLocaleString();
       roCountL.textContent="active common-equity issuers (end-2025)";
       roCap.textContent=fmtCap(CSEd.cap_cm);
@@ -1044,6 +1075,7 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
         roMed.parentNode.querySelector(".rc").textContent="median cap";
         var list=filtered();
         roCount.textContent=list.length.toLocaleString();
+        if(issSumN) issSumN.textContent=list.length.toLocaleString();
         roCountL.textContent="matching the current filters";
         var totalcap=0; list.forEach(function(x){ totalcap+=x.c; });
         roCap.textContent=fmtCap(totalcap);
@@ -1631,6 +1663,17 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
       s.addEventListener("click",function(ev){ if(PROV[key]){ ev.preventDefault(); openProv(key,s); } });
       s.addEventListener("keydown",function(ev){ if(ev.key==="Enter"||ev.key===" "){ if(PROV[key]){ ev.preventDefault(); openProv(key,s); } } });
     }catch(e){} });
+  }catch(e){}
+
+  // collapsible issuer table — enhancement only (native <details open> works with JS off).
+  // Mirror aria-expanded on the summary and swap the collapse/expand hint (same pattern as the nav sheet).
+  try{ var issD=document.getElementById("issDetails");
+    if(issD){ var issSummary=issD.querySelector("summary.tblsummary"), issHint=issD.querySelector(".tsum-hint");
+      var setIssExp=function(o){ try{ if(issSummary) issSummary.setAttribute("aria-expanded",o?"true":"false");
+        if(issHint) issHint.textContent=o?"click to collapse":"click to expand"; }catch(e){} };
+      setIssExp(issD.open);
+      issD.addEventListener("toggle",function(){ setIssExp(issD.open); });
+    }
   }catch(e){}
 
   try{ var navD=document.getElementById("navSheet");
