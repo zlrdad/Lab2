@@ -154,6 +154,24 @@ html[data-theme="light"] .ramp-4{opacity:.50}html[data-theme="light"] .ramp-5{op
 .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .chip[disabled]{opacity:.4;cursor:not-allowed}
 .chip.sw-on{--chipcol:var(--accent)}
+/* WFE derived (Taiwan combined) chip — dashed border marks "our computation" */
+.chip.wfe-derived{border-style:dashed}
+.chip.wfe-derived[aria-pressed="true"]{border-style:dashed}
+/* WFE constituent/partial tier — collapsed native <details>, quiet */
+.wfe-constituents{flex-basis:100%;margin-top:10px;border:1px dashed var(--hair-strong);border-radius:8px;padding:0}
+.wfe-csum{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--dim);cursor:pointer;padding:9px 12px;list-style:none;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.wfe-csum::-webkit-details-marker{display:none}
+.wfe-csum:hover{color:var(--body)}
+.wfe-ccaret{width:0;height:0;border-left:5px solid currentColor;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .15s;flex:none}
+.wfe-constituents[open] .wfe-ccaret{transform:rotate(90deg)}
+.wfe-chint{font-size:10px;letter-spacing:.03em;text-transform:none;color:var(--dim);opacity:.85}
+.wfe-cgrid{display:flex;flex-wrap:wrap;gap:9px;padding:4px 12px 12px}
+.wfe-cchip{display:inline-flex;flex-direction:column;gap:3px}
+.wfe-ctag{font-family:var(--mono);font-size:9px;letter-spacing:.05em;color:var(--dim);opacity:.9}
+.chip.wfe-constituent{border-style:dotted;font-size:11.5px;padding:6px 11px;min-height:32px}
+/* selection-driven basis note in the caption (reuses #wfeSub — no new UI element) */
+.wfe-basisnote{display:block;margin-top:6px;font-size:11.5px;color:var(--dim);line-height:1.5}
+.wfe-basisnote b{color:var(--body);font-weight:600}
 .sep{width:1px;height:24px;background:var(--hair);margin:0 4px}
 .facetgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px 20px;margin-top:8px}
 .facet label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
@@ -230,6 +248,66 @@ html[data-theme="light"] .tile .tn{color:var(--ink);text-shadow:none}
 .tile.leaklike .tn{color:var(--leak);text-shadow:none}
 .tile .tc{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);margin-top:13px}
 .tile .tl{font-size:13px;color:var(--body);line-height:1.55;margin-top:9px}
+
+/* cross-exchange concentration DEEP-DIVE (conc2) */
+.reconnote{font-size:13.5px;color:var(--body);line-height:1.6;margin-top:20px;padding:16px 18px;border:1px solid var(--hair);border-left:2px solid var(--accent);border-radius:9px;background:var(--surface);max-width:82ch}
+.reconnote b{color:var(--ink)}
+.mkchip{max-width:none}
+.mkchip.subj[aria-pressed="true"]{border-color:var(--accent);background:rgba(var(--accent-rgb),.14)}
+.ttag{display:inline-block;font-family:var(--mono);font-size:9.5px;padding:1px 6px;border-radius:5px;letter-spacing:.04em;border:1px solid var(--hair-strong);color:var(--dim);vertical-align:1px}
+.ttag.t1{color:var(--accent-txt);border-color:var(--conf-high-bd)}
+.ttag.t3{color:var(--pg-comp);border-color:var(--conf-med-bd)}
+.ttag.t6,.ttag.t7,.ttag.t8{color:var(--dim)}
+.mktpanels{margin-top:20px}
+.mktpanel{border:1px solid var(--hair);border-radius:13px;padding:24px 24px 22px;background:var(--surface);margin-top:18px}
+.mktpanel[hidden]{display:none}
+.mp-head{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.mp-head h4{font-family:var(--disp);font-weight:600;font-size:clamp(19px,2.4vw,26px);color:var(--ink);letter-spacing:-.01em;margin:0}
+.conftag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:20px;border:1px solid var(--hair-strong);color:var(--dim)}
+.conftag.hi{color:var(--accent-txt);border-color:var(--conf-high-bd)}
+.conftag.med{color:var(--pg-comp);border-color:var(--conf-med-bd)}
+.conftag.lomed{color:var(--leak-txt);border-color:var(--conf-soft-bd)}
+.tierpill{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--dim);border:1px dashed var(--hair-strong);border-radius:20px;padding:3px 10px}
+.mp-basis{font-size:12.5px;color:var(--body);line-height:1.55;margin-top:12px;max-width:88ch}
+.mp-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:30px;margin-top:22px;align-items:start}
+.mp-kpis{display:flex;gap:26px;margin-bottom:10px}
+.mpk .mpn{font-family:var(--disp);font-weight:700;font-size:clamp(28px,4vw,42px);color:var(--accent);line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-shadow:var(--gfx-glow-strong)}
+html[data-theme="light"] .mpk .mpn{color:var(--ink);text-shadow:none}
+.mpk .mpc{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:8px}
+.mpbars{margin-top:6px}
+.audlab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-txt);margin-bottom:10px}
+table.audit{width:100%;border-collapse:collapse;font-size:12.5px}
+table.audit th,table.audit td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--hair);color:var(--body);vertical-align:top}
+table.audit th{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+table.audit td.num,table.audit th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);white-space:nowrap}
+table.audit td b{color:var(--ink)}
+table.audit tr.adenom td{border-top:2px solid var(--hair-strong);border-bottom:none;color:var(--ink)}
+table.audit tr.aalt td{opacity:.72;font-style:italic}
+.aunote{color:var(--dim);font-size:11px;font-style:normal}
+.acompute{font-family:var(--mono);font-size:12.5px;color:var(--accent-txt);margin-top:12px;padding:10px 14px;border:1px solid rgba(var(--accent-rgb),.3);border-radius:8px;background:rgba(var(--accent-rgb),.05);letter-spacing:.01em}
+.acompute b{color:var(--ink)}
+.acompute.alt{color:var(--dim);border-color:var(--hair-strong);background:transparent;margin-top:8px}
+.seccard{margin-top:24px;border-top:1px solid var(--hair);padding-top:20px}
+.sech{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.sect{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.secbadges{display:flex;flex-wrap:wrap;gap:7px}
+.sbadge{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;padding:2px 9px;border-radius:20px;border:1px solid var(--hair-strong);color:var(--dim)}
+.sbadge.exact{color:var(--accent-txt);border-color:var(--conf-high-bd)}
+.sbadge.proxy{color:var(--pg-comp);border-color:var(--conf-med-bd)}
+.sbadge.partial{color:var(--dim)}
+.sbadge.blocked{color:var(--leak-txt);border-color:var(--conf-soft-bd)}
+.secsub{font-family:var(--mono);font-size:10.5px;color:var(--dim);letter-spacing:.03em;margin-top:9px}
+.staxo{color:var(--body)}
+.sproxylab{color:var(--dim)}
+ul.secrows{list-style:none;margin:14px 0 0;padding:0;columns:2;column-gap:34px}
+@media(max-width:939.98px){ul.secrows{columns:1}.mp-cols{grid-template-columns:1fr}}
+ul.secrows li{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--hair);break-inside:avoid;font-size:12.5px}
+ul.secrows li .sn{color:var(--body)}
+ul.secrows li .sv{font-family:var(--mono);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+ul.secrows li.snote{flex-wrap:wrap}
+ul.secrows li.snote .aunote{flex-basis:100%;margin-top:3px}
+.sblocked{margin-top:14px;font-size:13px;color:var(--body);line-height:1.55;padding:12px 15px;border:1px dashed var(--conf-soft-bd);border-radius:9px;background:rgba(var(--leak-rgb),.05)}
+.mp-dig{font-family:var(--mono);font-size:10.5px;letter-spacing:.02em;color:var(--dim);line-height:1.55;margin-top:20px}
 
 /* method / evidence rows */
 .evlist{margin-top:30px;border-top:1px solid var(--hair)}
@@ -398,8 +476,11 @@ a.brand{text-decoration:none}
 .links a[aria-current="page"]{color:var(--accent-txt);border-bottom:2px solid var(--accent)}
 .sheet-inner a[aria-current="page"] .sn{color:var(--accent-txt)}
 .sheet-inner a[aria-current="page"]{border-left:2px solid var(--accent)}
-/* section-page slim header */
-.pagehead{padding:46px 0 8px}
+/* section-page slim header — top padding clears the FIXED topbar (~54px desktop,
+   ~69px mobile once the Menu pill sets the bar height) with breathing room, the
+   same way #hero's 120px does on the hub. At 46px the breadcrumb/title slid under
+   the bar (cut in half on desktop, fully hidden on mobile). */
+.pagehead{padding:88px 0 8px}
 .pagehead .cat{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:14px}
 .pagehead .cat a{color:var(--accent-txt);text-decoration:none}
 .pagehead h1{font-family:var(--disp);font-weight:600;font-size:clamp(30px,5vw,52px);line-height:1.02;letter-spacing:-.02em;margin:0 0 14px}
@@ -427,6 +508,13 @@ a.brand{text-decoration:none}
 .tsum-n{font-size:12px;letter-spacing:.06em;color:var(--dim)}
 .tsum-n b{color:var(--accent-txt);font-weight:600}
 .tsum-hint{margin-left:auto;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+/* WFE data table + interactive chart points */
+.mtblwrap{margin-top:16px;overflow-x:auto}
+.tblcap{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.wfetable th[scope="row"]{font-family:var(--mono);color:var(--body);white-space:nowrap}
+.wfe-pt{cursor:pointer}
+.wfe-pt:hover{stroke:var(--accent);stroke-width:2}
+.wfe-pt:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .hublegend .glt{color:var(--body);font-weight:500;text-transform:uppercase;letter-spacing:.08em}
 /* hub section tiles */
 .tilenav{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:26px}
@@ -768,15 +856,17 @@ td.c-deal{white-space:nowrap}
   <div class="wrap narrow">
     <div class="kicker"><span class="l">06</span> Data &amp; method</div>
     <h2>Every source, vintage and basis.</h2>
-    <p class="lede">This dashboard is generated by a validated pipeline (148 assertions, all passing) that bakes a deterministic payload from the vault's in-house source files, then splices it verbatim into this page. Nothing here is hand-keyed.</p>
+    <p class="lede">This dashboard is generated by a validated pipeline (292 assertions, all passing) that bakes a deterministic payload from the vault's in-house source files, then splices it verbatim into this page. Nothing here is hand-keyed.</p>
 
     <div class="evlist">
       <div class="evrow"><div><div class="et">Vintages</div><div class="es">as-at dates</div></div>
-        <div class="ed">TMX Issuers List <b>31 May 2026</b> · CSE Listed Companies <b>31 Dec 2025</b> · WFE annual USD export <b>8 Jul 2026</b> (2010–2025; the 2026 annual row is a placeholder and is not charted).</div></div>
+        <div class="ed">TMX Issuers List <b>31 May 2026</b> · CSE Listed Companies <b>31 Dec 2025</b> · WFE annual USD export <b>8 Jul 2026</b> (2010–2025). Market capitalisation additionally carries a <b>2026 partial-year point</b> from the WFE monthly market-cap file (latest month reported per exchange, May/Jun 2026 — hollow + dashed + <span class="dag">*</span>); all other indicators end at 2025.</div></div>
       <div class="evrow"><div><div class="et">Operating-issuer recipe</div><div class="es">the filter that matters</div></div>
         <div class="ed">Both boards strip <code>Sector ∈ {ETP, CDR, Closed-End Funds, SPAC}</code> — that is, exchange-traded products (ETP) and Canadian Depositary Receipts (CDR) alongside closed-end funds and SPACs. The TSXV <b>additionally</b> strips active <code>CPC</code> (Capital Pool Company) shells (161 rows). Result: <b>TSX 2,236 → 672</b> operating; <b>TSXV 1,508 → 1,347</b> operating. Cap bands are binned from the <b>raw</b> C$ cap (not the rounded C$M) so issuers never misband at the 10M / 150M edges.</div></div>
       <div class="evrow"><div><div class="et">Entity basis (WFE)</div><div class="es">what each row consolidates</div></div>
         <div class="ed">Each WFE entity is the whole operator: <b>TMX</b> = TSX + TSXV; <b>Korea</b> = KOSPI + KOSDAQ + KONEX; <b>JPX</b> = Prime + Standard + Growth; <b>HKEX</b> = Main + GEM. NSE India is excluded from Asia-Pacific market-cap totals (double-counts with BSE). WFE's listed-company count is all-in (TMX 2025 = 3,701), not the operating base.</div></div>
+      <div class="evrow"><div><div class="et">Entity-basis hygiene</div><div class="es">Taiwan combined · constituent tier</div></div>
+        <div class="ed"><b>Taiwan is the inverse case</b> — WFE reports it as <b>two separate legal entities</b>, the TWSE main board and TPEx (its growth board), where peers arrive pre-consolidated. The picker adds a derived <b>Taiwan (combined) ◇</b> series: additive indicators <em>summed</em>, ratios <em>recomputed</em> from the combined numerator/denominator (never averaged — combined 2024 velocity ~143%, not the ~243% mean of the two boards); <b>our computation, not a WFE-reported entity</b> (dashed, ◇). Its 2026<span class="dag">*</span> point is a same-month (May) sum, <b>US$3.23T (2025) → US$4.93T (May 2026)</b>. TPEx, the four <b>individual</b> Nasdaq Nordic/Baltic venues (use the <b>Nasdaq Nordic &amp; Baltics</b> aggregate — the individuals have no market-cap series) and <b>Euronext Oslo</b> (Oslo Børs → Euronext Jun 2019; market cap ends 2019) are moved to a collapsed <b>Constituent &amp; partial series</b> picker group, each labelled with its coverage span. The <b>rankings strip</b> and <b>concentration lab</b> deliberately use <b>TWSE alone</b> — the Bloomberg/WFE crossover subject; a combined view would add ~US$0.37T (May 2026).</div></div>
       <div class="evrow"><div><div class="et">Gap-fills</div><div class="es">dashed / † / "no data"</div></div>
         <div class="ed"><b>LSE Group</b> WFE series end 2020; 2021–25 filled from the LSE primary factsheets (Main + AIM, GBP→USD at BoE rates). Velocity / follow-on-share / avg-company-size for the fill years use the anchor's GBP-basis figures; <code>listed_dom</code> is filled 2021–23 only (2024–25 null); IPO count and avg IPO size are not filled. <b>Korea &amp; Nasdaq-US follow-on</b> are zero-coded non-reports → null ("no data", never 0). A lone trailing-2025 follow-on zero after real history (ASX / Deutsche Börse / SIX) is also nulled.</div></div>
       <div class="evrow"><div><div class="et">CSE caveats</div><div class="es">aggregates + value-traded</div></div>
@@ -808,7 +898,7 @@ td.c-deal{white-space:nowrap}
 <footer>
   <div class="ft-h">Markets Dashboard · standalone</div>
   <p>A self-contained, filter-everything view of Canada's equity boards and 25 world exchanges, built for Ontario capital-markets policy research. Every module carries a <span style="display:inline-block;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--accent);vertical-align:middle"></span> source pill — tap it for the figure's provenance and confidence grade.</p>
-  <p>Data as at: TMX 31 May 2026 · CSE 31 Dec 2025 · WFE export 8 Jul 2026. Generated by <code>markets_dashboard_data.py</code> (66 assertions) + <code>build_markets_dashboard.py</code>.</p>
+  <p>Data as at: TMX 31 May 2026 · CSE 31 Dec 2025 · WFE export 8 Jul 2026 (market-cap 2026 partial point: latest month reported, May/Jun 2026). Generated by <code>markets_dashboard_data.py</code> + <code>build_markets_dashboard.py</code>.</p>
   <p class="footid">MARKETS DASHBOARD · static-first · opens from file:// · default view renders with JavaScript off · Mission Control design system</p>
 </footer>
 </div>
@@ -845,7 +935,7 @@ window.CSE={"asat":"2025-12-31","bands":[{"band":"<C$10M","n":307},{"band":"C$10
 ;
 window.XLIST={"agg_context":{"figures":{"interlisted_share_pct":30.7,"us_venue_share_pct":85.0},"source":"Themes/ interlisting research + Dashboards/champions-report/public-markets.html & exchanges.html (MJDS / US-exit-ramp treatment)","text":"Cross-border venue MIGRATION is a separate, larger phenomenon than the interlisting cut here: vault research finds 206/672 = 30.7% of TSX operating issuers interlisted, ~85% of them on US venues (NYSE / NYSE American / Nasdaq), the interlisting itself enabled by the Canada-US Multi-Jurisdictional Disclosure System (MJDS). Much US-venue trading of interlisted names migrates off the Canadian book — but that off-book volume is not measurable from this TSX-side dataset.","tier":"vault research synthesis (primary TMX workbook, tier 1; migration/premium literature Doidge-Karolyi-Stulz, tier 2)"},"asat":"2026-05-31","basis_note":"Volumes are TSX/TSXV-side only. `vt` is YTD value traded on the Canadian board — the US-venue side of an interlisted name's trading is NOT in this dataset. The interlisting-over-time count uses the EXCL-OTC basis (matches the current workbook, which does not treat an OTC quotation as an interlisting); the pre-2018 panel vintages folded OTC quotations in (carried as the `any` series).","fin_cut":{"asof":{"deals":940,"issuers":264,"share_pct":22.0,"total_cm":432656},"current":{"deals":821,"issuers":161,"share_pct":19.2,"total_cm":340349},"total_rows":4265},"groups":["NYSE","Nasdaq","NYSE American","ASX","London (LSE/AIM)","Other intl"],"liquidity":{"TSX":{"board_cap_cm":5961130,"board_vt_cm":1827226,"il":{"cap_cm":4405049,"cap_share":73.9,"med_cap_cm":4229,"med_vt_cm":1154,"n":206,"vt_cm":1346451,"vt_share":73.7},"ni":{"cap_cm":1556081,"cap_share":26.1,"med_cap_cm":519,"med_vt_cm":66,"n":466,"vt_cm":480775,"vt_share":26.3},"op_n":672},"TSXV":{"board_cap_cm":142526,"board_vt_cm":23515,"il":{"cap_cm":20552,"cap_share":14.4,"med_cap_cm":141,"med_vt_cm":14,"n":54,"vt_cm":3266,"vt_share":13.9},"ni":{"cap_cm":121974,"cap_share":85.6,"med_cap_cm":16,"med_vt_cm":1,"n":1293,"vt_cm":20249,"vt_share":86.1},"op_n":1347}},"normalization":{"London (LSE/AIM)":"London Stock Exchange main market + AIM","NYSE":"NYSE + NYSE Arca","NYSE American":"NYSE Mkt / NYSE MKT / NYSE Amex / Amex / NYSE Alternext (historical names for NYSE American)","Nasdaq":"NasdaqCM / NasdaqGS / NasdaqGM / NASDAQ (US Nasdaq tiers; Nasdaq Nordic is a European market -> Other intl)","US OTC":"OTCQX / OTCQB / OTCBB / OTCPK grey-market quotations — EXCLUDED from the interlisting count (the current workbook does not treat an OTC quotation as an interlisting; only the pre-2018 panel vintages recorded them)","panel_prefix":"Archive panel `interlisted` strings carry a TSX-/TSXV- prefix (pre-2018 vintages) that is stripped before grouping."},"timeseries":{"tsx":[170,231,253,284,289,277,262,235,219,215,214,215,211,234,229,205,202,196],"tsx_any":[170,231,273,325,348,341,324,289,281,280,214,215,211,234,229,205,202,196],"tsx_op":[1235,1118,1120,1122,1067,1022,962,897,853,833,802,784,761,794,782,746,706,669],"tsx_share":[13.8,20.7,22.6,25.3,27.1,27.1,27.2,26.2,25.7,25.8,26.7,27.4,27.7,29.5,29.3,27.5,28.6,29.3],"tsxv":[28,25,31,37,35,31,33,37,35,40,45,43,42,65,75,63,60,58],"tsxv_any":[86,25,65,167,201,168,192,116,186,191,45,43,42,65,75,63,60,58],"tsxv_op":[1979,1959,2020,2086,2085,2023,1916,1749,1613,1601,1596,1527,1519,1541,1520,1466,1402,1359],"tsxv_share":[1.4,1.3,1.5,1.8,1.7,1.5,1.7,2.1,2.2,2.5,2.8,2.8,2.8,4.2,4.9,4.3,4.3,4.3],"years":[2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025]},"us_groups":["NYSE","NYSE American","Nasdaq"],"us_share":85.0,"venue_group_map":{"AIM":"London (LSE/AIM)","ASX":"ASX","BMV":"Other intl","HKEx":"Other intl","JSE":"Other intl","LSE":"London (LSE/AIM)","Lima (BVL)":"Other intl","NYSE":"NYSE","NYSE Arca":"NYSE","NYSE Mkt":"NYSE American","NZSE":"Other intl","Nasdaq Nordic":"Other intl","NasdaqCM":"Nasdaq","NasdaqGM":"Nasdaq","NasdaqGS":"Nasdaq","Oslo Bors":"Other intl","SSEV":"Other intl","TASE":"Other intl"},"venue_mix":[{"cap_cm":3717286,"g":"NYSE","med_cap_cm":15714,"med_vt_cm":4542,"n":90,"vt_cm":1165425},{"cap_cm":365421,"g":"Nasdaq","med_cap_cm":795,"med_vt_cm":196,"n":48,"vt_cm":91032},{"cap_cm":167993,"g":"NYSE American","med_cap_cm":1536,"med_vt_cm":423,"n":37,"vt_cm":50612},{"cap_cm":55356,"g":"ASX","med_cap_cm":2270,"med_vt_cm":164,"n":16,"vt_cm":14074},{"cap_cm":76320,"g":"Other intl","med_cap_cm":1649,"med_vt_cm":266,"n":10,"vt_cm":19642},{"cap_cm":22673,"g":"London (LSE/AIM)","med_cap_cm":534,"med_vt_cm":37,"n":5,"vt_cm":5666}]}
 ;
-window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX Listed-Companies workbook.","wfe":"World Federation of Exchanges (WFE) Statistics must be credited on every WFE-derived chart."},"cap_bands":{"edges_cad":[10000000.0,50000000.0,150000000.0,1000000000.0,10000000000.0],"labels":["<C$10M","C$10–50M","C$50–150M","C$150M–1B","C$1B–10B","≥C$10B"],"note":"Binned from RAW C$ cap, not the rounded C$M written to issuers.json."},"dashboard":"Dashboards/markets-dashboard.html","fx_rates":{"GBP_USD":{"annual_avg":{"2021":1.3752,"2022":1.2362,"2023":1.2439,"2024":1.2782,"2025":1.3193},"year_end":{"2021":1.3521,"2022":1.2097,"2023":1.2732,"2024":1.2515,"2025":1.3448}},"cad_conversion_note":"US$1≈C$1.44 · €1≈C$1.50 · £1≈C$1.80"},"gapfill_flags":{"followon_nonreport":"Korea & Nasdaq-US follow-on are zero-coded non-reports in WFE -> null (render 'no data', never 0).","lse":"LSE Group WFE series end 2020; 2021-25 gap-filled from LSE primary (Main+AIM). Render dashed with † and 'estimate' markers.","trailing_zero":"A lone trailing-2025 follow-on zero after real history (ASX/Deutsche Börse/SIX) -> null."},"generated_by":"Data/refresh-scripts/markets_dashboard_data.py","operating_basis":{"both_boards_exclude":["CDR","Closed-End Funds","ETP","SPAC"],"definition":"Operating issuer strips ETP/CDR/Closed-End Funds/SPAC (both boards) plus active CPC shells (TSXV).","tsxv_additional_exclude":["CPC"]},"refresh":{"command":"python3 markets_dashboard_data.py","cse":"Re-pull the CSE listed-companies API + annual market summary (see CSE analysis).","lse":"Download the new-year Main Market + AIM December factsheets + LSEG market report; convert GBP→USD at BoE rates; update LSE_FILL.","tmx":"Drop the new TMX Issuers-List xlsx into Data/, update the sheet names + as-at, re-run.","wfe":"Re-pull the 25-exchange annual USD extract from the WFE Statistics Portal (see WFE anchor)."},"sources":{"concentration":"Sources/Exchange Concentration — Top-Issuer Shares (2026 compilation).md","cse":"Data/CSE Listed Companies — Analysis (Dec 2025).md (computed aggregates; CSE publishes no per-issuer cap file)","history_archive":"Data/tmx-archive-derived/ (new_listings_by_year.csv 5,873 · panel_transitions.csv · issuer_panel.csv — 18 year-end TMX Listed-Companies + New-Listings workbooks, Dec 2008-Dec 2025)","history_mig":"Data/tmx-mig-derived/ (mig_new_listings_by_type.csv · mig_monthly_headlines.csv · mig_named_financings.csv — 167 monthly TMX MiG Reports, Dec 2008-Jun 2026)","lse_gapfill":"Sources/LSE (2026) - London Stock Exchange Market Statistics 2020-2025.md","tmx":"Data/TMX (2026) - TSX & TSXV Listed Companies (Jun 2026).xlsx (as-at 31 May 2026)","tmx_graduates":"Data/tsxv-graduates-on-tsx-may2026.csv","wfe":"Data/WFE (2026) - Exchange Statistics 2010-2026 (Annual, USD, 25 exchanges).xlsx"},"vintages":{"cse":"2025-12-31","tmx":"2026-05-31","wfe_export":"2026-07-08"}}
+window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX Listed-Companies workbook.","wfe":"World Federation of Exchanges (WFE) Statistics must be credited on every WFE-derived chart."},"cap_bands":{"edges_cad":[10000000.0,50000000.0,150000000.0,1000000000.0,10000000000.0],"labels":["<C$10M","C$10–50M","C$50–150M","C$150M–1B","C$1B–10B","≥C$10B"],"note":"Binned from RAW C$ cap, not the rounded C$M written to issuers.json."},"dashboard":"Dashboards/markets-dashboard.html","fx_rates":{"GBP_USD":{"annual_avg":{"2021":1.3752,"2022":1.2362,"2023":1.2439,"2024":1.2782,"2025":1.3193},"year_end":{"2021":1.3521,"2022":1.2097,"2023":1.2732,"2024":1.2515,"2025":1.3448}},"cad_conversion_note":"US$1≈C$1.44 · €1≈C$1.50 · £1≈C$1.80"},"gapfill_flags":{"followon_nonreport":"Korea & Nasdaq-US follow-on are zero-coded non-reports in WFE -> null (render 'no data', never 0).","lse":"LSE Group WFE series end 2020; 2021-25 gap-filled from LSE primary (Main+AIM). Render dashed with † and 'estimate' markers.","trailing_zero":"A lone trailing-2025 follow-on zero after real history (ASX/Deutsche Börse/SIX) -> null."},"generated_by":"Data/refresh-scripts/markets_dashboard_data.py","operating_basis":{"both_boards_exclude":["CDR","Closed-End Funds","ETP","SPAC"],"definition":"Operating issuer strips ETP/CDR/Closed-End Funds/SPAC (both boards) plus active CPC shells (TSXV).","tsxv_additional_exclude":["CPC"]},"refresh":{"command":"python3 markets_dashboard_data.py","cse":"Re-pull the CSE listed-companies API + annual market summary (see CSE analysis).","lse":"Download the new-year Main Market + AIM December factsheets + LSEG market report; convert GBP→USD at BoE rates; update LSE_FILL.","tmx":"Drop the new TMX Issuers-List xlsx into Data/, update the sheet names + as-at, re-run.","wfe":"Re-pull the 25-exchange annual USD extract from the WFE Statistics Portal (see WFE anchor)."},"sources":{"concentration":"Sources/Exchange Concentration — Top-Issuer Shares (2026 compilation).md","concentration_deepdive":"Data/cross-exchange-concentration-jul2026.csv + Data/cross-exchange-concentration-sectors-jul2026.csv (structured from Sources/Cross-Exchange Concentration & Sector Structure (Jul 2026 compilation).md)","cse":"Data/CSE Listed Companies — Analysis (Dec 2025).md (computed aggregates; CSE publishes no per-issuer cap file)","history_archive":"Data/tmx-archive-derived/ (new_listings_by_year.csv 5,873 · panel_transitions.csv · issuer_panel.csv — 18 year-end TMX Listed-Companies + New-Listings workbooks, Dec 2008-Dec 2025)","history_mig":"Data/tmx-mig-derived/ (mig_new_listings_by_type.csv · mig_monthly_headlines.csv · mig_named_financings.csv — 167 monthly TMX MiG Reports, Dec 2008-Jun 2026)","lse_gapfill":"Sources/LSE (2026) - London Stock Exchange Market Statistics 2020-2025.md","tmx":"Data/TMX (2026) - TSX & TSXV Listed Companies (Jun 2026).xlsx (as-at 31 May 2026)","tmx_graduates":"Data/tsxv-graduates-on-tsx-may2026.csv","wfe":"Data/WFE (2026) - Exchange Statistics 2010-2026 (Annual, USD, 25 exchanges).xlsx"},"vintages":{"cse":"2025-12-31","tmx":"2026-05-31","wfe_export":"2026-07-08"}}
 ;
 </script>
 <script>
@@ -1203,14 +1293,27 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
   /* ================= WFE EXPLORER ================= */
   try{
     var W=window.WFE; var years=W.years, NY=years.length;
-    var wst={ind:"mktcap",ex:["TMX Group","Korea Exchange","Taiwan Stock Exchange","Japan Exchange Group"],from:2010,to:2025};
+    var Y2026=years.indexOf(2026);
+    var wst={ind:"mktcap",ex:["TMX Group","Korea Exchange","Taiwan Stock Exchange","Japan Exchange Group"],from:2010,to:2026};
     var COLS=["var(--accent)","var(--pg-comp)","var(--pg-sector)","var(--steel)","var(--leak)","var(--comp)"];
     var SHORT={}; (W.exchanges||[]).forEach(function(e){});
-    var SHORTMAP={"TMX Group": "TMX (Canada)", "Korea Exchange": "Korea (KRX)", "Taiwan Stock Exchange": "Taiwan (TWSE)", "Nasdaq - US": "Nasdaq (US)", "NYSE": "NYSE", "Japan Exchange Group": "Japan (JPX)", "Hong Kong Exchanges and Clearing": "Hong Kong", "ASX Australian Securities Exchange": "Australia (ASX)", "Shanghai Stock Exchange": "Shanghai", "Shenzhen Stock Exchange": "Shenzhen", "National Stock Exchange of India": "NSE India", "Singapore Exchange": "Singapore (SGX)", "Saudi Exchange (Tadawul)": "Saudi (Tadawul)", "LSE Group": "LSE Group", "Deutsche Boerse AG": "Deutsche B\u00f6rse", "Euronext": "Euronext", "Euronext Oslo": "Euronext Oslo", "SIX Swiss Exchange": "SIX (Switzerland)", "Taipei Exchange": "Taipei (TPEx)", "Tel-Aviv Stock Exchange": "Tel-Aviv (TASE)", "Nasdaq Nordic and Baltics": "Nasdaq Nordic", "NASDAQ OMX Nordic Stockholm": "Nordic \u00b7 Stockholm", "NASDAQ OMX Nordic Copenhagen": "Nordic \u00b7 Copenhagen", "NASDAQ OMX Nordic Helsinki": "Nordic \u00b7 Helsinki", "NASDAQ OMX Tallinn": "Nordic \u00b7 Tallinn"};
+    var SHORTMAP={"TMX Group": "TMX (Canada)", "Korea Exchange": "Korea (KRX)", "Taiwan Stock Exchange": "Taiwan (TWSE)", "Nasdaq - US": "Nasdaq (US)", "NYSE": "NYSE", "Japan Exchange Group": "Japan (JPX)", "Hong Kong Exchanges and Clearing": "Hong Kong", "ASX Australian Securities Exchange": "Australia (ASX)", "Shanghai Stock Exchange": "Shanghai", "Shenzhen Stock Exchange": "Shenzhen", "National Stock Exchange of India": "NSE India", "Singapore Exchange": "Singapore (SGX)", "Saudi Exchange (Tadawul)": "Saudi (Tadawul)", "LSE Group": "LSE Group", "Deutsche Boerse AG": "Deutsche B\u00f6rse", "Euronext": "Euronext", "Euronext Oslo": "Euronext Oslo", "SIX Swiss Exchange": "SIX (Switzerland)", "Taipei Exchange": "Taipei (TPEx)", "Tel-Aviv Stock Exchange": "Tel-Aviv (TASE)", "Taiwan (combined)": "Taiwan (combined)", "Nasdaq Nordic and Baltics": "Nasdaq Nordic", "NASDAQ OMX Nordic Stockholm": "Nordic \u00b7 Stockholm", "NASDAQ OMX Nordic Copenhagen": "Nordic \u00b7 Copenhagen", "NASDAQ OMX Nordic Helsinki": "Nordic \u00b7 Helsinki", "NASDAQ OMX Tallinn": "Nordic \u00b7 Tallinn"};
+    // PART carries the 2026 partial-point month label per series: the monthly-file points
+    // PLUS the derived Taiwan (combined) point (a same-month May sum of its constituents).
+    var PART={}; (function(){ var m26=W.mktcap_2026||{}; var p=m26.points||{}, dp=m26.derived_points||{};
+      for(var k in p) PART[k]=p[k]; for(var k2 in dp) PART[k2]=dp[k2]; })();
     var indMeta={}; W.indicators.forEach(function(m){ indMeta[m.id]=m; });
+    // entity-basis metadata (tier / derived flag / basis note) — drives dashed rendering,
+    // the ◇ derived readout flag, and the selection-driven caption basis note.
+    var EXMETA={}, DERIVED={}; (W.exchanges||[]).forEach(function(e){ EXMETA[e.name]=e; if(e.derived) DERIVED[e.name]=1; });
+    function isDerivedEx(k){ return !!DERIVED[k]; }
+    function isConstituent(k){ return EXMETA[k] && EXMETA[k].tier==="secondary"; }
     var wfeWrap=document.getElementById("wfeWrap"), wfeTitle=document.getElementById("wfeTitle"), wfeSub=document.getElementById("wfeSub"), wfeLgd=document.getElementById("wfeLgd");
+    var wfeRead=document.getElementById("wfeRead");
+    var wfeTblHead=document.getElementById("wfeTblHead"), wfeTblBody=document.getElementById("wfeTblBody"), wfeTblCount=document.getElementById("wfeTblCount"), wfeTblCap=document.getElementById("wfeTblCap");
     var gid_area="md-wfe-area";
 
+    function escW(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
     function shortEx(n){ return SHORTMAP[n]||n; }
     function colFor(n){ var i=wst.ex.indexOf(n); return i>=0?COLS[i%COLS.length]:"var(--steel)"; }
     function niceMax(m){ if(m<=0) return 1; var p=Math.pow(10,Math.floor(Math.log10(m))),n=m/p; var s=n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10; return s*p; }
@@ -1218,11 +1321,55 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
     function shortAxis(v,unit){ if(unit==="count") return Math.round(v).toLocaleString(); if(unit==="%") return (Math.round(v*10)/10)+"%"; if(v>=1e6) return "US$"+(v/1e6).toFixed(1)+"T"; if(v>=1e3) return "US$"+Math.round(v/1e3)+"B"; return "US$"+Math.round(v); }
 
     function gapStart(name){ var gf=W.gapfill[name]; if(!gf) return null; return (gf.indicators.indexOf(wst.ind)>=0)? gf.start_idx : null; }
+    function isGap(k,i){ var gf=gapStart(k); return gf!=null && i>=gf; }
+    function isPartial(k,i){ return wst.ind==="mktcap" && i===Y2026 && W.data[k] && W.data[k].mktcap && W.data[k].mktcap[i]!=null; }
+    function yrLabel(i){ return (wst.ind==="mktcap" && i===Y2026)?"2026*":String(years[i]); }
+    function uArg(meta,unit){ return meta.unit==="%"?"%":unit==="count"?"count":"usd"; }
+
+    // ── pinned per-point readout (hover / tap / focus) — house barread pattern ──
+    function wfeReadDefault(){ if(wfeRead) wfeRead.innerHTML='<div class="brh">Hover, tap or focus any point on the chart for its exchange, year and exact value.</div>'; }
+    function wfeReadShow(k,i){
+      try{ if(!wfeRead) return;
+        var meta=indMeta[wst.ind], unit=meta.unit==="%"?"%":(meta.unit==="companies"||meta.unit==="listings")?"count":"usd";
+        var arr=W.data[k]?W.data[k][wst.ind]:null, v=arr?arr[i]:null;
+        var flags=[];
+        if(isPartial(k,i)){ var pm=PART[k]?PART[k].month:""; flags.push('<span class="dag">*</span> partial 2026 — '+escW(pm)+' 2026'+(isDerivedEx(k)?' (May, both boards)':', latest month reported')); }
+        if(isGap(k,i)) flags.push('<span class="dag">†</span> gap-filled estimate');
+        if(isDerivedEx(k)) flags.push('◇ combined — TWSE + TPEx (our computation)');
+        var ulab=(unit==="count"&&v!=null)?(' '+escW(meta.unit)):'';
+        var head='<b>'+escW(shortEx(k))+'</b> · '+yrLabel(i)+' · <b>'+fmtUnit(v,uArg(meta,unit))+'</b>'+ulab;
+        var sub=escW(meta.name)+(meta.derived?" · derived":"")+(flags.length?' · '+flags.join(" · "):"");
+        wfeRead.innerHTML='<div class="brh">'+head+'</div><div class="brk">'+sub+'</div>';
+      }catch(e){}
+    }
+    // ── data table of the CURRENT selection (rows=years incl 2026*, cols=selected exchanges) ──
+    function renderWfeTable(i0,i1,meta,unit){
+      try{ if(!wfeTblBody||!wfeTblHead) return;
+        var uarg=uArg(meta,unit), partIdx=(wst.ind==="mktcap")?Y2026:-1;
+        var hh='<th scope="col">Year</th>'; wst.ex.forEach(function(k){ hh+='<th scope="col" class="num">'+escW(shortEx(k))+'</th>'; });
+        wfeTblHead.innerHTML='<tr>'+hh+'</tr>';
+        var body='';
+        for(var i=i0;i<=i1;i++){ var yl=(i===partIdx)?years[i]+'*':String(years[i]); var row='<th scope="row">'+yl+'</th>';
+          wst.ex.forEach(function(k){ var arr=W.data[k]&&W.data[k][wst.ind]; var v=arr?arr[i]:null;
+            var cell=(v==null)?'—':escW(fmtUnit(v,uarg));
+            if(v!=null&&isGap(k,i)) cell+='<span class="dag">†</span>';
+            if(v!=null&&i===partIdx) cell+='<span class="dag">*</span>';
+            row+='<td class="num">'+cell+'</td>'; });
+          body+='<tr>'+row+'</tr>'; }
+        wfeTblBody.innerHTML=body;
+        if(wfeTblCount) wfeTblCount.innerHTML='<b>'+(i1-i0+1)+'</b> years × <b>'+wst.ex.length+'</b> exchanges';
+        if(wfeTblCap) wfeTblCap.textContent=meta.name+(meta.derived?" · derived":"")+' · '+years[i0]+'–'+((partIdx>=0&&i1>=partIdx)?'2026*':years[i1]);
+      }catch(e){}
+    }
 
     function renderWFE(){
       try{
         var meta=indMeta[wst.ind], unit=meta.unit==="%"?"%":(meta.unit==="companies"||meta.unit==="listings")?"count":"usd";
         var i0=years.indexOf(wst.from), i1=years.indexOf(wst.to); if(i0<0)i0=0; if(i1<0)i1=15; if(i1<i0){var t=i0;i0=i1;i1=t;}
+        // 2026 partial point exists on the market-cap indicator ONLY; every other indicator's
+        // axis ends at 2025 even if 2026 is in the selected range (no fake points).
+        var maxIdx=(wst.ind==="mktcap")?Y2026:years.indexOf(2025); if(i1>maxIdx)i1=maxIdx; if(i0>maxIdx)i0=maxIdx;
+        var partIdx=(wst.ind==="mktcap")?Y2026:-1;
         var active=wst.ex.filter(function(k){ return W.data[k] && W.data[k][wst.ind]; });
         var series={}; active.forEach(function(k){ series[k]=W.data[k][wst.ind]; });
         var vmax=0; active.forEach(function(k){ for(var i=i0;i<=i1;i++){ var v=series[k][i]; if(v!=null&&v>vmax)vmax=v; } });
@@ -1240,37 +1387,65 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
         for(var t2=0;t2<5;t2++){ var val=vmax*(4-t2)/4,yy2=ytop+(ybot-ytop)*t2/4; gl.appendChild(txt(svg("text",{x:72,y:yy2+4}),shortAxis(val,unit==="usd"?"usd":unit))); } el.appendChild(gl);
         // x labels
         var gx=svg("g",{fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":10.5,"text-anchor":"middle"});
-        for(var i=i0;i<=i1;i++){ if((i1-i0)>8 && ((i-i0)%2!==0) && i!==i1) continue; gx.appendChild(txt(svg("text",{x:X(i),y:400}),years[i])); } el.appendChild(gx);
-        // area under TMX (only for usd mktcap-like)
+        for(var i=i0;i<=i1;i++){ if((i1-i0)>8 && ((i-i0)%2!==0) && i!==i1) continue; gx.appendChild(txt(svg("text",{x:X(i),y:400}),(i===partIdx)?"2026*":years[i])); } el.appendChild(gx);
+        // area under TMX (solid portion only, up to 2025 — never under the dashed partial)
         if(series["TMX Group"] && unit==="usd"){
-          var tp=[]; for(var i=i0;i<=i1;i++){ var v=series["TMX Group"][i]; if(v!=null) tp.push([X(i),Y(v)]); }
+          var tp=[]; for(var i=i0;i<=i1;i++){ if(i===partIdx) continue; var v=series["TMX Group"][i]; if(v!=null) tp.push([X(i),Y(v)]); }
           if(tp.length>1){ var d="M"+tp.map(function(p){return p[0]+","+p[1];}).join(" L")+" L"+tp[tp.length-1][0]+","+ybot+" L"+tp[0][0]+","+ybot+" Z"; el.appendChild(svg("path",{d:d,fill:"url(#"+gid_area+")"})); }
         }
+        var uarg=uArg(meta,unit);
         var order=active.slice().sort(function(a,b){ return a==="TMX Group"?1:b==="TMX Group"?-1:0; });
+        // ---- LINES only (markers are a separate interactive layer below) ----
         order.forEach(function(k){
           var arr=series[k], col=colFor(k), subj=(k==="TMX Group"), gf=gapStart(k), origIdx=wst.ex.indexOf(k);
           var baseDash=(origIdx>=4);
-          // build segments (skip nulls -> breaks)
+          var solidEnd=(partIdx>=0 && i1>=partIdx)? partIdx-1 : i1;  // 2026 partial drawn separately
           var segs=[],cur=[];
-          for(var i=i0;i<=i1;i++){ if(arr[i]==null){ if(cur.length){segs.push(cur);cur=[];} } else { cur.push({x:X(i),y:Y(arr[i]),i:i}); } }
+          for(var i=i0;i<=solidEnd;i++){ if(arr[i]==null){ if(cur.length){segs.push(cur);cur=[];} } else { cur.push({x:X(i),y:Y(arr[i]),i:i}); } }
           if(cur.length) segs.push(cur);
-          function line(pts,dashed){ if(pts.length<2){ if(pts.length){ el.appendChild(svg("circle",{cx:pts[0].x,cy:pts[0].y,r:3,fill:col})); } return; }
+          function line(pts,dashed){ if(pts.length<2) return;
             var pl=svg("polyline",{fill:"none",stroke:col,"stroke-width":subj?3.2:2.2,"stroke-linejoin":"round",points:pts.map(function(p){return p.x+","+p.y;}).join(" ")});
             if(dashed) pl.setAttribute("stroke-dasharray","6 5");
             if(subj) pl.setAttribute("style","filter:drop-shadow(var(--gfx-glow-soft))"); else pl.setAttribute("opacity",dashed?".72":".82");
             el.appendChild(pl); }
+          var derivedEx=isDerivedEx(k);   // Taiwan (combined) — whole series dashed (our computation)
           segs.forEach(function(seg){
             var solid=[],dash=[];
             seg.forEach(function(p){ if(gf==null||p.i<gf) solid.push(p); if(gf!=null&&p.i>=gf-1) dash.push(p); });
-            line(solid, baseDash);
-            if(dash.length>1){ line(dash,true); seg.forEach(function(p){ if(gf!=null&&p.i>=gf){ el.appendChild(svg("circle",{cx:p.x,cy:p.y,r:2.6,fill:"var(--surface)",stroke:col,"stroke-width":1.4})); } }); }
+            line(solid, baseDash||derivedEx);
+            if(dash.length>1) line(dash,true);
           });
-          if(subj){ var li=i1; while(li>=i0&&arr[li]==null) li--; if(li>=i0){ el.appendChild(svg("circle",{cx:X(li),cy:Y(arr[li]),r:5,fill:col}));
-            el.appendChild(txt(svg("text",{x:X(li)-8,y:Y(arr[li])-8,"text-anchor":"end",fill:"var(--gann-val)","font-family":"var(--disp)","font-weight":700,"font-size":15}),fmtUnit(arr[li],meta.unit==="%"?"%":unit==="count"?"count":"usd"))); } }
+          // 2026 partial: dashed connector from the last solid point (2025) to the 2026 point
+          if(partIdx>=0 && i1>=partIdx && arr[partIdx]!=null){
+            var prev=solidEnd; while(prev>=i0 && arr[prev]==null) prev--;
+            if(prev>=i0){ el.appendChild(svg("polyline",{"class":"wfe-partial-connector",fill:"none",stroke:col,"stroke-width":subj?3.2:2.2,"stroke-dasharray":"6 5",opacity:subj?".85":".72",points:X(prev)+","+Y(arr[prev])+" "+X(partIdx)+","+Y(arr[partIdx])})); }
+          }
         });
+        // ---- interactive MARKER + label layer: every plotted point hoverable/tappable/focusable ----
+        order.forEach(function(k){
+          var arr=series[k], col=colFor(k), subj=(k==="TMX Group");
+          var derivedEx=isDerivedEx(k);
+          for(var i=i0;i<=i1;i++){ var v=arr[i]; if(v==null) continue;
+            var partial=(i===partIdx), gap=isGap(k,i), special=(partial||gap||derivedEx);
+            var attrs={cx:X(i),cy:Y(v),r:special?4.4:(subj?3.4:3),"class":"wfe-pt"+(partial?" wfe-partial-pt":"")+(gap?" wfe-gap-pt":"")+(derivedEx?" wfe-derived-pt":""),tabindex:"0",role:"img"};
+            if(special){ attrs.fill="var(--surface)"; attrs.stroke=col; attrs["stroke-width"]=1.8; } else { attrs.fill=col; }
+            var c=svg("circle",attrs);
+            var lab=shortEx(k)+", "+yrLabel(i)+", "+fmtUnit(v,uarg)+(partial?(", partial 2026 point ("+(PART[k]?PART[k].month:"")+")"):"")+(gap?", gap-filled estimate":"")+(derivedEx?", combined series (TWSE + TPEx, our computation)":"");
+            c.setAttribute("aria-label",lab); c.appendChild(txt(svg("title",{}),lab));
+            (function(kk,ii){ function show(){ wfeReadShow(kk,ii); } c.addEventListener("mouseenter",show); c.addEventListener("focus",show); c.addEventListener("click",show); c.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); show(); } }); })(k,i);
+            el.appendChild(c);
+          }
+          if(subj){ var li=i1; while(li>=i0&&arr[li]==null) li--; if(li>=i0){
+            el.appendChild(txt(svg("text",{x:X(li)-8,y:Y(arr[li])-8,"text-anchor":"end",fill:"var(--gann-val)","font-family":"var(--disp)","font-weight":700,"font-size":15}),fmtUnit(arr[li],uarg))); } }
+        });
+        renderWfeTable(i0,i1,meta,unit);
         // titles + legend + aria
         wfeTitle.textContent=meta.name+(meta.derived?" · derived":"");
-        wfeSub.textContent=(meta.derived?("derived · "+(meta.formula||"")+" · "):"")+"TMX vs "+active.filter(function(k){return k!=="TMX Group";}).map(shortEx).join(", ")+" · "+years[i0]+"–"+years[i1];
+        var subMain=(meta.derived?("derived · "+(meta.formula||"")+" · "):"")+"TMX vs "+active.filter(function(k){return k!=="TMX Group";}).map(shortEx).join(", ")+" · "+years[i0]+"–"+years[i1];
+        // selection honesty: surface the basis note of any selected constituent/partial/derived
+        // series in the caption (reuses #wfeSub — no new UI element)
+        var basisNotes=[]; wst.ex.forEach(function(k){ var m=EXMETA[k]; if(m&&m.note&&(m.tier==="secondary"||m.tier==="derived")) basisNotes.push('<b>'+escW(shortEx(k))+'</b> — '+escW(m.note)+(m.coverage?' <em>('+escW(m.coverage)+')</em>':'')); });
+        wfeSub.innerHTML=escW(subMain)+(basisNotes.length?'<span class="wfe-basisnote">'+basisNotes.join('<br>')+'</span>':'');
         var lg=""; wst.ex.forEach(function(k,idx){ lg+='<span><i style="background:'+COLS[idx%COLS.length]+'"></i>'+shortEx(k)+'</span>'; });
         wfeLgd.innerHTML=lg;
         var aria=meta.name+" from "+years[i0]+" to "+years[i1]+" for "+wst.ex.map(shortEx).join(", ")+". ";
@@ -1295,6 +1470,11 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
     var wfeFrom=document.getElementById("wfeFrom"),wfeTo=document.getElementById("wfeTo");
     if(wfeFrom) wfeFrom.addEventListener("change",function(){ wst.from=+wfeFrom.value; renderWFE(); });
     if(wfeTo) wfeTo.addEventListener("change",function(){ wst.to=+wfeTo.value; renderWFE(); });
+    // data-table details: enhance aria-expanded (native <details> works with JS off)
+    var wfeTblDetails=document.getElementById("wfeTblDetails"), wfeTblSummary=document.getElementById("wfeTblSummary");
+    if(wfeTblDetails&&wfeTblSummary){ wfeTblSummary.setAttribute("aria-expanded", wfeTblDetails.open?"true":"false");
+      wfeTblDetails.addEventListener("toggle",function(){ wfeTblSummary.setAttribute("aria-expanded", wfeTblDetails.open?"true":"false"); }); }
+    wfeReadDefault();
     renderWFE();
   }catch(e){}
 
@@ -1329,6 +1509,34 @@ window.META={"assertions_passed":148,"attribution":{"tmx":"© TSX Inc. — TMX L
     if(ladTSX) ladTSX.addEventListener("click",function(){ ladTSX.setAttribute("aria-pressed","true"); ladTSXV.setAttribute("aria-pressed","false"); renderLadder("TSX"); });
     if(ladTSXV) ladTSXV.addEventListener("click",function(){ ladTSXV.setAttribute("aria-pressed","true"); ladTSX.setAttribute("aria-pressed","false"); renderLadder("TSXV"); });
     assertLadder(); renderLadder("TSX");
+  }catch(e){}
+
+  /* ============ CROSS-EXCHANGE DEEP-DIVE: market selector (conc2) ============ */
+  /* All 9 panels are BAKED; JS only toggles which one is visible + reconciles the
+     comparative strip / audit numbers against the payload (console warning on drift). */
+  try{
+    var C2=(window.CONC&&window.CONC.conc2)||null;
+    var mkchips=[].slice.call(document.querySelectorAll(".mkchip"));
+    var mkpanels=[].slice.call(document.querySelectorAll(".mktpanel"));
+    if(C2 && mkchips.length){
+      function showMarket(id){
+        mkpanels.forEach(function(p){ if(p.getAttribute("data-mk")===id){ p.removeAttribute("hidden"); } else { p.setAttribute("hidden",""); } });
+        mkchips.forEach(function(c){ c.setAttribute("aria-pressed", c.getAttribute("data-mk")===id ? "true":"false"); });
+      }
+      mkchips.forEach(function(c){ c.addEventListener("click", function(){ showMarket(c.getAttribute("data-mk")); }); });
+      // reconcile: every market's baked top-5 recomputes to its payload share (±0.1pp)
+      C2.markets.forEach(function(m){
+        var t1=+(100*m.top5[0].cap_b/m.denom_b).toFixed(1);
+        var t5=+(100*m.top5.reduce(function(s,c){return s+c.cap_b;},0)/m.denom_b).toFixed(1);
+        if(Math.abs(t1-m.top1_share)>0.1||Math.abs(t5-m.top5_share)>0.1)
+          console.warn("[markets-dashboard] conc2 drift "+m.id+": top1 "+t1+"/"+m.top1_share+" top5 "+t5+"/"+m.top5_share);
+      });
+      // Canada must equal the TSX ladder (tier-1 exact)
+      var can=C2.markets.filter(function(m){return m.id==="canada";})[0];
+      var CT=window.CONC&&window.CONC.TSX;
+      if(can&&CT&&(Math.abs(can.top5_share-CT.ladder["5"])>0.1||Math.abs(can.top1_share-CT.ladder["1"])>0.1))
+        console.warn("[markets-dashboard] conc2 Canada != TSX ladder");
+    }
   }catch(e){}
 
   /* ================= LISTINGS & FINANCINGS HISTORY ================= */

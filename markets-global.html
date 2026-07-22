@@ -476,8 +476,11 @@ a.brand{text-decoration:none}
 .links a[aria-current="page"]{color:var(--accent-txt);border-bottom:2px solid var(--accent)}
 .sheet-inner a[aria-current="page"] .sn{color:var(--accent-txt)}
 .sheet-inner a[aria-current="page"]{border-left:2px solid var(--accent)}
-/* section-page slim header */
-.pagehead{padding:46px 0 8px}
+/* section-page slim header — top padding clears the FIXED topbar (~54px desktop,
+   ~69px mobile once the Menu pill sets the bar height) with breathing room, the
+   same way #hero's 120px does on the hub. At 46px the breadcrumb/title slid under
+   the bar (cut in half on desktop, fully hidden on mobile). */
+.pagehead{padding:88px 0 8px}
 .pagehead .cat{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:14px}
 .pagehead .cat a{color:var(--accent-txt);text-decoration:none}
 .pagehead h1{font-family:var(--disp);font-weight:600;font-size:clamp(30px,5vw,52px);line-height:1.02;letter-spacing:-.02em;margin:0 0 14px}
