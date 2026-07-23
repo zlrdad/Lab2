@@ -15,13 +15,18 @@
   --pg-comp:#7c83ff;--pg-sector:#6fd3ff;--pg-leak:#ffb454;
   --pg-comp-rgb:124,131,255;--pg-sector-rgb:111,211,255;
   --leak:#ffb454;--leak-rgb:255,180,84;--leak-txt:#ffb454;
-  /* ── DATA-ROOM CATEGORICAL PALETTE (design spec §5.5a) — the 5 listing types get
-     distinct family-palette hues, same type = same colour on every suite page. Fills use
-     the base hue token; text/tags use a *-txt variant that stays legible in the light
-     register (the tokens differ between themes). No new literal hex — mapped to existing
-     azure/violet/cyan/orange + the grey ramp token. */
+  /* ── DATA-ROOM CATEGORICAL PALETTE (design spec §5.5a; §5.5b QA gate) — the 5 listing
+     types get distinct family-palette hues, same type = same colour on every suite page.
+     Fills use the base hue token; text/tags use a *-txt variant that stays legible in the
+     light register (the tokens differ between themes).
+     v2.10 R2: --type-cpc is now a DEDICATED derivation (was var(--pg-comp)) — pushed to a
+     lower-luminance, more-magenta violet so it diverges from --type-ipo azure under
+     deuteranopia (measured deut-distance vs azure 13→65; the History-stack IPO↔CPC collapse).
+     Scoped to the --type-* layer only — comparator-page --pg-comp violet is untouched.
+     v2.10 R6 (light block below): --type-grad brightened + --type-other grey darkened/cooled
+     to separate the light-register grad-cyan↔other-grey near-collision (§5.5b) (deut 48→76). */
   --type-ipo:var(--accent);       --type-ipo-txt:var(--accent-txt); --type-ipo-rgb:var(--accent-rgb);
-  --type-cpc:var(--pg-comp);      --type-cpc-txt:var(--pg-comp);    --type-cpc-rgb:var(--pg-comp-rgb);
+  --type-cpc:#a34fd4;             --type-cpc-txt:#c98cec;           --type-cpc-rgb:163,79,212;
   --type-grad:var(--pg-sector);   --type-grad-txt:var(--pg-sector); --type-grad-rgb:var(--pg-sector-rgb);
   --type-etp:var(--leak);         --type-etp-txt:var(--leak-txt);   --type-etp-rgb:var(--leak-rgb);
   --type-other:var(--steel);      --type-other-txt:var(--steel);    --type-other-rgb:var(--steel-rgb);
@@ -44,6 +49,13 @@ html[data-theme="light"]{
   --ink:#001d2e;--body:#2e4d60;--dim:#587485;--slate:#c6d6dd;
   --pg-comp:#4a4fd0;--pg-sector:#1478a8;--pg-comp-rgb:74,79,208;--pg-sector-rgb:20,120,168;
   --leak:#ffb454;--leak-txt:#8f5400;
+  /* v2.10 R2/R6 — dedicated light-register category derivations (measured, §5.5b gate):
+     CPC magenta-violet keeps deuteranopia divergence from azure; grad brightened to a truer
+     petrol and other-grey darkened/cooled so the light grad↔grey pair separates (deut 48→76).
+     Only the --type-* layer moves; --pg-comp / --pg-sector / --steel stay as-is. */
+  --type-cpc:#7a2fb0;--type-cpc-txt:#7a2fb0;--type-cpc-rgb:122,47,176;
+  --type-grad:#1683b5;--type-grad-txt:#1683b5;--type-grad-rgb:22,131,181;
+  --type-other:#445c6b;--type-other-txt:#445c6b;--type-other-rgb:68,92,107;
   --hair:rgba(46,77,96,.16);--hair-strong:rgba(46,77,96,.28);--band:rgba(46,77,96,.06);
   --grid-op:.55;--halo-op:.06;
   --numeral-glow:0 1px 0 rgba(0,29,46,.04);
@@ -119,6 +131,14 @@ html[data-theme="light"] .fig-n{color:var(--ink);text-shadow:none}
 .fig-cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink);margin-top:15px}
 .fig-q{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--dim);line-height:1.5;margin-top:6px;max-width:30ch}
 .fig-l{font-size:13px;color:var(--body);line-height:1.5;margin-top:9px;max-width:30ch}
+/* v2.10 UX7 — the hub Overview leads with the two thesis KPIs (all-in vs operating); the three
+   secondary figures drop to a smaller, quieter row so the first data an external visitor sees
+   isn't five competing headline numbers. */
+.figrow.figsec{margin-top:0;border-top:none;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.figsec .fig{padding-top:20px}
+.figsec .fig-n{font-size:min(clamp(26px,3.4vw,38px),15cqw)}
+.figsec .fig-l{display:none}
+.seclead{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:30px}
 
 /* charts */
 .chart-head{margin:0 0 8px;text-align:left}
@@ -134,6 +154,23 @@ html[data-theme="light"] .hbar-val.inbar,html[data-theme="light"] .hbar-val.subj
 .ramp-1{fill:var(--accent);opacity:.92}.ramp-2{fill:var(--accent);opacity:.74}.ramp-3{fill:var(--accent);opacity:.58}
 .ramp-4{fill:var(--accent);opacity:.44}.ramp-5{fill:var(--accent);opacity:.32}.ramp-6{fill:var(--accent);opacity:.22}
 html[data-theme="light"] .ramp-4{opacity:.50}html[data-theme="light"] .ramp-5{opacity:.38}html[data-theme="light"] .ramp-6{opacity:.28}
+/* A2/A6 sector-stack fills — accent intensity ramp for the top-6 named sectors + grey for the
+   Other / unattributed remainder (v2.10 §5.5a ramp, NOT 16 hues). Legend swatches share these. */
+.hsec-0{fill:var(--accent);opacity:.94}.hsec-1{fill:var(--accent);opacity:.79}.hsec-2{fill:var(--accent);opacity:.64}
+.hsec-3{fill:var(--accent);opacity:.50}.hsec-4{fill:var(--accent);opacity:.38}.hsec-5{fill:var(--accent);opacity:.27}
+.hsec-6{fill:var(--steel);opacity:.62}
+html[data-theme="light"] .hsec-3{opacity:.56}html[data-theme="light"] .hsec-4{opacity:.44}html[data-theme="light"] .hsec-5{opacity:.33}
+.rlegend .swx{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:var(--accent)}
+.rlegend .swx.s0{opacity:.94}.rlegend .swx.s1{opacity:.79}.rlegend .swx.s2{opacity:.64}.rlegend .swx.s3{opacity:.50}
+.rlegend .swx.s4{opacity:.38}.rlegend .swx.s5{opacity:.27}.rlegend .swx.s6{background:var(--steel);opacity:.62}
+/* A3 graduation-flow module — compact + quiet */
+.gradflow{margin-top:14px}
+.gradflow .gfmeta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--body)}
+.gradflow .gfmeta b{color:var(--ink)}
+.gradflow .gfk{display:inline-flex;align-items:center;gap:6px}
+.gradflow .gfk i{width:16px;height:3px;border-radius:2px;display:inline-block}
+.gradflow .gfk i.trans{background:var(--accent)}
+.gradflow .gfk i.rost{background:var(--steel)}
 .subj-glow{filter:drop-shadow(var(--gfx-glow-soft))}
 .lgd{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--dim);margin-top:18px;letter-spacing:.03em}
 .lgd span{display:inline-flex;align-items:center;gap:7px}
@@ -143,6 +180,14 @@ html[data-theme="light"] .ramp-4{opacity:.50}html[data-theme="light"] .ramp-5{op
 .lgd i.hollow{width:11px;height:11px;border-radius:50%;background:var(--surface);border:1.5px solid var(--accent)}
 .dashcap{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.03em;margin-top:14px;line-height:1.6;max-width:78ch}
 .dashcap b{color:var(--body);font-weight:500}
+/* v2.10 UX2/UX4 — collapse long inline chart notes: a 1-line summary visible, full note on demand */
+.notedetails{margin-top:12px;max-width:82ch}
+.notedetails>summary{cursor:pointer;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-txt);list-style:none;display:inline-flex;align-items:center;gap:8px;padding:3px 0}
+.notedetails>summary::-webkit-details-marker{display:none}
+.notedetails>summary::before{content:"▸";display:inline-block;transition:transform .15s ease}
+.notedetails[open]>summary::before{transform:rotate(90deg)}
+.notedetails .nd-body{margin-top:4px;padding-left:2px;border-left:1px solid var(--hair);padding-left:14px}
+.notedetails .nd-body .dashcap:first-child{margin-top:8px}
 
 /* controls: chips, selects, toggles */
 .controls{margin:30px 0 4px}
@@ -231,10 +276,12 @@ a.deeplink:hover,a.deeplink:focus-visible{border-bottom-color:var(--accent);outl
 .banner .bh{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--leak-txt);margin-bottom:6px}
 
 /* gap-fill legend */
-.gflegend{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.03em;border:1px dashed var(--hair-strong);border-radius:9px;padding:12px 16px}
-.gflegend b{color:var(--body);font-weight:500}
+/* v2.10 R5 — gap-fill convention key raised from quiet --dim mono to --body so the
+   real-vs-estimated distinction (dashed / hollow ◇ / † / break) registers at a glance. */
+.gflegend{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin-top:18px;font-family:var(--mono);font-size:11px;color:var(--body);letter-spacing:.03em;border:1px dashed var(--hair-strong);border-radius:9px;padding:12px 16px}
+.gflegend b{color:var(--ink);font-weight:600}
 .gflegend span{display:inline-flex;align-items:center;gap:7px}
-.gflegend i.dash{width:16px;height:2px;background:repeating-linear-gradient(90deg,var(--dim) 0 5px,transparent 5px 9px);display:inline-block}
+.gflegend i.dash{width:16px;height:2px;background:repeating-linear-gradient(90deg,var(--body) 0 5px,transparent 5px 9px);display:inline-block}
 .gflegend i.hollow{width:11px;height:11px;border-radius:50%;background:var(--surface);border:1.5px solid var(--accent);display:inline-block}
 .dag{color:var(--accent-txt);font-weight:700}
 
@@ -318,7 +365,7 @@ ul.secrows li.snote .aunote{flex-basis:100%;margin-top:3px}
 .evrow .ed b{color:var(--ink)}
 .evrow .ed code{font-family:var(--mono);font-size:12.5px;color:var(--accent-txt)}
 .mtable{width:100%;border-collapse:collapse;margin-top:14px;font-size:13px}
-.mtable th,.mtable td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--hair);color:var(--body);vertical-align:top}
+.mtable th,.mtable td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--hair);color:var(--body);vertical-align:top;overflow-wrap:anywhere;word-break:break-word}
 .mtable th{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--dim)}
 .mtable td b{color:var(--ink)}
 
@@ -376,6 +423,14 @@ ul.secrows li.snote .aunote{flex-basis:100%;margin-top:3px}
 .statsband .sbk i{width:9px;height:9px;border-radius:2px;display:inline-block}
 .sbk i.ipo{background:var(--type-ipo)}.sbk i.cpc{background:var(--type-cpc)}
 .sbk i.grad{background:var(--type-grad)}.sbk i.etp{background:var(--type-etp)}.sbk i.other{background:var(--type-other)}
+/* v2.10 R3 — LIGHT-THEME, SWATCH-ONLY: the vivid graphic tokens are near-invisible as
+   ~12px keys on paper (measured mark-on-bg: ETP orange 1.68:1, IPO azure 2.50:1). Point the
+   small legend/chip/key swatches at the darker -txt variant AND add a hairline so thin
+   segments read. The LARGE chart fills stay vivid (design intent) — this cannot regress dark
+   or the big stacks. */
+html[data-theme="light"] .rlegend i,html[data-theme="light"] .tchip i,html[data-theme="light"] .brk i,html[data-theme="light"] .sbk i,html[data-theme="light"] .lgd i.sw{box-shadow:inset 0 0 0 1px rgba(46,77,96,.42)}
+html[data-theme="light"] .rlegend i.ipo,html[data-theme="light"] .tchip.ipo i,html[data-theme="light"] .brk i.ipo,html[data-theme="light"] .sbk i.ipo{background:var(--accent-txt)}
+html[data-theme="light"] .rlegend i.etp,html[data-theme="light"] .tchip.etp i,html[data-theme="light"] .brk i.etp,html[data-theme="light"] .sbk i.etp{background:var(--leak-txt)}
 /* status chips in the roster */
 .rchip{display:inline-block;font-family:var(--mono);font-size:10.5px;padding:3px 9px;border-radius:20px;letter-spacing:.02em;white-space:nowrap;line-height:1.5}
 .rc-l{color:var(--accent-txt);border:1px solid var(--conf-high-bd)}
@@ -547,7 +602,10 @@ td.c-deal{white-space:nowrap}
 .rk-ev .rk-d{font-family:var(--mono);font-size:11px;color:var(--accent-txt);letter-spacing:.03em}
 .rk-ev .rk-e{font-size:13.5px;line-height:1.45;color:var(--body)}
 .rk-ev .rk-f{font-family:var(--mono);font-size:10.5px;color:var(--dim);white-space:nowrap}
-.devtag{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--warn,#e0a03a);border:1px dashed var(--warn,#e0a03a);border-radius:5px;padding:1px 6px;margin-left:8px;vertical-align:middle}
+/* v2.10 R4 — the "developing/provisional" tag folded into the in-palette --leak family.
+   Retires the former undefined-variable amber fallback (the one off-system hue in the suite,
+   a near-collision with --leak); provisional-caution is leak-adjacent and already tokenized. */
+.devtag{display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--leak-txt);border:1px dashed var(--leak-txt);border-radius:5px;padding:1px 6px;margin-left:8px;vertical-align:middle}
 .devbox{margin-top:22px;border:1px dashed rgba(var(--accent-rgb),.5);border-radius:12px;padding:18px 20px;background:rgba(var(--accent-rgb),.04)}
 .devbox .devhead{font-family:var(--disp);font-weight:600;font-size:16px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .devbox p{font-size:13.5px;line-height:1.6;color:var(--body);margin:0}
@@ -566,7 +624,8 @@ td.c-deal{white-space:nowrap}
 <a href="markets-boards.html">Boards</a>
 <a href="markets-history.html">History</a>
 <a href="markets-global.html" aria-current="page">Global</a>
-<a href="markets-concentration.html">Concentration</a></nav>
+<a href="markets-concentration.html">Concentration</a>
+<a href="markets-method.html">Method</a></nav>
     <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark">
       <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
       <svg class="ic ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
@@ -583,7 +642,8 @@ td.c-deal{white-space:nowrap}
 <a href="markets-boards.html"><span class="sn">Boards</span></a>
 <a href="markets-history.html"><span class="sn">History</span></a>
 <a href="markets-global.html" aria-current="page"><span class="sn">Global</span></a>
-<a href="markets-concentration.html"><span class="sn">Concentration</span></a></div>
+<a href="markets-concentration.html"><span class="sn">Concentration</span></a>
+<a href="markets-method.html"><span class="sn">Method</span></a></div>
       </nav>
     </details>
   </span>
@@ -594,8 +654,7 @@ td.c-deal{white-space:nowrap}
   <div class="wrap">
     <div class="cat">◇ Markets Dashboard suite · <a href="markets-dashboard.html">back to hub</a></div>
     <h1>Global explorer &amp; rankings.</h1>
-    <div class="tag">TMX benchmarked against 25 world exchanges — twelve WFE indicators, 2010–2025 — and the reconciliation of the ranking you've heard (Bloomberg country-level) against the one this dashboard measures (WFE exchange-level).</div>
-    <div class="sharemeta"><span>Self-contained · opens from file://</span><span>Renders with JavaScript off</span><span>Dark / light · top-right</span></div>
+    <div class="tag">TMX against 25 world exchanges, and the country-vs-exchange ranking reconciliation.</div>
   </div>
 </section>
 
@@ -691,7 +750,7 @@ td.c-deal{white-space:nowrap}
     </div>
 
     <div class="chart-head" style="margin-top:26px"><h3 id="wfeTitle">Market capitalisation</h3><div class="sub" id="wfeSub">US$ · TMX vs Korea (KRX), Taiwan (TWSE), Japan (JPX) · 2010–2026*</div></div>
-    <div class="svgwrap" id="wfeWrap" role="img" aria-label="Line chart of market capitalisation 2010 to 2026 for TMX, Korea, Taiwan and Japan. Each series carries a 2026 partial-year point (hollow, dashed) from its latest reported month: TMX ends around US$5.0 trillion (May 2026), Korea around US$4.95 trillion, up sharply from US$2.76 trillion at 2025 year-end."><svg viewBox="0 0 920 440" preserveAspectRatio="xMinYMin meet"><defs><linearGradient id="md-wfe-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.22"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></linearGradient></defs><g stroke="var(--hair)" stroke-width="1"><line x1="80" y1="40.0" x2="860" y2="40.0"/><line x1="80" y1="125.0" x2="860" y2="125.0"/><line x1="80" y1="210.0" x2="860" y2="210.0"/><line x1="80" y1="295.0" x2="860" y2="295.0"/><line x1="80" y1="380.0" x2="860" y2="380.0"/></g><g fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" text-anchor="end"><text x="72" y="44.0">US$10.0T</text><text x="72" y="129.0">US$7.5T</text><text x="72" y="214.0">US$5.0T</text><text x="72" y="299.0">US$2.5T</text><text x="72" y="384.0">US$0B</text></g><text x="80" y="26" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">market capitalisation · US$</text><g fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5" text-anchor="middle"><text x="80.0" y="400">2010</text><text x="226.2" y="400">2013</text><text x="372.5" y="400">2016</text><text x="518.8" y="400">2019</text><text x="616.2" y="400">2021</text><text x="713.8" y="400">2023</text><text x="811.2" y="400">2025</text><text x="860.0" y="400">2026*</text></g><path d="M80.0,306.2 L128.8,315.0 L177.5,310.0 L226.2,308.1 L275.0,308.8 L323.8,325.9 L372.5,310.6 L421.2,299.5 L470.0,314.1 L518.8,298.1 L567.5,291.3 L616.2,269.0 L665.0,286.7 L713.8,275.0 L762.5,265.6 L811.2,223.4 L811.2,380.0 L80.0,380.0 Z" fill="url(#md-wfe-area)"/><polyline fill="none" stroke="var(--pg-comp)" stroke-width="2.2" stroke-linejoin="round" points="80.0,342.9 128.8,346.1 177.5,339.9 226.2,338.0 275.0,338.8 323.8,338.1 372.5,336.4 421.2,319.8 470.0,331.9 518.8,329.5 567.5,306.0 616.2,304.6 665.0,324.1 713.8,313.1 762.5,327.0 811.2,286.3" opacity=".82"/><polyline class="wfe-partial-connector" fill="none" stroke="var(--pg-comp)" stroke-width="2.2" stroke-dasharray="6 5" opacity=".72" points="811.2,286.3 860.0,211.7"/><circle class="wfe-partial-pt" cx="860.0" cy="211.7" r="4.4" fill="var(--surface)" stroke="var(--pg-comp)" stroke-width="1.8"><title>Korea (KRX) · 2026 · US$4.95T · May 2026 (partial — latest month reported)</title></circle><circle cx="80.0" cy="342.9" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2010 · US$1.09T</title></circle><circle cx="128.8" cy="346.1" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2011 · US$996.1B</title></circle><circle cx="177.5" cy="339.9" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2012 · US$1.18T</title></circle><circle cx="226.2" cy="338.0" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2013 · US$1.23T</title></circle><circle cx="275.0" cy="338.8" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2014 · US$1.21T</title></circle><circle cx="323.8" cy="338.1" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2015 · US$1.23T</title></circle><circle cx="372.5" cy="336.4" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2016 · US$1.28T</title></circle><circle cx="421.2" cy="319.8" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2017 · US$1.77T</title></circle><circle cx="470.0" cy="331.9" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2018 · US$1.41T</title></circle><circle cx="518.8" cy="329.5" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2019 · US$1.48T</title></circle><circle cx="567.5" cy="306.0" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2020 · US$2.18T</title></circle><circle cx="616.2" cy="304.6" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2021 · US$2.22T</title></circle><circle cx="665.0" cy="324.1" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2022 · US$1.64T</title></circle><circle cx="713.8" cy="313.1" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2023 · US$1.97T</title></circle><circle cx="762.5" cy="327.0" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2024 · US$1.56T</title></circle><circle cx="811.2" cy="286.3" r="2.6" fill="var(--pg-comp)"><title>Korea (KRX) · 2025 · US$2.76T</title></circle><polyline fill="none" stroke="var(--pg-sector)" stroke-width="2.2" stroke-linejoin="round" points="80.0,352.2 128.8,358.4 177.5,355.0 226.2,352.0 275.0,351.1 323.8,354.7 372.5,350.7 421.2,343.5 470.0,347.4 518.8,338.6 567.5,325.6 616.2,311.0 665.0,330.8 713.8,317.0 762.5,303.2 811.2,277.9" opacity=".82"/><polyline class="wfe-partial-connector" fill="none" stroke="var(--pg-sector)" stroke-width="2.2" stroke-dasharray="6 5" opacity=".72" points="811.2,277.9 860.0,225.0"/><circle class="wfe-partial-pt" cx="860.0" cy="225.0" r="4.4" fill="var(--surface)" stroke="var(--pg-sector)" stroke-width="1.8"><title>Taiwan (TWSE) · 2026 · US$4.56T · May 2026 (partial — latest month reported)</title></circle><circle cx="80.0" cy="352.2" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2010 · US$818.5B</title></circle><circle cx="128.8" cy="358.4" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2011 · US$635.5B</title></circle><circle cx="177.5" cy="355.0" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2012 · US$735.3B</title></circle><circle cx="226.2" cy="352.0" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2013 · US$822.7B</title></circle><circle cx="275.0" cy="351.1" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2014 · US$850.9B</title></circle><circle cx="323.8" cy="354.7" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2015 · US$745.0B</title></circle><circle cx="372.5" cy="350.7" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2016 · US$861.9B</title></circle><circle cx="421.2" cy="343.5" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2017 · US$1.07T</title></circle><circle cx="470.0" cy="347.4" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2018 · US$959.2B</title></circle><circle cx="518.8" cy="338.6" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2019 · US$1.22T</title></circle><circle cx="567.5" cy="325.6" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2020 · US$1.60T</title></circle><circle cx="616.2" cy="311.0" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2021 · US$2.03T</title></circle><circle cx="665.0" cy="330.8" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2022 · US$1.45T</title></circle><circle cx="713.8" cy="317.0" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2023 · US$1.85T</title></circle><circle cx="762.5" cy="303.2" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2024 · US$2.26T</title></circle><circle cx="811.2" cy="277.9" r="2.6" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2025 · US$3.00T</title></circle><polyline fill="none" stroke="var(--steel)" stroke-width="2.2" stroke-linejoin="round" points="275.0,231.1 323.8,213.6 372.5,207.9 421.2,168.4 470.0,199.9 518.8,169.5 567.5,151.6 616.2,157.5 665.0,197.1 713.8,170.9 762.5,165.4 811.2,121.2" opacity=".82"/><polyline class="wfe-partial-connector" fill="none" stroke="var(--steel)" stroke-width="2.2" stroke-dasharray="6 5" opacity=".72" points="811.2,121.2 860.0,83.4"/><circle class="wfe-partial-pt" cx="860.0" cy="83.4" r="4.4" fill="var(--surface)" stroke="var(--steel)" stroke-width="1.8"><title>Japan (JPX) · 2026 · US$8.72T · Jun 2026 (partial — latest month reported)</title></circle><circle cx="275.0" cy="231.1" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2014 · US$4.38T</title></circle><circle cx="323.8" cy="213.6" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2015 · US$4.89T</title></circle><circle cx="372.5" cy="207.9" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2016 · US$5.06T</title></circle><circle cx="421.2" cy="168.4" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2017 · US$6.22T</title></circle><circle cx="470.0" cy="199.9" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2018 · US$5.30T</title></circle><circle cx="518.8" cy="169.5" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2019 · US$6.19T</title></circle><circle cx="567.5" cy="151.6" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2020 · US$6.72T</title></circle><circle cx="616.2" cy="157.5" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2021 · US$6.54T</title></circle><circle cx="665.0" cy="197.1" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2022 · US$5.38T</title></circle><circle cx="713.8" cy="170.9" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2023 · US$6.15T</title></circle><circle cx="762.5" cy="165.4" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2024 · US$6.31T</title></circle><circle cx="811.2" cy="121.2" r="2.6" fill="var(--steel)"><title>Japan (JPX) · 2025 · US$7.61T</title></circle><polyline fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-linejoin="round" points="80.0,306.2 128.8,315.0 177.5,310.0 226.2,308.1 275.0,308.8 323.8,325.9 372.5,310.6 421.2,299.5 470.0,314.1 518.8,298.1 567.5,291.3 616.2,269.0 665.0,286.7 713.8,275.0 762.5,265.6 811.2,223.4" style="filter:drop-shadow(var(--gfx-glow-soft))"/><polyline class="wfe-partial-connector" fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-dasharray="6 5" opacity=".85" points="811.2,223.4 860.0,209.9"/><circle class="wfe-partial-pt" cx="860.0" cy="209.9" r="4.4" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.8"><title>TMX (Canada) · 2026 · US$5.00T · May 2026 (partial — latest month reported)</title></circle><circle cx="80.0" cy="306.2" r="3" fill="var(--accent)"><title>TMX (Canada) · 2010 · US$2.17T</title></circle><circle cx="128.8" cy="315.0" r="3" fill="var(--accent)"><title>TMX (Canada) · 2011 · US$1.91T</title></circle><circle cx="177.5" cy="310.0" r="3" fill="var(--accent)"><title>TMX (Canada) · 2012 · US$2.06T</title></circle><circle cx="226.2" cy="308.1" r="3" fill="var(--accent)"><title>TMX (Canada) · 2013 · US$2.11T</title></circle><circle cx="275.0" cy="308.8" r="3" fill="var(--accent)"><title>TMX (Canada) · 2014 · US$2.09T</title></circle><circle cx="323.8" cy="325.9" r="3" fill="var(--accent)"><title>TMX (Canada) · 2015 · US$1.59T</title></circle><circle cx="372.5" cy="310.6" r="3" fill="var(--accent)"><title>TMX (Canada) · 2016 · US$2.04T</title></circle><circle cx="421.2" cy="299.5" r="3" fill="var(--accent)"><title>TMX (Canada) · 2017 · US$2.37T</title></circle><circle cx="470.0" cy="314.1" r="3" fill="var(--accent)"><title>TMX (Canada) · 2018 · US$1.94T</title></circle><circle cx="518.8" cy="298.1" r="3" fill="var(--accent)"><title>TMX (Canada) · 2019 · US$2.41T</title></circle><circle cx="567.5" cy="291.3" r="3" fill="var(--accent)"><title>TMX (Canada) · 2020 · US$2.61T</title></circle><circle cx="616.2" cy="269.0" r="3" fill="var(--accent)"><title>TMX (Canada) · 2021 · US$3.26T</title></circle><circle cx="665.0" cy="286.7" r="3" fill="var(--accent)"><title>TMX (Canada) · 2022 · US$2.74T</title></circle><circle cx="713.8" cy="275.0" r="3" fill="var(--accent)"><title>TMX (Canada) · 2023 · US$3.09T</title></circle><circle cx="762.5" cy="265.6" r="3" fill="var(--accent)"><title>TMX (Canada) · 2024 · US$3.37T</title></circle><circle cx="811.2" cy="223.4" r="3" fill="var(--accent)"><title>TMX (Canada) · 2025 · US$4.61T</title></circle><text x="852.0" y="201.9" text-anchor="end" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">US$5.00T<title>TMX (Canada) · 2026 · US$5.00T · May 2026 (partial — latest month reported)</title></text></svg></div>
+    <div class="svgwrap" id="wfeWrap" role="img" aria-label="Line chart of market capitalisation 2010 to 2026 for TMX, Korea, Taiwan and Japan. Each series carries a 2026 partial-year point (hollow, dashed) from its latest reported month: TMX ends around US$5.0 trillion (May 2026), Korea around US$4.95 trillion, up sharply from US$2.76 trillion at 2025 year-end."><svg viewBox="0 0 920 440" preserveAspectRatio="xMinYMin meet"><defs><linearGradient id="md-wfe-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--accent);stop-opacity:.22"/><stop offset="1" style="stop-color:var(--accent);stop-opacity:0"/></linearGradient></defs><g stroke="var(--hair)" stroke-width="1"><line x1="80" y1="40.0" x2="860" y2="40.0"/><line x1="80" y1="125.0" x2="860" y2="125.0"/><line x1="80" y1="210.0" x2="860" y2="210.0"/><line x1="80" y1="295.0" x2="860" y2="295.0"/><line x1="80" y1="380.0" x2="860" y2="380.0"/></g><g fill="var(--gann-lab)" font-family="var(--mono)" font-size="11" text-anchor="end"><text x="72" y="44.0">US$10.0T</text><text x="72" y="129.0">US$7.5T</text><text x="72" y="214.0">US$5.0T</text><text x="72" y="299.0">US$2.5T</text><text x="72" y="384.0">US$0B</text></g><text x="80" y="26" fill="var(--gann-lab)" font-family="var(--mono)" font-size="11">market capitalisation · US$</text><g fill="var(--gann-lab)" font-family="var(--mono)" font-size="10.5" text-anchor="middle"><text x="80.0" y="400">2010</text><text x="226.2" y="400">2013</text><text x="372.5" y="400">2016</text><text x="518.8" y="400">2019</text><text x="616.2" y="400">2021</text><text x="713.8" y="400">2023</text><text x="811.2" y="400">2025</text><text x="860.0" y="400">2026*</text></g><path d="M80.0,306.2 L128.8,315.0 L177.5,310.0 L226.2,308.1 L275.0,308.8 L323.8,325.9 L372.5,310.6 L421.2,299.5 L470.0,314.1 L518.8,298.1 L567.5,291.3 L616.2,269.0 L665.0,286.7 L713.8,275.0 L762.5,265.6 L811.2,223.4 L811.2,380.0 L80.0,380.0 Z" fill="url(#md-wfe-area)"/><polyline class="wfeser wfeser-korea" fill="none" stroke="var(--pg-comp)" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="2 5" points="80.0,342.9 128.8,346.1 177.5,339.9 226.2,338.0 275.0,338.8 323.8,338.1 372.5,336.4 421.2,319.8 470.0,331.9 518.8,329.5 567.5,306.0 616.2,304.6 665.0,324.1 713.8,313.1 762.5,327.0 811.2,286.3" opacity=".82"/><polyline class="wfe-partial-connector" fill="none" stroke="var(--pg-comp)" stroke-width="2.2" stroke-dasharray="6 5" opacity=".72" points="811.2,286.3 860.0,211.7"/><rect class="wfe-partial-pt wfe-mk wfe-mk-square" x="855.6" y="207.3" width="8.8" height="8.8" fill="var(--surface)" stroke="var(--pg-comp)" stroke-width="1.8"><title>Korea (KRX) · 2026 · US$4.95T · May 2026 (partial — latest month reported)</title></rect><rect class="wfe-mk wfe-mk-square" x="77.0" y="339.9" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2010 · US$1.09T</title></rect><rect class="wfe-mk wfe-mk-square" x="125.8" y="343.1" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2011 · US$996.1B</title></rect><rect class="wfe-mk wfe-mk-square" x="174.5" y="336.9" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2012 · US$1.18T</title></rect><rect class="wfe-mk wfe-mk-square" x="223.2" y="335.0" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2013 · US$1.23T</title></rect><rect class="wfe-mk wfe-mk-square" x="272.0" y="335.8" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2014 · US$1.21T</title></rect><rect class="wfe-mk wfe-mk-square" x="320.8" y="335.1" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2015 · US$1.23T</title></rect><rect class="wfe-mk wfe-mk-square" x="369.5" y="333.4" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2016 · US$1.28T</title></rect><rect class="wfe-mk wfe-mk-square" x="418.2" y="316.8" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2017 · US$1.77T</title></rect><rect class="wfe-mk wfe-mk-square" x="467.0" y="328.9" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2018 · US$1.41T</title></rect><rect class="wfe-mk wfe-mk-square" x="515.8" y="326.5" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2019 · US$1.48T</title></rect><rect class="wfe-mk wfe-mk-square" x="564.5" y="303.0" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2020 · US$2.18T</title></rect><rect class="wfe-mk wfe-mk-square" x="613.2" y="301.6" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2021 · US$2.22T</title></rect><rect class="wfe-mk wfe-mk-square" x="662.0" y="321.1" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2022 · US$1.64T</title></rect><rect class="wfe-mk wfe-mk-square" x="710.8" y="310.1" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2023 · US$1.97T</title></rect><rect class="wfe-mk wfe-mk-square" x="759.5" y="324.0" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2024 · US$1.56T</title></rect><rect class="wfe-mk wfe-mk-square" x="808.2" y="283.3" width="6.0" height="6.0" fill="var(--pg-comp)"><title>Korea (KRX) · 2025 · US$2.76T</title></rect><polyline class="wfeser wfeser-taiwan" fill="none" stroke="var(--pg-sector)" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="9 5" points="80.0,352.2 128.8,358.4 177.5,355.0 226.2,352.0 275.0,351.1 323.8,354.7 372.5,350.7 421.2,343.5 470.0,347.4 518.8,338.6 567.5,325.6 616.2,311.0 665.0,330.8 713.8,317.0 762.5,303.2 811.2,277.9" opacity=".82"/><polyline class="wfe-partial-connector" fill="none" stroke="var(--pg-sector)" stroke-width="2.2" stroke-dasharray="6 5" opacity=".72" points="811.2,277.9 860.0,225.0"/><path class="wfe-partial-pt wfe-mk wfe-mk-triangle" d="M860.0,219.9 L864.4,228.7 L855.6,228.7 Z" fill="var(--surface)" stroke="var(--pg-sector)" stroke-width="1.8"><title>Taiwan (TWSE) · 2026 · US$4.56T · May 2026 (partial — latest month reported)</title></path><path class="wfe-mk wfe-mk-triangle" d="M80.0,348.8 L83.0,354.8 L77.0,354.8 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2010 · US$818.5B</title></path><path class="wfe-mk wfe-mk-triangle" d="M128.8,354.9 L131.8,360.9 L125.8,360.9 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2011 · US$635.5B</title></path><path class="wfe-mk wfe-mk-triangle" d="M177.5,351.6 L180.5,357.6 L174.5,357.6 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2012 · US$735.3B</title></path><path class="wfe-mk wfe-mk-triangle" d="M226.2,348.6 L229.2,354.6 L223.2,354.6 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2013 · US$822.7B</title></path><path class="wfe-mk wfe-mk-triangle" d="M275.0,347.7 L278.0,353.7 L272.0,353.7 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2014 · US$850.9B</title></path><path class="wfe-mk wfe-mk-triangle" d="M323.8,351.2 L326.8,357.2 L320.8,357.2 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2015 · US$745.0B</title></path><path class="wfe-mk wfe-mk-triangle" d="M372.5,347.2 L375.5,353.2 L369.5,353.2 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2016 · US$861.9B</title></path><path class="wfe-mk wfe-mk-triangle" d="M421.2,340.1 L424.2,346.1 L418.2,346.1 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2017 · US$1.07T</title></path><path class="wfe-mk wfe-mk-triangle" d="M470.0,343.9 L473.0,349.9 L467.0,349.9 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2018 · US$959.2B</title></path><path class="wfe-mk wfe-mk-triangle" d="M518.8,335.2 L521.8,341.2 L515.8,341.2 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2019 · US$1.22T</title></path><path class="wfe-mk wfe-mk-triangle" d="M567.5,322.2 L570.5,328.2 L564.5,328.2 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2020 · US$1.60T</title></path><path class="wfe-mk wfe-mk-triangle" d="M616.2,307.6 L619.2,313.6 L613.2,313.6 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2021 · US$2.03T</title></path><path class="wfe-mk wfe-mk-triangle" d="M665.0,327.4 L668.0,333.4 L662.0,333.4 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2022 · US$1.45T</title></path><path class="wfe-mk wfe-mk-triangle" d="M713.8,313.6 L716.8,319.6 L710.8,319.6 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2023 · US$1.85T</title></path><path class="wfe-mk wfe-mk-triangle" d="M762.5,299.8 L765.5,305.8 L759.5,305.8 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2024 · US$2.26T</title></path><path class="wfe-mk wfe-mk-triangle" d="M811.2,274.4 L814.2,280.4 L808.2,280.4 Z" fill="var(--pg-sector)"><title>Taiwan (TWSE) · 2025 · US$3.00T</title></path><polyline class="wfeser wfeser-japan" fill="none" stroke="var(--steel)" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="9 4 2 4" points="275.0,231.1 323.8,213.6 372.5,207.9 421.2,168.4 470.0,199.9 518.8,169.5 567.5,151.6 616.2,157.5 665.0,197.1 713.8,170.9 762.5,165.4 811.2,121.2" opacity=".82"/><polyline class="wfe-partial-connector" fill="none" stroke="var(--steel)" stroke-width="2.2" stroke-dasharray="6 5" opacity=".72" points="811.2,121.2 860.0,83.4"/><path class="wfe-partial-pt wfe-mk wfe-mk-diamond" d="M860.0,77.9 L864.8,83.4 L860.0,88.9 L855.2,83.4 Z" fill="var(--surface)" stroke="var(--steel)" stroke-width="1.8"><title>Japan (JPX) · 2026 · US$8.72T · Jun 2026 (partial — latest month reported)</title></path><path class="wfe-mk wfe-mk-diamond" d="M275.0,227.3 L278.3,231.1 L275.0,234.8 L271.7,231.1 Z" fill="var(--steel)"><title>Japan (JPX) · 2014 · US$4.38T</title></path><path class="wfe-mk wfe-mk-diamond" d="M323.8,209.8 L327.1,213.6 L323.8,217.3 L320.5,213.6 Z" fill="var(--steel)"><title>Japan (JPX) · 2015 · US$4.89T</title></path><path class="wfe-mk wfe-mk-diamond" d="M372.5,204.2 L375.8,207.9 L372.5,211.7 L369.2,207.9 Z" fill="var(--steel)"><title>Japan (JPX) · 2016 · US$5.06T</title></path><path class="wfe-mk wfe-mk-diamond" d="M421.2,164.7 L424.5,168.4 L421.2,172.2 L417.9,168.4 Z" fill="var(--steel)"><title>Japan (JPX) · 2017 · US$6.22T</title></path><path class="wfe-mk wfe-mk-diamond" d="M470.0,196.2 L473.3,199.9 L470.0,203.7 L466.7,199.9 Z" fill="var(--steel)"><title>Japan (JPX) · 2018 · US$5.30T</title></path><path class="wfe-mk wfe-mk-diamond" d="M518.8,165.8 L522.1,169.5 L518.8,173.2 L515.5,169.5 Z" fill="var(--steel)"><title>Japan (JPX) · 2019 · US$6.19T</title></path><path class="wfe-mk wfe-mk-diamond" d="M567.5,147.8 L570.8,151.6 L567.5,155.3 L564.2,151.6 Z" fill="var(--steel)"><title>Japan (JPX) · 2020 · US$6.72T</title></path><path class="wfe-mk wfe-mk-diamond" d="M616.2,153.8 L619.5,157.5 L616.2,161.2 L612.9,157.5 Z" fill="var(--steel)"><title>Japan (JPX) · 2021 · US$6.54T</title></path><path class="wfe-mk wfe-mk-diamond" d="M665.0,193.3 L668.3,197.1 L665.0,200.8 L661.7,197.1 Z" fill="var(--steel)"><title>Japan (JPX) · 2022 · US$5.38T</title></path><path class="wfe-mk wfe-mk-diamond" d="M713.8,167.2 L717.1,170.9 L713.8,174.7 L710.5,170.9 Z" fill="var(--steel)"><title>Japan (JPX) · 2023 · US$6.15T</title></path><path class="wfe-mk wfe-mk-diamond" d="M762.5,161.7 L765.8,165.4 L762.5,169.2 L759.2,165.4 Z" fill="var(--steel)"><title>Japan (JPX) · 2024 · US$6.31T</title></path><path class="wfe-mk wfe-mk-diamond" d="M811.2,117.5 L814.5,121.2 L811.2,125.0 L807.9,121.2 Z" fill="var(--steel)"><title>Japan (JPX) · 2025 · US$7.61T</title></path><polyline class="wfeser wfeser-tmx" fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-linejoin="round" points="80.0,306.2 128.8,315.0 177.5,310.0 226.2,308.1 275.0,308.8 323.8,325.9 372.5,310.6 421.2,299.5 470.0,314.1 518.8,298.1 567.5,291.3 616.2,269.0 665.0,286.7 713.8,275.0 762.5,265.6 811.2,223.4" style="filter:drop-shadow(var(--gfx-glow-soft))"/><polyline class="wfe-partial-connector" fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-dasharray="6 5" opacity=".85" points="811.2,223.4 860.0,209.9"/><circle class="wfe-partial-pt wfe-mk wfe-mk-circle" cx="860.0" cy="209.9" r="4.4" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.8"><title>TMX (Canada) · 2026 · US$5.00T · May 2026 (partial — latest month reported)</title></circle><circle class="wfe-mk wfe-mk-circle" cx="80.0" cy="306.2" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2010 · US$2.17T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="128.8" cy="315.0" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2011 · US$1.91T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="177.5" cy="310.0" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2012 · US$2.06T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="226.2" cy="308.1" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2013 · US$2.11T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="275.0" cy="308.8" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2014 · US$2.09T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="323.8" cy="325.9" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2015 · US$1.59T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="372.5" cy="310.6" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2016 · US$2.04T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="421.2" cy="299.5" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2017 · US$2.37T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="470.0" cy="314.1" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2018 · US$1.94T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="518.8" cy="298.1" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2019 · US$2.41T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="567.5" cy="291.3" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2020 · US$2.61T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="616.2" cy="269.0" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2021 · US$3.26T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="665.0" cy="286.7" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2022 · US$2.74T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="713.8" cy="275.0" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2023 · US$3.09T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="762.5" cy="265.6" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2024 · US$3.37T</title></circle><circle class="wfe-mk wfe-mk-circle" cx="811.2" cy="223.4" r="3.4" fill="var(--accent)"><title>TMX (Canada) · 2025 · US$4.61T</title></circle><text x="852.0" y="201.9" text-anchor="end" fill="var(--gann-val)" font-family="var(--disp)" font-weight="700" font-size="15">US$5.00T<title>TMX (Canada) · 2026 · US$5.00T · May 2026 (partial — latest month reported)</title></text></svg></div>
     <div class="lgd" id="wfeLgd" aria-hidden="true">
       <span><i style="background:var(--accent)"></i>TMX (Canada)</span>
       <span><i style="background:var(--pg-comp)"></i>Korea (KRX)</span>
@@ -717,9 +776,16 @@ td.c-deal{white-space:nowrap}
     </details>
 
     <div class="wfeattr">Source: World Federation of Exchanges (WFE) Statistics · export 2026-07-08</div>
+    <div class="dashcap"><b>Reading this chart.</b> The 2026<span class="dag">*</span> point is a market-cap-only partial (each exchange's latest reported month, May/Jun 2026); every other indicator ends at 2025. WFE rows consolidate whole operators (TMX = TSX+TSXV, Korea = KOSPI+KOSDAQ+KONEX, JPX = Prime+Standard+Growth, HKEX = Main+GEM); <b>Taiwan (combined) ◇ is our computation, not a WFE-reported entity</b>, and the rankings strip and concentration lab below deliberately use <b>TWSE alone</b>.</div>
+    <details class="notedetails">
+      <summary>Full basis notes — partial point · entity basis · Taiwan &amp; the constituent tier</summary>
+      <div class="nd-body">
     <div class="dashcap"><b>2026 partial point (market cap only).</b> The annual WFE export ends 2025; the 2026 point on the market-capitalisation indicator is spliced from the WFE <em>monthly</em> market-cap file — <b>2026 = latest month reported</b> (per-exchange month varies; May/Jun 2026), covering 19 exchanges. It is drawn hollow + dashed + <span class="dag">*</span> as a partial/estimate, never a full year. This closes the chart-vs-rankings gap: Korea reads US$2.76T at 2025 year-end but US$4.95T by May 2026. The three ranking exchanges (TMX, Korea, Taiwan) are pinned to May 2026 — the latest month TMX reports — for consistency with the rankings strip below; every other covered exchange shows its own freshest month. Other indicators end at 2025.</div>
     <div class="dashcap"><b>Entity basis.</b> Each WFE entity consolidates every board that operator runs: TMX = TSX + TSXV; Korea = KOSPI + KOSDAQ + KONEX; JPX = Prime + Standard + Growth; HKEX = Main + GEM. <b>LSE Group</b> WFE series end 2020; 2021–25 are gap-filled from the LSE primary factsheets (Main + AIM, GBP→USD at BoE rates) — dashed with a <span class="dag">†</span>; IPO count and average IPO size are <em>not</em> filled. <b>Korea and Nasdaq-US follow-on</b> are zero-coded non-reports in the WFE feed → shown as "no data", never 0. Derived indicators (turnover velocity, average company size, average IPO size, follow-on share, foreign-listing share) carry their formula in the source drawer.</div>
     <div class="dashcap"><b>Taiwan &amp; the constituent tier (entity-basis hygiene).</b> Taiwan is the one market WFE reports as two separate legal entities — the <b>TWSE main board</b> and <b>TPEx</b> (its growth board) — where peers arrive pre-consolidated. The picker now offers a derived <b>Taiwan (combined) ◇</b> series: additive indicators (listings, market cap, value traded, capital raised, new-listing counts) are <em>summed</em>, and ratios (velocity, average size, follow-on &amp; foreign share) are <em>recomputed</em> from the combined numerator/denominator — never averaged (combined 2024 velocity is <b>~143%</b>, not the ~243% mean of the two boards). It is <b>our computation, not a WFE-reported entity</b> — drawn dashed with a ◇ marker; its 2026<span class="dag">*</span> point is a clean same-month (May) sum, <b>US$3.23T (2025) → US$4.93T (May 2026)</b>. TPEx, the four individual Nasdaq Nordic/Baltic venues (use the <b>Nasdaq Nordic &amp; Baltics</b> aggregate instead) and <b>Euronext Oslo</b> (Oslo Børs → Euronext, Jun 2019; market-cap series ends 2019) are moved to the collapsed <b>Constituent &amp; partial series</b> group, each labelled with its coverage span. The <b>rankings strip</b> and <b>concentration lab</b> below use <b>TWSE alone</b> — the entity in the Bloomberg/WFE crossover story; a combined view would add ~US$0.37T (May 2026).</div>
+      </div>
+    </details>
+    <div class="dashcap" style="margin-top:12px">Full source, FX and refresh detail lives on the <a class="deeplink" href="markets-method.html#m-taiwan">data &amp; method page →</a></div>
     <div class="pillrow"><a href="#method" class="provpill" data-prov="wfe"><span class="o"></span>source · WFE Statistics</a></div>
   </div>
 </section>
@@ -765,44 +831,25 @@ td.c-deal{white-space:nowrap}
 
 <section class="band" id="method" data-rev>
   <div class="wrap narrow">
-    <div class="kicker"><span class="l">06</span> Data &amp; method</div>
-    <h2>Every source, vintage and basis.</h2>
-    <p class="lede">This dashboard is generated by a validated pipeline (292 assertions, all passing) that bakes a deterministic payload from the vault's in-house source files, then splices it verbatim into this page. Nothing here is hand-keyed.</p>
-
+    <div class="kicker"><span class="l">◇</span> Data &amp; method</div>
+    <h2>What this page's numbers rest on.</h2>
+    <p class="lede">Only the load-bearing basis for the figures above. The full appendix — every source, entity basis, gap-fill convention, the FX table and the refresh chain — lives on the method page.</p>
     <div class="evlist">
-      <div class="evrow"><div><div class="et">Vintages</div><div class="es">as-at dates</div></div>
-        <div class="ed">TMX Issuers List <b>31 May 2026</b> · CSE Listed Companies <b>31 Dec 2025</b> · WFE annual USD export <b>8 Jul 2026</b> (2010–2025). Market capitalisation additionally carries a <b>2026 partial-year point</b> from the WFE monthly market-cap file (latest month reported per exchange, May/Jun 2026 — hollow + dashed + <span class="dag">*</span>); all other indicators end at 2025.</div></div>
-      <div class="evrow"><div><div class="et">Operating-issuer recipe</div><div class="es">the filter that matters</div></div>
-        <div class="ed">Both boards strip <code>Sector ∈ {ETP, CDR, Closed-End Funds, SPAC}</code> — that is, exchange-traded products (ETP) and Canadian Depositary Receipts (CDR) alongside closed-end funds and SPACs. The TSXV <b>additionally</b> strips active <code>CPC</code> (Capital Pool Company) shells (161 rows). Result: <b>TSX 2,236 → 672</b> operating; <b>TSXV 1,508 → 1,347</b> operating. Cap bands are binned from the <b>raw</b> C$ cap (not the rounded C$M) so issuers never misband at the 10M / 150M edges.</div></div>
-      <div class="evrow"><div><div class="et">Entity basis (WFE)</div><div class="es">what each row consolidates</div></div>
-        <div class="ed">Each WFE entity is the whole operator: <b>TMX</b> = TSX + TSXV; <b>Korea</b> = KOSPI + KOSDAQ + KONEX; <b>JPX</b> = Prime + Standard + Growth; <b>HKEX</b> = Main + GEM. NSE India is excluded from Asia-Pacific market-cap totals (double-counts with BSE). WFE's listed-company count is all-in (TMX 2025 = 3,701), not the operating base.</div></div>
-      <div class="evrow"><div><div class="et">Entity-basis hygiene</div><div class="es">Taiwan combined · constituent tier</div></div>
-        <div class="ed"><b>Taiwan is the inverse case</b> — WFE reports it as <b>two separate legal entities</b>, the TWSE main board and TPEx (its growth board), where peers arrive pre-consolidated. The picker adds a derived <b>Taiwan (combined) ◇</b> series: additive indicators <em>summed</em>, ratios <em>recomputed</em> from the combined numerator/denominator (never averaged — combined 2024 velocity ~143%, not the ~243% mean of the two boards); <b>our computation, not a WFE-reported entity</b> (dashed, ◇). Its 2026<span class="dag">*</span> point is a same-month (May) sum, <b>US$3.23T (2025) → US$4.93T (May 2026)</b>. TPEx, the four <b>individual</b> Nasdaq Nordic/Baltic venues (use the <b>Nasdaq Nordic &amp; Baltics</b> aggregate — the individuals have no market-cap series) and <b>Euronext Oslo</b> (Oslo Børs → Euronext Jun 2019; market cap ends 2019) are moved to a collapsed <b>Constituent &amp; partial series</b> picker group, each labelled with its coverage span. The <b>rankings strip</b> and <b>concentration lab</b> deliberately use <b>TWSE alone</b> — the Bloomberg/WFE crossover subject; a combined view would add ~US$0.37T (May 2026).</div></div>
-      <div class="evrow"><div><div class="et">Gap-fills</div><div class="es">dashed / † / "no data"</div></div>
-        <div class="ed"><b>LSE Group</b> WFE series end 2020; 2021–25 filled from the LSE primary factsheets (Main + AIM, GBP→USD at BoE rates). Velocity / follow-on-share / avg-company-size for the fill years use the anchor's GBP-basis figures; <code>listed_dom</code> is filled 2021–23 only (2024–25 null); IPO count and avg IPO size are not filled. <b>Korea &amp; Nasdaq-US follow-on</b> are zero-coded non-reports → null ("no data", never 0). A lone trailing-2025 follow-on zero after real history (ASX / Deutsche Börse / SIX) is also nulled.</div></div>
-      <div class="evrow"><div><div class="et">CSE caveats</div><div class="es">aggregates + value-traded</div></div>
-        <div class="ed">The CSE publishes no per-issuer market-cap file → aggregates only. Its concentration figures (top-10 46.2%, top-25 59.4%, top-50 71.3%) are <b>value-traded</b> shares, not market cap. The CSE headline counts <b>601</b> active issuers; its by-sector table sums to <b>600</b> (one unclassified / rounding) — recorded, not forced.</div></div>
-      <div class="evrow"><div><div class="et">FX (BoE annual avg)</div><div class="es">GBP→USD</div></div>
-        <div class="ed">2021 1.3752 · 2022 1.2362 · 2023 1.2439 · 2024 1.2782 · 2025 1.3193. CAD reference: US$1≈C$1.44 · £1≈C$1.80.</div></div>
-      <div class="evrow"><div><div class="et">Issuer links</div><div class="es">a convenience, not data</div></div>
-        <div class="ed">Company names link out to third-party profiles. Currently-listed issuers link to their <b>Yahoo Finance</b> quote page, built deterministically from the ticker plus its venue (TSX → <code>.TO</code>, TSXV → <code>.V</code>, CSE → <code>.CN</code>; class/unit tickers such as <code>BAM.A</code> become <code>BAM-A</code>). <b>Delisted or unresolvable</b> companies link to a quoted <b>name search</b> instead — never a ticker — because tickers get recycled and a dead symbol would resolve to a different company. The links are conveniences only; they add no data and no external scripts.</div></div>
-      <div class="evrow"><div><div class="et">Refresh</div><div class="es">how to rebuild</div></div>
-        <div class="ed">Re-run <code>python3 Data/refresh-scripts/markets_dashboard_data.py</code> after dropping a newer TMX xlsx, WFE export, CSE analysis or LSE December factsheets. The pipeline asserts every reconciliation target before writing — on any failure it writes nothing and prints the discrepancy. Then re-run the HTML build step (<code>build_markets_dashboard.py</code>).</div></div>
+      <div class="evrow"><div><div class="et">Entity basis (WFE)</div><div class="es">what each row consolidates</div></div><div class="ed">Each WFE entity is the whole operator (TMX = TSX+TSXV; Korea = KOSPI+KOSDAQ+KONEX; JPX = Prime+Standard+Growth; HKEX = Main+GEM). WFE's listed-company count is all-in, not the operating base.</div></div>
+      <div class="evrow"><div><div class="et">Taiwan (combined) ◇</div><div class="es">our computation, not a WFE entity</div></div><div class="ed">WFE reports Taiwan as two legal entities (TWSE + TPEx). The picker adds a derived <b>Taiwan (combined) ◇</b> — additive indicators summed, ratios recomputed (never averaged). The rankings strip &amp; concentration lab use <b>TWSE alone</b> (the crossover subject).</div></div>
+      <div class="evrow"><div><div class="et">Gap-fills</div><div class="es">dashed / † / "no data"</div></div><div class="ed"><b>LSE Group</b> WFE series end 2020; 2021–25 filled from LSE primary factsheets (dashed, †). <b>Korea &amp; Nasdaq-US follow-on</b> are non-reports → "no data", never 0.</div></div>
     </div>
-
-    <h3 style="margin-top:44px">Sources (all in-vault)</h3>
+    <h3 style="margin-top:36px">Sources for this page</h3>
     <table class="mtable">
       <thead><tr><th scope="col">Role</th><th scope="col">File</th></tr></thead>
       <tbody>
-        <tr><td><b>Per-issuer bake (TSX+TSXV)</b></td><td>Data/TMX (2026) - TSX &amp; TSXV Listed Companies (Jun 2026).xlsx (as-at 31 May 2026)</td></tr>
-        <tr><td><b>Graduate reconciliation</b></td><td>Data/tsxv-graduates-on-tsx-may2026.csv</td></tr>
         <tr><td><b>WFE explorer</b></td><td>Data/WFE (2026) - Exchange Statistics 2010-2026 (Annual, USD, 25 exchanges).xlsx</td></tr>
-        <tr><td><b>CSE aggregates</b></td><td>Data/CSE Listed Companies — Analysis (Dec 2025).md (computed aggregates; CSE publishes no per-issuer cap file)</td></tr>
-        <tr><td><b>Concentration + LSE fill</b></td><td>Sources/Exchange Concentration — Top-Issuer Shares (2026 compilation).md · Sources/LSE (2026) - London Stock Exchange Market Statistics 2020-2025.md</td></tr>
+        <tr><td><b>LSE gap-fill</b></td><td>Sources/LSE (2026) - London Stock Exchange Market Statistics 2020-2025.md</td></tr>
       </tbody>
     </table>
     <div class="wfeattr">WFE attribution (mandatory): World Federation of Exchanges (WFE) Statistics must be credited on every WFE-derived chart.</div>
-    <div class="pillrow"><a href="#overview" class="provpill" data-prov="method"><span class="o"></span>back to overview</a></div>
+    <div class="pillrow"><a href="#method" class="provpill" data-prov="method"><span class="o"></span>Source &amp; confidence</a>
+      <a class="deeplink" href="markets-method.html#m-taiwan">Full data &amp; method →</a></div>
   </div>
 </section>
 
@@ -841,7 +888,7 @@ window.WFE={"data":{"ASX Australian Securities Exchange":{"avg_coy":[728,576,674
 ;
 window.RANK={"as_of":"2026-07-22","bases":[{"attribution":"Every 'Taiwan/Korea passed Canada' headline traces to one instrument: Bloomberg's own country-level compilation ('data compiled by Bloomberg'). No separate Reuters/FT origination; other outlets syndicate or attribute to Bloomberg. No published methodology note.","canada":"Passed by Taiwan (Apr 29) and Korea (May 7 2026). Korea's lead has likely narrowed or reversed since its July correction — unconfirmed.","id":"bloomberg","measures":"Domestically-listed companies aggregated by country (≈free-float / primary-listing basis); Canada ≈ US$4.4T universe.","name":"Bloomberg country-level","tier":6},{"attribution":"World Federation of Exchanges (WFE) monthly market-capitalisation export; TMX/Taiwan/Korea month-end figures.","canada":"Still leads Korea and Taiwan through the latest reported month (May 2026); gap to Korea down to ~US$54bn from ~US$1.3T two years ago.","id":"wfe","measures":"Full domestic market cap of all listed companies on the exchange itself (TMX = TSX + TSXV).","name":"WFE exchange-level (this dashboard's basis)","tier":1}],"crossovers":[{"date":"2026-04-29","developing":false,"event":"Taiwan passes Canada — 6th largest (Bloomberg basis)","fig":"Taiwan $4.47–4.48T vs Canada $4.44–4.49T","tier":6},{"date":"2026-05-07","developing":false,"event":"Korea passes Canada — 7th largest (Bloomberg basis)","fig":"Korea $4.59T vs Canada ~$4.5T","tier":6},{"date":"2026-05-26","developing":false,"event":"Taiwan passes India — 5th largest (Bloomberg basis)","fig":"Taiwan $4.95T vs India $4.92T","tier":6},{"date":"2026-06-02","developing":false,"event":"Korea passes India — ~6th largest (Bloomberg basis)","fig":"Korea $5.0T vs India $4.8T","tier":6},{"date":"2026-07 (developing)","developing":true,"event":"Korea's rally cracks — steepest monthly drop on record; the Bloomberg-basis Korea>Canada crossover may already be undoing","fig":"KOSPI ~23% monthly drop from a Jun 22 peak; KOSPI+KOSDAQ 7,993T→~6,057T won by Jul 14","tier":8}],"developing":{"flag":"DEVELOPING / UNCONFIRMED","text":"Korea's rally cracked hard in July 2026 — the KOSPI's steepest monthly drop on record (~23%, from a June 22 peak), which may already be undoing part of the Bloomberg-basis crossover. No tier 1–6 outlet has yet published a 'Canada retakes 7th' story, so this is flagged developing, not asserted as settled. One tier-8 real-time aggregator shows Korea below Canada; a KRW/FX back-of-envelope agrees; neither is Bloomberg-grade confirmation.","tier":8},"prose":"WFE counts each exchange separately and includes every listed company at its full global value — so a company listed in two places appears in both exchanges' totals (TMX's C$5.96T operating cap includes the entire global value of its 206 interlisted names). Bloomberg's country ranking instead builds one deduplicated universe per country of its domestically listed companies. Different universes, different answers — and both are internally consistent: on Bloomberg's ~US$4.4T country basis Taiwan (Apr 29) and Korea (May 7 2026) passed Canada, while on WFE's exchange basis (~US$5.0T) Canada still edges both through the latest reported month. See the PROV drawer for tiers, dates and the developing Korea reversal.","wfe_may2026_ustn":{"Korea Exchange":4.949,"TMX":5.003,"Taiwan Stock Exchange":4.559}}
 ;
-window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX Listed-Companies workbook.","wfe":"World Federation of Exchanges (WFE) Statistics must be credited on every WFE-derived chart."},"cap_bands":{"edges_cad":[10000000.0,50000000.0,150000000.0,1000000000.0,10000000000.0],"labels":["<C$10M","C$10–50M","C$50–150M","C$150M–1B","C$1B–10B","≥C$10B"],"note":"Binned from RAW C$ cap, not the rounded C$M written to issuers.json."},"dashboard":"Dashboards/markets-dashboard.html","fx_rates":{"GBP_USD":{"annual_avg":{"2021":1.3752,"2022":1.2362,"2023":1.2439,"2024":1.2782,"2025":1.3193},"year_end":{"2021":1.3521,"2022":1.2097,"2023":1.2732,"2024":1.2515,"2025":1.3448}},"cad_conversion_note":"US$1≈C$1.44 · €1≈C$1.50 · £1≈C$1.80"},"gapfill_flags":{"followon_nonreport":"Korea & Nasdaq-US follow-on are zero-coded non-reports in WFE -> null (render 'no data', never 0).","lse":"LSE Group WFE series end 2020; 2021-25 gap-filled from LSE primary (Main+AIM). Render dashed with † and 'estimate' markers.","trailing_zero":"A lone trailing-2025 follow-on zero after real history (ASX/Deutsche Börse/SIX) -> null."},"generated_by":"Data/refresh-scripts/markets_dashboard_data.py","operating_basis":{"both_boards_exclude":["CDR","Closed-End Funds","ETP","SPAC"],"definition":"Operating issuer strips ETP/CDR/Closed-End Funds/SPAC (both boards) plus active CPC shells (TSXV).","tsxv_additional_exclude":["CPC"]},"refresh":{"command":"python3 markets_dashboard_data.py","cse":"Re-pull the CSE listed-companies API + annual market summary (see CSE analysis).","lse":"Download the new-year Main Market + AIM December factsheets + LSEG market report; convert GBP→USD at BoE rates; update LSE_FILL.","tmx":"Drop the new TMX Issuers-List xlsx into Data/, update the sheet names + as-at, re-run.","wfe":"Re-pull the 25-exchange annual USD extract from the WFE Statistics Portal (see WFE anchor)."},"sources":{"concentration":"Sources/Exchange Concentration — Top-Issuer Shares (2026 compilation).md","concentration_deepdive":"Data/cross-exchange-concentration-jul2026.csv + Data/cross-exchange-concentration-sectors-jul2026.csv (structured from Sources/Cross-Exchange Concentration & Sector Structure (Jul 2026 compilation).md)","cse":"Data/CSE Listed Companies — Analysis (Dec 2025).md (computed aggregates; CSE publishes no per-issuer cap file)","history_archive":"Data/tmx-archive-derived/ (new_listings_by_year.csv 5,873 · panel_transitions.csv · issuer_panel.csv — 18 year-end TMX Listed-Companies + New-Listings workbooks, Dec 2008-Dec 2025)","history_mig":"Data/tmx-mig-derived/ (mig_new_listings_by_type.csv · mig_monthly_headlines.csv · mig_named_financings.csv — 167 monthly TMX MiG Reports, Dec 2008-Jun 2026)","lse_gapfill":"Sources/LSE (2026) - London Stock Exchange Market Statistics 2020-2025.md","tmx":"Data/TMX (2026) - TSX & TSXV Listed Companies (Jun 2026).xlsx (as-at 31 May 2026)","tmx_graduates":"Data/tsxv-graduates-on-tsx-may2026.csv","wfe":"Data/WFE (2026) - Exchange Statistics 2010-2026 (Annual, USD, 25 exchanges).xlsx"},"vintages":{"cse":"2025-12-31","tmx":"2026-05-31","wfe_export":"2026-07-08"}}
+window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX Listed-Companies workbook.","wfe":"World Federation of Exchanges (WFE) Statistics must be credited on every WFE-derived chart."},"cap_bands":{"edges_cad":[10000000.0,50000000.0,150000000.0,1000000000.0,10000000000.0],"labels":["<C$10M","C$10–50M","C$50–150M","C$150M–1B","C$1B–10B","≥C$10B"],"note":"Binned from RAW C$ cap, not the rounded C$M written to issuers.json."},"dashboard":"Dashboards/markets-dashboard.html","fx_rates":{"GBP_USD":{"annual_avg":{"2021":1.3752,"2022":1.2362,"2023":1.2439,"2024":1.2782,"2025":1.3193},"year_end":{"2021":1.3521,"2022":1.2097,"2023":1.2732,"2024":1.2515,"2025":1.3448}},"cad_conversion_note":"US$1≈C$1.44 · €1≈C$1.50 · £1≈C$1.80"},"gapfill_flags":{"followon_nonreport":"Korea & Nasdaq-US follow-on are zero-coded non-reports in WFE -> null (render 'no data', never 0).","lse":"LSE Group WFE series end 2020; 2021-25 gap-filled from LSE primary (Main+AIM). Render dashed with † and 'estimate' markers.","trailing_zero":"A lone trailing-2025 follow-on zero after real history (ASX/Deutsche Börse/SIX) -> null."},"generated_by":"Data/refresh-scripts/markets_dashboard_data.py","operating_basis":{"both_boards_exclude":["CDR","Closed-End Funds","ETP","SPAC"],"definition":"Operating issuer strips ETP/CDR/Closed-End Funds/SPAC (both boards) plus active CPC shells (TSXV).","tsxv_additional_exclude":["CPC"]},"refresh":{"command":"python3 markets_dashboard_data.py","cse":"Re-pull the CSE listed-companies API + annual market summary (see CSE analysis).","lse":"Download the new-year Main Market + AIM December factsheets + LSEG market report; convert GBP→USD at BoE rates; update LSE_FILL.","tmx":"Drop the new TMX Issuers-List xlsx into Data/, update the sheet names + as-at, re-run.","wfe":"Re-pull the 25-exchange annual USD extract from the WFE Statistics Portal (see WFE anchor)."},"sources":{"concentration":"Sources/Exchange Concentration — Top-Issuer Shares (2026 compilation).md","concentration_deepdive":"Data/cross-exchange-concentration-jul2026.csv + Data/cross-exchange-concentration-sectors-jul2026.csv (structured from Sources/Cross-Exchange Concentration & Sector Structure (Jul 2026 compilation).md)","cse":"Data/CSE Listed Companies — Analysis (Dec 2025).md (computed aggregates; CSE publishes no per-issuer cap file)","history_archive":"Data/tmx-archive-derived/ (new_listings_by_year.csv 5,873 · panel_transitions.csv · issuer_panel.csv — 18 year-end TMX Listed-Companies + New-Listings workbooks, Dec 2008-Dec 2025)","history_mig":"Data/tmx-mig-derived/ (mig_new_listings_by_type.csv · mig_monthly_headlines.csv · mig_named_financings.csv — 167 monthly TMX MiG Reports, Dec 2008-Jun 2026)","lse_gapfill":"Sources/LSE (2026) - London Stock Exchange Market Statistics 2020-2025.md","tmx":"Data/TMX (2026) - TSX & TSXV Listed Companies (Jun 2026).xlsx (as-at 31 May 2026)","tmx_graduates":"Data/tsxv-graduates-on-tsx-may2026.csv","wfe":"Data/WFE (2026) - Exchange Statistics 2010-2026 (Annual, USD, 25 exchanges).xlsx"},"vintages":{"cse":"2025-12-31","tmx":"2026-05-31","wfe_export":"2026-07-08"}}
 ;
 </script>
 <script>
@@ -917,7 +964,7 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
       if(u==="ASX") return "ASX"; if(u==="LSE"||u==="AIM") return "London (LSE/AIM)";
       return "Other intl"; }
     function venueDisp(il){ return il?String(il).split(",").map(function(s){return s.trim();}).join(" + "):"—"; }
-    var st={board:"TSX",basis:"op",sort:{key:"c",dir:"desc"},page:0,chartMeasure:"count",
+    var st={board:"TSX",basis:"op",sort:{key:"c",dir:"desc"},page:0,chartMeasure:"count",lens:"tmx",
             f:{sector:"",band:"",region:"",index:"",inter:"",grad:"",cpc:"",search:""}};
     var chips={TSX:document.getElementById("bTSX"),TSXV:document.getElementById("bTSXV"),CSE:document.getElementById("bCSE")};
     var basOp=document.getElementById("basOp"),basAll=document.getElementById("basAll");
@@ -994,21 +1041,32 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
       var byVal=(st.chartMeasure==="cap");
       var unit=byVal?"cap":"count";
       // sector chart — bar size = issuer count OR total market cap C$ over the SAME filtered subset
-      var bySec={}; list.forEach(function(x){ bySec[x.s]=(bySec[x.s]||0)+(byVal?x.c:1); });
-      var srows=Object.keys(bySec).map(function(s){return {label:shortSec(s),value:bySec[s]};}).sort(function(a,b){return b.value-a.value;});
+      var srows;
+      if(st.lens==="core"){
+        // A1 — growth-sector lens: regroup TMX categories into the 5 mappable core sectors
+        // + the honest "Not isolable" remainder. Count↔cap aware, filter-consistent; the
+        // 5 cores + remainder PARTITION the subset so the bars sum to the readout total.
+        var GL=BD.growth_lens, m=GL.map, core={}, ni={label:GL.not_isolable_label,value:0};
+        GL.core_order.forEach(function(c){ core[c]={label:c,value:0}; });
+        list.forEach(function(x){ var c=m[x.s], v=(byVal?x.c:1); if(c) core[c].value+=v; else ni.value+=v; });
+        srows=GL.core_order.map(function(c){ return core[c]; }); srows.push(ni);   // fixed order; remainder last
+      } else {
+        var bySec={}; list.forEach(function(x){ bySec[x.s]=(bySec[x.s]||0)+(byVal?x.c:1); });
+        srows=Object.keys(bySec).map(function(s){return {label:shortSec(s),value:bySec[s]};}).sort(function(a,b){return b.value-a.value;});
+      }
       if(!srows.length) srows=[{label:"(no issuers)",value:0}];
       var secEl=secWrap.querySelector("svg")||svg("svg",{}); if(!secWrap.querySelector("svg")) secWrap.appendChild(secEl);
-      drawHBar(secEl, srows, {unit:unit,gid:"md-sector-grad",axis:byVal?"total market cap, by sector (C$)":"issuers, by sector (count)"});
+      drawHBar(secEl, srows, {unit:unit,gid:"md-sector-grad",axis:(st.lens==="core"?"growth-sector lens, ":"")+(byVal?"total market cap, by sector (C$)":"issuers, by sector (count)")});
       // band chart
       var byBand={}; list.forEach(function(x){ byBand[x.cb]=(byBand[x.cb]||0)+(byVal?x.c:1); });
       var brows=[]; for(var i=0;i<BANDLAB.length;i++){ brows.push({label:BANDLAB[i],value:byBand[i]||0}); }
       var maxi=0; brows.forEach(function(r,i){ if(r.value>brows[maxi].value) maxi=i; });
       var bandEl=bandWrap.querySelector("svg")||svg("svg",{}); if(!bandWrap.querySelector("svg")) bandWrap.appendChild(bandEl);
       drawHBar(bandEl, brows, {unit:unit,gid:"md-band-grad",subjIdx:maxi,axis:byVal?"total market cap, by cap band (C$)":"issuers, by cap band (count)"});
-      if(secChSub) secChSub.textContent=byVal?"Bar length = total market cap (C$) of the filtered subset, by sector":"Bar length = number of issuers in the filtered subset";
+      if(secChSub) secChSub.textContent=(st.lens==="core"?"Growth-sector lens · ":"")+(byVal?"Bar length = total market cap (C$) of the filtered subset, by sector":"Bar length = number of issuers in the filtered subset");
       if(bandChSub) bandChSub.textContent=byVal?"Bar length = total market cap (C$) in each capitalisation band":"Bar length = number of issuers in each capitalisation band";
       function disp(v){ return byVal?fmtCap(v):v; }
-      secWrap.setAttribute("aria-label", secChTitle.textContent+" ("+(byVal?"by market cap":"by count")+"). "+srows.map(function(r){return r.label+" "+disp(r.value);}).join(", ")+".");
+      secWrap.setAttribute("aria-label", secChTitle.textContent+" ("+(st.lens==="core"?"growth-sector lens, ":"")+(byVal?"by market cap":"by count")+"). "+srows.map(function(r){return r.label+" "+disp(r.value);}).join(", ")+".");
       bandWrap.setAttribute("aria-label", bandChTitle.textContent+" ("+(byVal?"by market cap":"by count")+"). "+brows.map(function(r){return r.label+" "+disp(r.value);}).join(", ")+".");
     }
 
@@ -1079,8 +1137,9 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
         var bt=boardTotalCap(); roPct.textContent=(bt?((totalcap/bt*100).toFixed(1)):"0.0")+"%";
         roPctL.textContent="subset share of "+st.board+" "+(st.basis==="op"?"operating":"all-in")+" cap";
         var basisTxt=(st.basis==="op"?"operating issuers":"all-in listings");
-        secChTitle.textContent=st.board+" "+basisTxt+", by sector";
+        secChTitle.textContent=st.board+" "+basisTxt+(st.lens==="core"?", by growth-sector lens":", by sector");
         bandChTitle.textContent=st.board+" "+basisTxt+", by cap band";
+        if(lensNote) lensNote.style.display=(st.lens==="core")?"":"none";
         tblSub.textContent=list.length+" issuers · click a column to sort · "+PER+" per page";
         renderCharts(list); renderTable(list);
       }catch(e){}
@@ -1094,6 +1153,10 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
       var cmc=document.getElementById("cmCount"),cmp=document.getElementById("cmCap");
       [cmc,cmp].forEach(function(n){ if(n) n.disabled=isCSE; });
       if(isCSE){ st.chartMeasure="count"; if(cmc)cmc.setAttribute("aria-pressed","true"); if(cmp)cmp.setAttribute("aria-pressed","false"); }
+      // A1 lens: disabled on CSE (own taxonomy); reset to TMX categories
+      var lt=document.getElementById("lensTmx"),lc=document.getElementById("lensCore");
+      [lt,lc].forEach(function(n){ if(n) n.disabled=isCSE; });
+      if(isCSE){ st.lens="tmx"; if(lt)lt.setAttribute("aria-pressed","true"); if(lc)lc.setAttribute("aria-pressed","false"); if(lensNote) lensNote.style.display="none"; }
       [fSector,fBand,fRegion,fIndex,fInter,fGrad,fCpc,fSearch,fReset].forEach(function(n){ if(n) n.disabled=isCSE; });
       if(fGrad) fGrad.disabled=isCSE||(b==="TSXV"); // graduates only meaningful on TSX
       if(!isCSE){ st.f={sector:"",band:"",region:"",index:"",inter:"",grad:"",cpc:"",search:""}; populateFacets(); resetSelectsUI(); }
@@ -1114,6 +1177,14 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
       if(cmCap) cmCap.setAttribute("aria-pressed",v==="cap"?"true":"false"); render(); }
     if(cmCount) cmCount.addEventListener("click",function(){ setChartMeasure("count"); });
     if(cmCap) cmCap.addEventListener("click",function(){ setChartMeasure("cap"); });
+    // A1 — growth-sector lens toggle (regroups the TMX sector chart into the 5 mappable core
+    // sectors + "Not isolable"). Disabled on CSE (which runs its own 6-sector taxonomy).
+    var lensNote=document.getElementById("lensNote"),lensTmx=document.getElementById("lensTmx"),lensCore=document.getElementById("lensCore");
+    function setLens(v){ if(st.board==="CSE") return; st.lens=v;
+      if(lensTmx) lensTmx.setAttribute("aria-pressed",v==="tmx"?"true":"false");
+      if(lensCore) lensCore.setAttribute("aria-pressed",v==="core"?"true":"false"); render(); }
+    if(lensTmx) lensTmx.addEventListener("click",function(){ setLens("tmx"); });
+    if(lensCore) lensCore.addEventListener("click",function(){ setLens("core"); });
     function bindFacet(el,key,isNum){ if(!el) return; el.addEventListener(el.tagName==="INPUT"?"input":"change",function(){ st.f[key]=el.value; st.page=0; render(); }); }
     bindFacet(fSector,"sector"); bindFacet(fBand,"band"); bindFacet(fRegion,"region"); bindFacet(fIndex,"index");
     bindFacet(fInter,"inter"); bindFacet(fGrad,"grad"); bindFacet(fCpc,"cpc"); bindFacet(fSearch,"search");
@@ -1222,6 +1293,20 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
     function escW(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
     function shortEx(n){ return SHORTMAP[n]||n; }
     function colFor(n){ var i=wst.ex.indexOf(n); return i>=0?COLS[i%COLS.length]:"var(--steel)"; }
+    // v2.10 R1 — per-series dash + marker-shape redundancy (mirrors the static bake): subject
+    // (TMX) solid + round; each comparator a distinct dash pattern AND glyph, keyed by rank.
+    var WFE_DASH=["","2 5","9 5","9 4 2 4","1 7","6 4"], WFE_SHAPE=["circle","square","triangle","diamond","cross","wedge"];
+    var WFE_SLUG={"TMX Group":"tmx","Korea Exchange":"korea","Taiwan Stock Exchange":"taiwan","Japan Exchange Group":"japan"};
+    function wfeRank(k){ if(k==="TMX Group") return 0; var comp=wst.ex.filter(function(x){return x!=="TMX Group";}); var j=comp.indexOf(k); return (j<0?0:j)+1; }
+    function wfeDashFor(k){ return WFE_DASH[wfeRank(k)%WFE_DASH.length]; }
+    function wfeShapeFor(k){ return WFE_SHAPE[wfeRank(k)%WFE_SHAPE.length]; }
+    function wfeSlugFor(k){ return WFE_SLUG[k]||("s"+wfeRank(k)); }
+    function wfeMkEl(shape,cx,cy,r){
+      if(shape==="square") return svg("rect",{x:cx-r,y:cy-r,width:2*r,height:2*r});
+      if(shape==="triangle") return svg("path",{d:"M"+cx+","+(cy-r*1.15)+" L"+(cx+r)+","+(cy+r*0.85)+" L"+(cx-r)+","+(cy+r*0.85)+" Z"});
+      if(shape==="diamond") return svg("path",{d:"M"+cx+","+(cy-r*1.25)+" L"+(cx+r*1.1)+","+cy+" L"+cx+","+(cy+r*1.25)+" L"+(cx-r*1.1)+","+cy+" Z"});
+      return svg("circle",{cx:cx,cy:cy,r:r});
+    }
     function niceMax(m){ if(m<=0) return 1; var p=Math.pow(10,Math.floor(Math.log10(m))),n=m/p; var s=n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10; return s*p; }
     function fmtUnit(v,unit){ if(v==null) return "—"; if(unit==="count") return Math.round(v).toLocaleString(); if(unit==="%") return (Math.round(v*10)/10).toFixed(1)+"%"; if(v>=1e6) return "US$"+(v/1e6).toFixed(2)+"T"; if(v>=1e3) return "US$"+(v/1e3).toFixed(1)+"B"; return "US$"+Math.round(v).toLocaleString()+"M"; }
     function shortAxis(v,unit){ if(unit==="count") return Math.round(v).toLocaleString(); if(unit==="%") return (Math.round(v*10)/10)+"%"; if(v>=1e6) return "US$"+(v/1e6).toFixed(1)+"T"; if(v>=1e3) return "US$"+Math.round(v/1e3)+"B"; return "US$"+Math.round(v); }
@@ -1304,22 +1389,22 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
         // ---- LINES only (markers are a separate interactive layer below) ----
         order.forEach(function(k){
           var arr=series[k], col=colFor(k), subj=(k==="TMX Group"), gf=gapStart(k), origIdx=wst.ex.indexOf(k);
-          var baseDash=(origIdx>=4);
+          var serDash=wfeDashFor(k), serSlug=wfeSlugFor(k);   // v2.10 R1 per-series dash (colour-blind redundancy; mirrors the static bake)
           var solidEnd=(partIdx>=0 && i1>=partIdx)? partIdx-1 : i1;  // 2026 partial drawn separately
           var segs=[],cur=[];
           for(var i=i0;i<=solidEnd;i++){ if(arr[i]==null){ if(cur.length){segs.push(cur);cur=[];} } else { cur.push({x:X(i),y:Y(arr[i]),i:i}); } }
           if(cur.length) segs.push(cur);
-          function line(pts,dashed){ if(pts.length<2) return;
-            var pl=svg("polyline",{fill:"none",stroke:col,"stroke-width":subj?3.2:2.2,"stroke-linejoin":"round",points:pts.map(function(p){return p.x+","+p.y;}).join(" ")});
-            if(dashed) pl.setAttribute("stroke-dasharray","6 5");
-            if(subj) pl.setAttribute("style","filter:drop-shadow(var(--gfx-glow-soft))"); else pl.setAttribute("opacity",dashed?".72":".82");
+          function line(pts,dashStr){ if(pts.length<2) return;
+            var pl=svg("polyline",{"class":"wfeser wfeser-"+serSlug,fill:"none",stroke:col,"stroke-width":subj?3.2:2.2,"stroke-linejoin":"round",points:pts.map(function(p){return p.x+","+p.y;}).join(" ")});
+            if(dashStr) pl.setAttribute("stroke-dasharray",dashStr);
+            if(subj) pl.setAttribute("style","filter:drop-shadow(var(--gfx-glow-soft))"); else pl.setAttribute("opacity",dashStr?".72":".82");
             el.appendChild(pl); }
           var derivedEx=isDerivedEx(k);   // Taiwan (combined) — whole series dashed (our computation)
           segs.forEach(function(seg){
             var solid=[],dash=[];
             seg.forEach(function(p){ if(gf==null||p.i<gf) solid.push(p); if(gf!=null&&p.i>=gf-1) dash.push(p); });
-            line(solid, baseDash||derivedEx);
-            if(dash.length>1) line(dash,true);
+            line(solid, derivedEx?"6 5":serDash);
+            if(dash.length>1) line(dash,"6 5");
           });
           // 2026 partial: dashed connector from the last solid point (2025) to the 2026 point
           if(partIdx>=0 && i1>=partIdx && arr[partIdx]!=null){
@@ -1331,11 +1416,14 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
         order.forEach(function(k){
           var arr=series[k], col=colFor(k), subj=(k==="TMX Group");
           var derivedEx=isDerivedEx(k);
+          var shape=wfeShapeFor(k);   // v2.10 R1 per-series marker glyph (always-on colour-blind redundancy)
           for(var i=i0;i<=i1;i++){ var v=arr[i]; if(v==null) continue;
             var partial=(i===partIdx), gap=isGap(k,i), special=(partial||gap||derivedEx);
-            var attrs={cx:X(i),cy:Y(v),r:special?4.4:(subj?3.4:3),"class":"wfe-pt"+(partial?" wfe-partial-pt":"")+(gap?" wfe-gap-pt":"")+(derivedEx?" wfe-derived-pt":""),tabindex:"0",role:"img"};
-            if(special){ attrs.fill="var(--surface)"; attrs.stroke=col; attrs["stroke-width"]=1.8; } else { attrs.fill=col; }
-            var c=svg("circle",attrs);
+            var r=special?4.4:(subj?3.4:3);
+            var c=wfeMkEl(shape,X(i),Y(v),r);
+            c.setAttribute("class","wfe-pt wfe-mk wfe-mk-"+shape+(partial?" wfe-partial-pt":"")+(gap?" wfe-gap-pt":"")+(derivedEx?" wfe-derived-pt":""));
+            c.setAttribute("tabindex","0"); c.setAttribute("role","img");
+            if(special){ c.setAttribute("fill","var(--surface)"); c.setAttribute("stroke",col); c.setAttribute("stroke-width","1.8"); } else { c.setAttribute("fill",col); }
             var lab=shortEx(k)+", "+yrLabel(i)+", "+fmtUnit(v,uarg)+(partial?(", partial 2026 point ("+(PART[k]?PART[k].month:"")+")"):"")+(gap?", gap-filled estimate":"")+(derivedEx?", combined series (TWSE + TPEx, our computation)":"");
             c.setAttribute("aria-label",lab); c.appendChild(txt(svg("title",{}),lab));
             (function(kk,ii){ function show(){ wfeReadShow(kk,ii); } c.addEventListener("mouseenter",show); c.addEventListener("focus",show); c.addEventListener("click",show); c.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); show(); } }); })(k,i);
@@ -1452,8 +1540,26 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
     var TYLAB=H.type_labels, SECN=H.sectors;
     var ML=(H.fin_series&&H.fin_series.measure_labels)||{count:"Listings (count)",cap:"All capital raised (C$)",fin:"Follow-on only (C$)",ipo:"IPO proceeds (C$)"};
     // typeSel: shared listing-type filter (drives BOTH the chart stacks and the roster).
-    var hst={board:"comb",year:2025,meas:"count",roOp:"all",typeSel:{}};
+    var hst={board:"comb",year:2025,meas:"count",roOp:"all",stackBy:"type",typeSel:{}};
     HTYPES.forEach(function(t){ hst.typeSel[t]=true; });
+    // --- A2/A6 sector-stack machinery ---
+    var SSTK=H.sector_stack||{order:[],other_label:"Other sectors"};
+    var SCAP=H.sector_capital||{order:[],other_label:"Other & unattributed",comb:[],tsx:[],tsxv:[]};
+    var _secSlot={}; (SSTK.order||[]).forEach(function(s,i){ _secSlot[s]=i; });
+    var A2_LABELS=(SSTK.order||[]).concat([SSTK.other_label]);
+    var A6_LABELS=(SCAP.order||[]).concat([SCAP.other_label]);
+    var ROST_BY_YEAR={}; H.roster.forEach(function(r){ (ROST_BY_YEAR[r.y]=ROST_BY_YEAR[r.y]||[]).push(r); });
+    function a2CountsAt(board,i){ // sector-slot counts for year i, board, under typeSel (A2)
+      var y=HYEARS[i], out=[]; for(var k=0;k<A2_LABELS.length;k++) out.push(0);
+      var rows=ROST_BY_YEAR[y]||[];
+      for(var j=0;j<rows.length;j++){ var r=rows[j];
+        if(board!=="comb" && (board==="TSX"?r.b!==0:r.b!==1)) continue;
+        if(!hst.typeSel[HTYPES[r.k]]) continue;
+        var nm=SECN[r.s], slot=(_secSlot[nm]!=null)?_secSlot[nm]:(A2_LABELS.length-1);
+        out[slot]++; }
+      return out;
+    }
+    function a6CapAt(board,i){ var key=(board==="comb")?"comb":(board==="TSX"?"tsx":"tsxv"); return SCAP[key]?SCAP[key][i]:null; } // array or null (A6)
     function escH(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
     function niceMaxH(m){ if(m<=0) return 1; var p=Math.pow(10,Math.floor(Math.log10(m))),n=m/p; var steps=[1,1.5,2,2.5,3,4,5,6,8,10],s=10; for(var j=0;j<steps.length;j++){ if(n<=steps[j]){ s=steps[j]; break; } } return s*p; }
     // composition presets are shortcuts over the type multiselect (single source of truth = typeSel)
@@ -1496,6 +1602,8 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
     // ── live filtered-stats band (recomputes on every board / type / measure change) ──
     function renderStats(){
       try{
+        // in sector-stack mode the sector drawer owns the stats band (renderSecStats)
+        if(hst.stackBy==="sector" && (hst.meas==="count"||hst.meas==="cap")) return;
         var per={}; HTYPES.forEach(function(t){ per[t]=0; });
         var total=0,minY=null,maxY=null;
         for(var i=0;i<HYN;i++){ var c=yearCounts(hst.board,i),yt=0; HTYPES.forEach(function(t,k){ if(hst.typeSel[t]){ per[t]+=c[k]; yt+=c[k]; } }); if(yt>0){ if(minY==null)minY=HYEARS[i]; maxY=HYEARS[i]; total+=yt; } }
@@ -1518,8 +1626,107 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
       grp.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); setYear(HYEARS[i]); } });
     }
 
+    // --- A2/A6 sector-stack UI helpers ---
+    var hTypeLegend=document.getElementById("hTypeLegend"), hSecLegend=document.getElementById("hSecLegend"),
+        hSecNote=document.getElementById("hSecNote"), hTypeRow=document.getElementById("hTypeRow");
+    function renderSecLegend(labels){
+      if(!hSecLegend) return;
+      hSecLegend.innerHTML=labels.map(function(l,i){ return '<span><span class="swx s'+i+'"></span>'+escH(l)+'</span>'; }).join("");
+    }
+    function setSectorUI(on){
+      if(hTypeLegend) hTypeLegend.style.display=on?"none":"";
+      if(hSecLegend) hSecLegend.style.display=on?"":"none";
+      if(hSecNote) hSecNote.style.display=on?"":"none";
+      // capital sector-stack (A6) is not type-split → freeze the type + composition chips;
+      // count sector-stack (A2) keeps them live (sector counts respect the type filter).
+      var frozen=on&&hst.meas!=="count";
+      hcompChips.forEach(function(c){ c.disabled=frozen; c.style.opacity=frozen?".4":""; });
+      if(hTypeRow){ hTypeRow.querySelectorAll("[data-htype],#hTypeAll").forEach(function(b){ b.disabled=frozen; b.style.opacity=frozen?".4":""; }); }
+    }
+    // Unified stacked sector-bar drawer. mode "count" (A2, from roster+typeSel) or "cap"
+    // (A6, from baked MiG sector-capital). perYear[i] = segment-value array or null.
+    function drawSectorStack(mode){
+      try{
+        var isCap=(mode==="cap");
+        var labels=isCap?A6_LABELS:A2_LABELS, nSeg=labels.length;
+        var per=[], maxv=1, anyData=false;
+        for(var i=0;i<HYN;i++){
+          var v=isCap?a6CapAt(hst.board,i):a2CountsAt(hst.board,i);
+          per.push(v);
+          if(v){ anyData=true; var t=0; for(var k=0;k<v.length;k++) t+=v[k]; if(t>maxv) maxv=t; }
+        }
+        var x0=58,xEnd=902,ytop=30,ybot=414, slot=(xEnd-x0)/HYN, barW=slot*0.60;
+        var vmax=niceMaxH(maxv);
+        function Y(v){ return +(ybot-(ybot-ytop)*v/vmax).toFixed(1); }
+        var el=hStackWrap.querySelector("svg")||svg("svg",{}); if(!hStackWrap.querySelector("svg")) hStackWrap.appendChild(el);
+        while(el.firstChild) el.removeChild(el.firstChild);
+        el.setAttribute("viewBox","0 0 920 470"); el.setAttribute("preserveAspectRatio","xMinYMin meet");
+        var gg=svg("g",{stroke:"var(--hair)","stroke-width":1}); for(var t=0;t<5;t++){ var yy=ytop+(ybot-ytop)*t/4; gg.appendChild(svg("line",{x1:x0,y1:yy,x2:xEnd,y2:yy})); } el.appendChild(gg);
+        var gl=svg("g",{fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":11,"text-anchor":"end"});
+        for(var t2=0;t2<5;t2++){ var val=vmax*(4-t2)/4,yy2=ytop+(ybot-ytop)*t2/4; gl.appendChild(txt(svg("text",{x:50,y:yy2+4}),isCap?("C$"+Math.round(val/1000)+"B"):String(Math.round(val)))); } el.appendChild(gl);
+        el.appendChild(txt(svg("text",{x:x0,y:20,fill:"var(--gann-lab)","font-family":"var(--mono)","font-size":11}),isCap?"capital raised · C$ · December-YTD · MiG sector split (2013+)":"new listings · count · by sector"));
+        var aria=[];
+        for(var i2=0;i2<HYN;i2++){
+          var vv=per[i2], cx=x0+slot*i2+(slot-barW)/2, cur=ybot;
+          var grp=svg("g",{"class":"stackbar"+(HYEARS[i2]===hst.year?" sel":""),"data-year":HYEARS[i2]});
+          var tot=0, tparts=[];
+          if(vv){ for(var k2=0;k2<vv.length;k2++){ tot+=vv[k2]; }
+            for(var k3=0;k3<vv.length;k3++){ var v3=vv[k3]; if(v3<=0) continue;
+              var h=ybot-Y(v3); cur-=h;
+              grp.appendChild(svg("rect",{"class":"hsec-"+k3,x:cx.toFixed(1),y:cur.toFixed(1),width:barW.toFixed(1),height:h.toFixed(1),rx:1.5}));
+              tparts.push(labels[k3]+" "+(isCap?fmtCB(v3):v3)); }
+            if(tot>0) grp.appendChild(txt(svg("text",{x:(cx+barW/2).toFixed(1),y:(cur-4).toFixed(1),"text-anchor":"middle",fill:"var(--gann-val)","font-family":"var(--mono)","font-size":9,"font-variant-numeric":"tabular-nums"}),isCap?(tot/1000).toFixed(1):String(tot)));
+          }
+          grp.appendChild(svg("title",{})); grp.lastChild.textContent=HYEARS[i2]+" · "+BL[hst.board]+" · "+(isCap?fmtCB(tot):(tot+" listings"))+" — "+(tparts.join(", ")||(isCap?"no sector data (pre-2013 / unreliable)":"none"));
+          grp.appendChild(txt(svg("text",{"class":"xlab",x:(cx+barW/2).toFixed(1),y:ybot+16,"text-anchor":"middle"}),"'"+String(HYEARS[i2]).slice(2)));
+          (function(ii){ grp.setAttribute("tabindex","0"); grp.style.cursor="pointer";
+            grp.addEventListener("mouseenter",function(){ grp.classList.add("hov"); renderSecBarRead(ii,mode); });
+            grp.addEventListener("mouseleave",function(){ grp.classList.remove("hov"); });
+            grp.addEventListener("focus",function(){ renderSecBarRead(ii,mode); });
+            grp.addEventListener("click",function(){ setYear(HYEARS[ii]); });
+            grp.addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); setYear(HYEARS[ii]); } });
+          })(i2);
+          el.appendChild(grp);
+          aria.push(HYEARS[i2]+": "+(vv?(isCap?fmtCB(tot):tot):"—"));
+        }
+        el.appendChild(svg("line",{x1:x0,y1:ybot,x2:xEnd,y2:ybot,stroke:"var(--hair-strong)","stroke-width":1}));
+        renderSecLegend(labels);
+        var bl=BL[hst.board];
+        hStackTitle.textContent=(isCap?"Capital raised by sector — ":"New listings by sector — ")+bl+(isCap?" · December-YTD (2013+)":", "+(matchPreset()==="all"?"all listings":matchPreset()==="op"?"operating only":matchPreset()==="etp"?"funds / ETPs only":selArr().length+" of 5 types"));
+        hStackWrap.setAttribute("aria-label",(isCap?"Capital raised by sector per year, ":"New listings by sector per year, ")+bl+". "+aria.join("; ")+".");
+        renderSecStats(mode, per, labels);
+      }catch(e){}
+    }
+    function renderSecBarRead(i,mode){
+      try{ var isCap=(mode==="cap"), labels=isCap?A6_LABELS:A2_LABELS, vv=isCap?a6CapAt(hst.board,i):a2CountsAt(hst.board,i);
+        if(!vv){ hBarRead.innerHTML='<div class="brh"><b>'+HYEARS[i]+'</b> · '+BL[hst.board]+' · no sector split ('+(isCap?"pre-2013 or a source-unreliable board-year, flagged":"—")+')</div>'; return; }
+        var tot=0; for(var k=0;k<vv.length;k++) tot+=vv[k];
+        var head='<b>'+HYEARS[i]+'</b> · '+BL[hst.board]+' · <b>'+(isCap?fmtCB(tot):tot+" listings")+'</b>'+(isCap?" capital":"");
+        var chips=""; for(var k2=0;k2<vv.length;k2++){ if(vv[k2]<=0) continue; chips+='<span class="brk"><span class="swx s'+k2+'" style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px"></span>'+escH(labels[k2])+' <b>'+(isCap?fmtCB(vv[k2]):vv[k2])+'</b></span>'; }
+        hBarRead.innerHTML='<div class="brh">'+head+'</div>'+chips;
+      }catch(e){}
+    }
+    function renderSecStats(mode, per, labels){
+      try{ var isCap=(mode==="cap"), tot=0, segs=[]; for(var k=0;k<labels.length;k++) segs.push(0);
+        for(var i=0;i<per.length;i++){ var v=per[i]; if(!v) continue; for(var k2=0;k2<v.length;k2++){ segs[k2]+=v[k2]; tot+=v[k2]; } }
+        var h='<span class="sbk"><b>'+(isCap?fmtCB(tot):tot.toLocaleString())+'</b>&nbsp;'+(isCap?"total capital":"listings")+'</span>';
+        // top 3 segments by total
+        var idx=labels.map(function(_,k){return k;}).sort(function(a,b){return segs[b]-segs[a];});
+        for(var r=0;r<Math.min(4,idx.length);r++){ var k3=idx[r]; if(segs[k3]<=0) continue; h+='<span class="sbk"><span class="swx s'+k3+'" style="display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px"></span>'+escH(labels[k3])+'&nbsp;<b>'+(isCap?fmtCB(segs[k3]):segs[k3].toLocaleString())+'</b></span>'; }
+        h+='<span class="sbk"><b>'+BL[hst.board]+'</b> · stacked by '+(isCap?"MiG sector capital":"roster sector")+'</span>';
+        if(hStatsRow) hStatsRow.innerHTML=h;
+      }catch(e){}
+    }
+
     function drawStack(){
       try{
+        if(hst.stackBy==="sector"){
+          setSectorUI(true);
+          if(hst.meas==="count"){ drawSectorStack("count"); return; }
+          if(hst.meas==="cap"){ drawSectorStack("cap"); return; }
+          drawDollar(); return;   // fin/ipo have no reconciled sector split → aggregate fallback (note shown)
+        }
+        setSectorUI(false);
         if(hst.meas!=="count"){ drawDollar(); return; }
         hcompChips.forEach(function(c){ c.disabled=false; c.style.opacity=""; });
         var incl=inclIdxSel();
@@ -1690,6 +1897,12 @@ window.META={"assertions_passed":292,"attribution":{"tmx":"© TSX Inc. — TMX L
     document.querySelectorAll("[data-hmeas]").forEach(function(b){ b.addEventListener("click",function(){
       hst.meas=b.getAttribute("data-hmeas");
       document.querySelectorAll("[data-hmeas]").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
+      drawStack(); renderStats(); renderBarRead(null);
+    }); });
+    // A2/A6 — stack-by toggle (Listing type ↔ Sector)
+    document.querySelectorAll("[data-hstackby]").forEach(function(b){ b.addEventListener("click",function(){
+      hst.stackBy=b.getAttribute("data-hstackby");
+      document.querySelectorAll("[data-hstackby]").forEach(function(x){ x.setAttribute("aria-pressed", x===b?"true":"false"); });
       drawStack(); renderStats(); renderBarRead(null);
     }); });
     if(hYear) hYear.addEventListener("change",function(){ setYear(+hYear.value); });
