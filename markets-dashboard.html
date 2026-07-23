@@ -30,6 +30,15 @@
   --type-grad:var(--pg-sector);   --type-grad-txt:var(--pg-sector); --type-grad-rgb:var(--pg-sector-rgb);
   --type-etp:var(--leak);         --type-etp-txt:var(--leak-txt);   --type-etp-rgb:var(--leak-rgb);
   --type-other:var(--steel);      --type-other-txt:var(--steel);    --type-other-rgb:var(--steel-rgb);
+  /* ── SECTOR-STACK CATEGORICAL PALETTE (design spec §5.5b) — the History sector stack (A2 count /
+     A6 capital) shows the top-6 sectors + grey Other. These are POSITIONAL (segment 0..5 of the
+     ordered stack), named in the legend + readout, so colour is one of several channels. Six
+     distinct family-range hues (azure/orange/cyan + derived magenta/green/teal) replacing the old
+     accent opacity-ramp (which collapsed to ~1 visible hue under a type filter). Colour-blind-
+     checked pairwise: dark min-deuteranopia ΔE 14.1, min-normal ΔE 27.3; light min-deut ΔE 8.5,
+     min-normal ΔE 20.8 — the stack order + named legend/readout carry the residual (§5.5b-2).
+     sec-6 (Other) = --steel (theme-aware grey). Dedicated hex per register, like --type-cpc. */
+  --sec-0:#4da3ff;--sec-1:#ffb454;--sec-2:#6fd3ff;--sec-3:#cf6fd6;--sec-4:#5fd0a0;--sec-5:#35c7c9;--sec-6:var(--steel);
   --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
   --disp:'Space Grotesk','Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
@@ -56,6 +65,9 @@ html[data-theme="light"]{
   --type-cpc:#7a2fb0;--type-cpc-txt:#7a2fb0;--type-cpc-rgb:122,47,176;
   --type-grad:#1683b5;--type-grad-txt:#1683b5;--type-grad-rgb:22,131,181;
   --type-other:#445c6b;--type-other-txt:#445c6b;--type-other-rgb:68,92,107;
+  /* sector-stack palette — darker light-register variants (all clear ≥3.9:1 on the cool paper,
+     WCAG 1.4.11 graphical-object ≥3:1); §5.5b light min-deut ΔE 8.5 / min-normal ΔE 20.8. */
+  --sec-0:#2f7fd0;--sec-1:#b96f12;--sec-2:#127fb0;--sec-3:#a83f9e;--sec-4:#158a5f;--sec-5:#0f8a86;--sec-6:var(--steel);
   --hair:rgba(46,77,96,.16);--hair-strong:rgba(46,77,96,.28);--band:rgba(46,77,96,.06);
   --grid-op:.55;--halo-op:.06;
   --numeral-glow:0 1px 0 rgba(0,29,46,.04);
@@ -127,7 +139,10 @@ p.body{font-size:15.5px;color:var(--body);max-width:66ch;line-height:1.7;margin:
 .fig{padding:30px 26px 26px 0;border-bottom:1px solid var(--hair);position:relative;container-type:inline-size;min-width:0}
 .fig-n{font-family:var(--disp);font-weight:700;font-size:min(clamp(38px,6vw,68px),17cqw);line-height:.95;letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:var(--accent);text-shadow:var(--gfx-glow-strong);white-space:nowrap}
 .fig.grey .fig-n{color:var(--ink);text-shadow:none}
-html[data-theme="light"] .fig-n{color:var(--ink);text-shadow:none}
+/* v2.11 light-register restraint (Carlo, note 5): KPI/stat numerals keep the page accent on paper
+   too — the AA-passing cobalt --accent-txt (#1250d4, 6.40:1), not flat ink — so light mode no longer
+   reads "all black". Comparator (.fig.grey) figures stay ink; leak figures stay Signal-Orange. */
+html[data-theme="light"] .fig-n{color:var(--accent-txt);text-shadow:none}
 .fig-cap{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink);margin-top:15px}
 .fig-q{font-family:var(--mono);font-size:11px;letter-spacing:.02em;color:var(--dim);line-height:1.5;margin-top:6px;max-width:30ch}
 .fig-l{font-size:13px;color:var(--body);line-height:1.5;margin-top:9px;max-width:30ch}
@@ -154,15 +169,17 @@ html[data-theme="light"] .hbar-val.inbar,html[data-theme="light"] .hbar-val.subj
 .ramp-1{fill:var(--accent);opacity:.92}.ramp-2{fill:var(--accent);opacity:.74}.ramp-3{fill:var(--accent);opacity:.58}
 .ramp-4{fill:var(--accent);opacity:.44}.ramp-5{fill:var(--accent);opacity:.32}.ramp-6{fill:var(--accent);opacity:.22}
 html[data-theme="light"] .ramp-4{opacity:.50}html[data-theme="light"] .ramp-5{opacity:.38}html[data-theme="light"] .ramp-6{opacity:.28}
-/* A2/A6 sector-stack fills — accent intensity ramp for the top-6 named sectors + grey for the
-   Other / unattributed remainder (v2.10 §5.5a ramp, NOT 16 hues). Legend swatches share these. */
-.hsec-0{fill:var(--accent);opacity:.94}.hsec-1{fill:var(--accent);opacity:.79}.hsec-2{fill:var(--accent);opacity:.64}
-.hsec-3{fill:var(--accent);opacity:.50}.hsec-4{fill:var(--accent);opacity:.38}.hsec-5{fill:var(--accent);opacity:.27}
-.hsec-6{fill:var(--steel);opacity:.62}
-html[data-theme="light"] .hsec-3{opacity:.56}html[data-theme="light"] .hsec-4{opacity:.44}html[data-theme="light"] .hsec-5{opacity:.33}
-.rlegend .swx{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:var(--accent)}
-.rlegend .swx.s0{opacity:.94}.rlegend .swx.s1{opacity:.79}.rlegend .swx.s2{opacity:.64}.rlegend .swx.s3{opacity:.50}
-.rlegend .swx.s4{opacity:.38}.rlegend .swx.s5{opacity:.27}.rlegend .swx.s6{background:var(--steel);opacity:.62}
+/* A2/A6 sector-stack fills — distinct family-range hues for the top-6 sectors + grey Other
+   (v2.11 §5.5b categorical palette, colour-blind-checked; replaces the old accent opacity-ramp
+   that collapsed to ~1 visible hue under a type filter). Position-keyed (--sec-0..6); the legend
+   AND the readout swatches (.swx.s*) share the same tokens so a segment reads identically in the
+   chart, the legend and the pinned/stats readout. */
+.hsec-0{fill:var(--sec-0)}.hsec-1{fill:var(--sec-1)}.hsec-2{fill:var(--sec-2)}
+.hsec-3{fill:var(--sec-3)}.hsec-4{fill:var(--sec-4)}.hsec-5{fill:var(--sec-5)}.hsec-6{fill:var(--sec-6)}
+.swx{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:var(--sec-0)}
+.swx.s0{background:var(--sec-0)}.swx.s1{background:var(--sec-1)}.swx.s2{background:var(--sec-2)}.swx.s3{background:var(--sec-3)}
+.swx.s4{background:var(--sec-4)}.swx.s5{background:var(--sec-5)}.swx.s6{background:var(--sec-6)}
+html[data-theme="light"] .swx{box-shadow:0 0 0 .5px rgba(46,77,96,.35)}
 /* A3 graduation-flow module — compact + quiet */
 .gradflow{margin-top:14px}
 .gradflow .gfmeta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:10px;font-family:var(--mono);font-size:11.5px;color:var(--body)}
@@ -232,7 +249,7 @@ html[data-theme="light"] .hsec-3{opacity:.56}html[data-theme="light"] .hsec-4{op
 .ro{padding:20px 20px 18px 0;position:relative}
 .ro + .ro::before{content:"";position:absolute;left:-1px;top:18px;bottom:18px;width:1px;background:var(--hair)}
 .ro .rn{font-family:var(--disp);font-weight:700;font-size:clamp(24px,3.4vw,38px);line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--accent)}
-html[data-theme="light"] .ro .rn{color:var(--ink)}
+html[data-theme="light"] .ro .rn{color:var(--accent-txt)}
 .ro .rc{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);margin-top:11px}
 .ro .rl{font-size:12px;color:var(--dim);line-height:1.45;margin-top:5px;max-width:26ch}
 
@@ -291,7 +308,7 @@ a.deeplink:hover,a.deeplink:focus-visible{border-bottom-color:var(--accent);outl
 .tilegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:28px}
 .tile{border:1px solid var(--hair);border-radius:12px;padding:22px 22px 20px;background:var(--surface)}
 .tile .tn{font-family:var(--disp);font-weight:700;font-size:clamp(30px,4vw,46px);color:var(--accent);line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-shadow:var(--gfx-glow-strong)}
-html[data-theme="light"] .tile .tn{color:var(--ink);text-shadow:none}
+html[data-theme="light"] .tile .tn{color:var(--accent-txt);text-shadow:none}
 .tile.leaklike .tn{color:var(--leak);text-shadow:none}
 .tile .tc{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink);margin-top:13px}
 .tile .tl{font-size:13px;color:var(--body);line-height:1.55;margin-top:9px}
@@ -319,7 +336,7 @@ html[data-theme="light"] .tile .tn{color:var(--ink);text-shadow:none}
 .mp-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:30px;margin-top:22px;align-items:start}
 .mp-kpis{display:flex;gap:26px;margin-bottom:10px}
 .mpk .mpn{font-family:var(--disp);font-weight:700;font-size:clamp(28px,4vw,42px);color:var(--accent);line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-shadow:var(--gfx-glow-strong)}
-html[data-theme="light"] .mpk .mpn{color:var(--ink);text-shadow:none}
+html[data-theme="light"] .mpk .mpn{color:var(--accent-txt);text-shadow:none}
 .mpk .mpc{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:8px}
 .mpbars{margin-top:6px}
 .audlab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-txt);margin-bottom:10px}
@@ -443,7 +460,7 @@ table.issuers td .rmeta{color:var(--dim);font-size:11px;display:block;margin-top
 .recon{border:1px solid var(--hair);border-radius:11px;padding:18px 18px 16px;background:var(--surface)}
 .recon.note{border-style:dashed;background:transparent}
 .recon .rt{font-family:var(--disp);font-weight:700;font-size:clamp(26px,3.6vw,40px);color:var(--accent);line-height:.95;letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-shadow:var(--gfx-glow-strong)}
-html[data-theme="light"] .recon .rt{color:var(--ink);text-shadow:none}
+html[data-theme="light"] .recon .rt{color:var(--accent-txt);text-shadow:none}
 .recon.note .rt{color:var(--leak);text-shadow:none;font-size:clamp(17px,2.2vw,22px)}
 .recon .rk{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-top:12px}
 .recon .rd{font-size:12.5px;color:var(--body);line-height:1.5;margin-top:8px}
@@ -609,7 +626,12 @@ td.c-deal{white-space:nowrap}
 .devbox{margin-top:22px;border:1px dashed rgba(var(--accent-rgb),.5);border-radius:12px;padding:18px 20px;background:rgba(var(--accent-rgb),.04)}
 .devbox .devhead{font-family:var(--disp);font-weight:600;font-size:16px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .devbox p{font-size:13.5px;line-height:1.6;color:var(--body);margin:0}
-@media(max-width:939.98px){ .rk-ev{grid-template-columns:1fr;gap:4px} .rk-ev .rk-f{white-space:normal} }
+@media(max-width:939.98px){ .rk-ev{grid-template-columns:1fr;gap:4px} .rk-ev .rk-f{white-space:normal}
+  /* N2 — the KPI figure row is a grid with three intrinsic `auto` columns + a 1fr note;
+     on a phone those don't shrink and drive whole-page sideways scroll. Let them wrap.
+     (The ranktable above already scrolls inside its own .tablewrap — overflow on the
+     wrapper, not the body — so it is not the page-overflow source.) */
+  .rk-figrow{display:flex;flex-wrap:wrap;column-gap:20px;row-gap:16px} .rk-note{flex:1 1 100%;max-width:none} }
 
 </style>
 </head>
@@ -622,6 +644,7 @@ td.c-deal{white-space:nowrap}
   <span class="tb-r">
     <nav class="links" aria-label="Suite navigation"><a href="markets-dashboard.html" aria-current="page">Hub</a>
 <a href="markets-boards.html">Boards</a>
+<a href="markets-crosslistings.html">Cross-listings</a>
 <a href="markets-history.html">History</a>
 <a href="markets-global.html">Global</a>
 <a href="markets-concentration.html">Concentration</a>
@@ -640,6 +663,7 @@ td.c-deal{white-space:nowrap}
       <nav class="sheet" id="navSheetPanel" aria-label="Suite navigation">
         <div class="sheet-inner"><a href="markets-dashboard.html" aria-current="page"><span class="sn">Hub</span></a>
 <a href="markets-boards.html"><span class="sn">Boards</span></a>
+<a href="markets-crosslistings.html"><span class="sn">Cross-listings</span></a>
 <a href="markets-history.html"><span class="sn">History</span></a>
 <a href="markets-global.html"><span class="sn">Global</span></a>
 <a href="markets-concentration.html"><span class="sn">Concentration</span></a>
@@ -654,22 +678,19 @@ td.c-deal{white-space:nowrap}
   <div class="wrap">
     <div class="cat">◇ Standalone · Ontario capital-markets research</div>
     <h1>The markets dashboard.</h1>
-    <div class="tag">A complete, filter-everything view of Canada's equity boards — the <strong>Toronto Stock Exchange (TSX)</strong>, the <strong>TSX Venture Exchange (TSXV)</strong> and the <strong>Canadian Securities Exchange (CSE)</strong> — set against <strong>25 world exchanges</strong> from the World Federation of Exchanges. Switch boards, filter by sector, size, region and index membership, explore global listing and IPO trends, and read the concentration behind the headline market caps. Built for policy research; every figure carries its source.</div>
-    <div class="vintage">
-      <b>Vintages:</b> TMX 31&nbsp;May&nbsp;2026 · CSE 31&nbsp;Dec&nbsp;2025 · WFE export 8&nbsp;Jul&nbsp;2026. Operating counts strip funds/receipts/SPACs (and active CPC shells on the TSXV); gap-filled series are dashed with a <span class="dag">†</span>.
-    </div>
-    <div class="pillrow"><a href="#method" class="provpill" data-prov="method"><span class="o"></span>Source &amp; confidence</a></div>
+    <div class="tag">Canada's three equity boards — the <strong>TSX</strong>, the <strong>TSX Venture Exchange</strong> and the <strong>CSE</strong> — filtered every way and set against <strong>25 of the world's exchanges</strong>. Switch boards, cut by sector, size and region, trace eighteen years of listings, and read the concentration behind the headline market caps.</div>
   </div>
 </section>
 
 <section class="band" id="overview" data-rev>
   <div class="wrap">
     <div class="kicker"><span class="l">01</span> Overview</div>
-    <h2>Three Canadian boards, one global frame.</h2>
-    <p class="lede">The headline listing counts and the operating-company reality, side by side. Canada lists 3,744 securities across its two TMX boards — but only ~2,019 are genuine operating companies once funds, receipts and shells are stripped out; the CSE adds ~601 more. Everything below is filterable.</p>
+    <h2>3,744 TMX listings; 2,019 real operating companies.</h2>
+    <p class="lede">Strip out the funds, receipts and shells and Canada's two TMX boards resolve to <b>2,019</b> genuine operating companies — <b>672</b> on the TSX and <b>1,347</b> on the TSXV — with the CSE adding ~601 more. This is that reconciliation; everything below is filterable.</p>
     <div class="figrow">
       <div class="fig"><div class="fig-n">3,744</div><div class="fig-cap">all-in TMX listings</div><div class="fig-q">TSX 2,236 · TSXV 1,508</div><div class="fig-l">Every security on the two TMX boards, funds and receipts included.</div></div>
-      <div class="fig grey"><div class="fig-n">672 / 1,347</div><div class="fig-cap">operating issuers</div><div class="fig-q">TSX / TSXV · funds &amp; CPCs stripped</div><div class="fig-l">The productive-economy base — 2,019 combined operating companies.</div></div>
+      <div class="fig grey"><div class="fig-n">672</div><div class="fig-cap">TSX operating issuers</div><div class="fig-q">of 2,236 all-in · funds &amp; ETPs stripped</div><div class="fig-l">The senior board's productive-economy base.</div></div>
+      <div class="fig grey"><div class="fig-n">1,347</div><div class="fig-cap">TSXV operating issuers</div><div class="fig-q">of 1,508 all-in · active CPC shells stripped</div><div class="fig-l">The venture board's — 2,019 operating companies combined.</div></div>
     </div>
     <div class="seclead">Also on the shelf</div>
     <div class="figrow figsec">
@@ -677,7 +698,7 @@ td.c-deal{white-space:nowrap}
       <div class="fig grey"><div class="fig-n">601</div><div class="fig-cap">CSE active equities</div><div class="fig-q">~C$16.3B · end-2025 · aggregates only</div></div>
       <div class="fig grey"><div class="fig-n">25</div><div class="fig-cap">WFE exchanges</div><div class="fig-q">12 indicators · 2010–2025</div></div>
     </div>
-    <div class="pillrow"><a href="#method" class="provpill" data-prov="overview"><span class="o"></span>data &amp; method</a></div>
+    <div class="pillrow"><a href="markets-method.html" class="provpill" data-prov="overview"><span class="o"></span>data &amp; method</a></div>
   </div>
 </section>
 
@@ -691,9 +712,10 @@ td.c-deal{white-space:nowrap}
 <section class="band" id="sections" data-rev>
   <div class="wrap">
     <div class="kicker"><span class="l">◇</span> The suite</div>
-    <h2>Four data rooms, one frame.</h2>
-    <p class="lede">This hub carries the headline reconciliation. Each data room below opens as its own self-contained page — same design, same provenance discipline, its data at full depth — and the shared method page carries the full appendix behind every figure.</p>
-    <div class="tilenav"><a class="sectile" href="markets-boards.html"><div class="st-n">02</div><div class="st-t">Canada boards explorer</div><div class="st-d">Filter every issuer on the TSX, TSXV and CSE — 8 facets, live readout, sortable table, sector and cap-band charts.</div><div class="st-s">3,744 listings · 2,019 operating</div><div class="st-go">Open →</div></a>
+    <h2>Five data rooms, one frame.</h2>
+    <p class="lede">The headline reconciliation lives here; each data room below opens as its own self-contained page — same design, same provenance discipline, its data at full depth — and the shared method page carries the full appendix behind every figure.</p>
+    <div class="tilenav"><a class="sectile" href="markets-boards.html"><div class="st-n">02</div><div class="st-t">Canada boards explorer</div><div class="st-d">Filter every TSX and TSXV listing — 8 facets, live readout, sortable table, sector and cap-band charts; the CSE at the aggregate level.</div><div class="st-s">3,744 listings · 2,019 operating</div><div class="st-go">Open →</div></a>
+<a class="sectile" href="markets-crosslistings.html"><div class="st-n">02b</div><div class="st-t">Cross-listings</div><div class="st-d">Where TSX issuers list abroad: the venue mix, the outsized share of the Canadian tape they carry, the eighteen-year trend, and the cross-listed cut of named financings.</div><div class="st-s">206 TSX names · ~85% on a US venue</div><div class="st-go">Open →</div></a>
 <a class="sectile" href="markets-history.html"><div class="st-n">03</div><div class="st-t">Listings &amp; financings history</div><div class="st-d">Eighteen years of new listings, stacked by type with click-through to the companies; capital-raised and financings measures; a name-by-name deal search.</div><div class="st-s">5,873-row roster · 2008–2025</div><div class="st-go">Open →</div></a>
 <a class="sectile" href="markets-global.html"><div class="st-n">04</div><div class="st-t">Global explorer &amp; rankings</div><div class="st-d">TMX against 25 world exchanges (12 indicators, 2010–2025), plus the &ldquo;heard vs measured&rdquo; rankings reconciliation strip.</div><div class="st-s">25 exchanges · dual-basis rankings</div><div class="st-go">Open →</div></a>
 <a class="sectile" href="markets-concentration.html"><div class="st-n">05</div><div class="st-t">Concentration lab</div><div class="st-d">Top-1/5/10/25 ladders, the Lorenz curve, the cross-exchange comparator strip and the sector cut behind Canada's headline market cap.</div><div class="st-s">top-25 = 53% of TSX cap</div><div class="st-go">Open →</div></a>
@@ -701,31 +723,10 @@ td.c-deal{white-space:nowrap}
   </div>
 </section>
 
-<section class="band" id="method" data-rev>
-  <div class="wrap narrow">
-    <div class="kicker"><span class="l">◇</span> Data &amp; method</div>
-    <h2>What this page's numbers rest on.</h2>
-    <p class="lede">Only the load-bearing basis for the figures above. The full appendix — every source, entity basis, gap-fill convention, the FX table and the refresh chain — lives on the method page.</p>
-    <div class="evlist">
-      <div class="evrow"><div><div class="et">Operating-issuer recipe</div><div class="es">the filter behind every count</div></div><div class="ed">Both boards strip funds/receipts/SPACs (<code>ETP, CDR, Closed-End Funds, SPAC</code>); the TSXV also strips active <code>CPC</code> shells. <b>TSX 2,236→672</b>, <b>TSXV 1,508→1,347</b> operating.</div></div>
-      <div class="evrow"><div><div class="et">Vintages</div><div class="es">as-at dates</div></div><div class="ed">TMX Issuers List <b>31 May 2026</b> · CSE <b>31 Dec 2025</b> · WFE export <b>8 Jul 2026</b>. Gap-filled/partial points are dashed with a <span class="dag">†</span>/<span class="dag">*</span>.</div></div>
-    </div>
-    <h3 style="margin-top:36px">Sources for this page</h3>
-    <table class="mtable">
-      <thead><tr><th scope="col">Role</th><th scope="col">File</th></tr></thead>
-      <tbody>
-        <tr><td><b>Per-issuer bake (TSX+TSXV)</b></td><td>Data/TMX (2026) - TSX &amp; TSXV Listed Companies (Jun 2026).xlsx (as-at 31 May 2026)</td></tr>
-      </tbody>
-    </table>
-    
-    <div class="pillrow"><a href="#method" class="provpill" data-prov="method"><span class="o"></span>Source &amp; confidence</a>
-      <a class="deeplink" href="markets-method.html#m-operating">Full data &amp; method →</a></div>
-  </div>
-</section>
-
 <footer>
   <div class="ft-h">Markets Dashboard · standalone</div>
   <p>A self-contained, filter-everything view of Canada's equity boards and 25 world exchanges, built for Ontario capital-markets policy research. Every module carries a <span style="display:inline-block;width:7px;height:7px;border-radius:50%;border:1.5px solid var(--accent);vertical-align:middle"></span> source pill — tap it for the figure's provenance and confidence grade.</p>
+  <p class="ftmethod"><a class="deeplink" href="markets-method.html">Full data &amp; method →</a> — every source, vintage, entity basis, the FX table and the refresh chain, in one place.</p>
   <p>Data as at: TMX 31 May 2026 · CSE 31 Dec 2025 · WFE export 8 Jul 2026 (market-cap 2026 partial point: latest month reported, May/Jun 2026). Generated by <code>markets_dashboard_data.py</code> + <code>build_markets_dashboard.py</code>.</p>
   <p class="footid">MARKETS DASHBOARD · static-first · opens from file:// · default view renders with JavaScript off · Mission Control design system</p>
 </footer>
@@ -739,17 +740,11 @@ td.c-deal{white-space:nowrap}
 <script>
 window.PROV = {
  overview:{ t:"Overview — reconciliation targets", conf:"high",
-   meta:'All-in <b>3,744</b> (TSX 2,236 + TSXV 1,508). Operating <b>672 / 1,347</b>. Operating caps <b>C$5.961T</b> (TSX) / <b>C$142.5B</b> (TSXV); all-in incl. ETPs/CDRs/funds <b>C$6.948T</b> (TSX &mdash; funds add C$0.99T = 14.2%) / <b>C$142.6B</b> (TSXV). CSE <b>601</b> active equities / ~<b>C$16.3B</b> (end-2025, aggregates only). WFE <b>25</b> exchanges &times; <b>12</b> indicators &times; 2010&ndash;2025. Every figure is asserted by the pipeline before the payload is written.' },
- method:{ t:"Data & method — the validated pipeline", conf:"high",
-   meta:'Generated by <b>markets_dashboard_data.py</b> (every reconciliation target asserted before the payload is written) from in-vault sources, then spliced verbatim into this page.<ul>'
-     +'<li><b>TSX operating</b> = total &minus; (Sector &isin; {ETP, CDR, Closed-End Funds, SPAC}) &rarr; 2,236 &minus; 1,564 = <b>672</b>.</li>'
-     +'<li><b>TSXV operating</b> = total &minus; active CPC shells &rarr; 1,508 &minus; 161 = <b>1,347</b>.</li>'
-     +'<li>Cap bands binned from the <b>raw</b> C$ cap (edges 10M/50M/150M/1B/10B), not the rounded C$M.</li></ul>'
-     +'Vintages: TMX 31 May 2026 · CSE 31 Dec 2025 · WFE export 8 Jul 2026. Combined operating base 2,019.' }
+   meta:'All-in <b>3,744</b> (TSX 2,236 + TSXV 1,508). Operating <b>672 / 1,347</b>. Operating caps <b>C$5.961T</b> (TSX) / <b>C$142.5B</b> (TSXV); all-in incl. ETPs/CDRs/funds <b>C$6.948T</b> (TSX &mdash; funds add C$0.99T = 14.2%) / <b>C$142.6B</b> (TSXV). CSE <b>601</b> active equities / ~<b>C$16.3B</b> (end-2025, aggregates only). WFE <b>25</b> exchanges &times; <b>12</b> indicators &times; 2010&ndash;2025. Every figure is asserted by the pipeline before the payload is written.' }
 };
 </script>
 <script id="md-data">
-window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX Listed-Companies workbook.","wfe":"World Federation of Exchanges (WFE) Statistics must be credited on every WFE-derived chart."},"cap_bands":{"edges_cad":[10000000.0,50000000.0,150000000.0,1000000000.0,10000000000.0],"labels":["<C$10M","C$10–50M","C$50–150M","C$150M–1B","C$1B–10B","≥C$10B"],"note":"Binned from RAW C$ cap, not the rounded C$M written to issuers.json."},"dashboard":"Dashboards/markets-dashboard.html","fx_rates":{"GBP_USD":{"annual_avg":{"2021":1.3752,"2022":1.2362,"2023":1.2439,"2024":1.2782,"2025":1.3193},"year_end":{"2021":1.3521,"2022":1.2097,"2023":1.2732,"2024":1.2515,"2025":1.3448}},"cad_conversion_note":"US$1≈C$1.44 · €1≈C$1.50 · £1≈C$1.80"},"gapfill_flags":{"followon_nonreport":"Korea & Nasdaq-US follow-on are zero-coded non-reports in WFE -> null (render 'no data', never 0).","lse":"LSE Group WFE series end 2020; 2021-25 gap-filled from LSE primary (Main+AIM). Render dashed with † and 'estimate' markers.","trailing_zero":"A lone trailing-2025 follow-on zero after real history (ASX/Deutsche Börse/SIX) -> null."},"generated_by":"Data/refresh-scripts/markets_dashboard_data.py","operating_basis":{"both_boards_exclude":["CDR","Closed-End Funds","ETP","SPAC"],"definition":"Operating issuer strips ETP/CDR/Closed-End Funds/SPAC (both boards) plus active CPC shells (TSXV).","tsxv_additional_exclude":["CPC"]},"refresh":{"command":"python3 markets_dashboard_data.py","cse":"Re-pull the CSE listed-companies API + annual market summary (see CSE analysis).","lse":"Download the new-year Main Market + AIM December factsheets + LSEG market report; convert GBP→USD at BoE rates; update LSE_FILL.","tmx":"Drop the new TMX Issuers-List xlsx into Data/, update the sheet names + as-at, re-run.","wfe":"Re-pull the 25-exchange annual USD extract from the WFE Statistics Portal (see WFE anchor)."},"sources":{"concentration":"Sources/Exchange Concentration — Top-Issuer Shares (2026 compilation).md","concentration_deepdive":"Data/cross-exchange-concentration-jul2026.csv + Data/cross-exchange-concentration-sectors-jul2026.csv (structured from Sources/Cross-Exchange Concentration & Sector Structure (Jul 2026 compilation).md)","cse":"Data/CSE Listed Companies — Analysis (Dec 2025).md (computed aggregates; CSE publishes no per-issuer cap file)","history_archive":"Data/tmx-archive-derived/ (new_listings_by_year.csv 5,873 · panel_transitions.csv · issuer_panel.csv — 18 year-end TMX Listed-Companies + New-Listings workbooks, Dec 2008-Dec 2025)","history_mig":"Data/tmx-mig-derived/ (mig_new_listings_by_type.csv · mig_monthly_headlines.csv · mig_named_financings.csv — 167 monthly TMX MiG Reports, Dec 2008-Jun 2026)","lse_gapfill":"Sources/LSE (2026) - London Stock Exchange Market Statistics 2020-2025.md","tmx":"Data/TMX (2026) - TSX & TSXV Listed Companies (Jun 2026).xlsx (as-at 31 May 2026)","tmx_graduates":"Data/tsxv-graduates-on-tsx-may2026.csv","wfe":"Data/WFE (2026) - Exchange Statistics 2010-2026 (Annual, USD, 25 exchanges).xlsx"},"vintages":{"cse":"2025-12-31","tmx":"2026-05-31","wfe_export":"2026-07-08"}}
+window.META={"assertions_passed":341,"attribution":{"tmx":"© TSX Inc. — TMX Listed-Companies workbook.","wfe":"World Federation of Exchanges (WFE) Statistics must be credited on every WFE-derived chart."},"cap_bands":{"edges_cad":[10000000.0,50000000.0,150000000.0,1000000000.0,10000000000.0],"labels":["<C$10M","C$10–50M","C$50–150M","C$150M–1B","C$1B–10B","≥C$10B"],"note":"Binned from RAW C$ cap, not the rounded C$M written to issuers.json."},"dashboard":"Dashboards/markets-dashboard.html","fx_rates":{"GBP_USD":{"annual_avg":{"2021":1.3752,"2022":1.2362,"2023":1.2439,"2024":1.2782,"2025":1.3193},"year_end":{"2021":1.3521,"2022":1.2097,"2023":1.2732,"2024":1.2515,"2025":1.3448}},"cad_conversion_note":"US$1≈C$1.44 · €1≈C$1.50 · £1≈C$1.80"},"gapfill_flags":{"followon_nonreport":"Korea & Nasdaq-US follow-on are zero-coded non-reports in WFE -> null (render 'no data', never 0).","lse":"LSE Group WFE series end 2020; 2021-25 gap-filled from LSE primary (Main+AIM). Render dashed with † and 'estimate' markers.","trailing_zero":"A lone trailing-2025 follow-on zero after real history (ASX/Deutsche Börse/SIX) -> null."},"generated_by":"Data/refresh-scripts/markets_dashboard_data.py","operating_basis":{"both_boards_exclude":["CDR","Closed-End Funds","ETP","SPAC"],"definition":"Operating issuer strips ETP/CDR/Closed-End Funds/SPAC (both boards) plus active CPC shells (TSXV).","tsxv_additional_exclude":["CPC"]},"refresh":{"command":"python3 markets_dashboard_data.py","cse":"Re-pull the CSE listed-companies API + annual market summary (see CSE analysis).","lse":"Download the new-year Main Market + AIM December factsheets + LSEG market report; convert GBP→USD at BoE rates; update LSE_FILL.","tmx":"Drop the new TMX Issuers-List xlsx into Data/, update the sheet names + as-at, re-run.","wfe":"Re-pull the 25-exchange annual USD extract from the WFE Statistics Portal (see WFE anchor)."},"sources":{"concentration":"Sources/Exchange Concentration — Top-Issuer Shares (2026 compilation).md","concentration_deepdive":"Data/cross-exchange-concentration-jul2026.csv + Data/cross-exchange-concentration-sectors-jul2026.csv (structured from Sources/Cross-Exchange Concentration & Sector Structure (Jul 2026 compilation).md)","cse":"Data/CSE Listed Companies — Analysis (Dec 2025).md (computed aggregates; CSE publishes no per-issuer cap file)","history_archive":"Data/tmx-archive-derived/ (new_listings_by_year.csv 5,873 · panel_transitions.csv · issuer_panel.csv — 18 year-end TMX Listed-Companies + New-Listings workbooks, Dec 2008-Dec 2025)","history_mig":"Data/tmx-mig-derived/ (mig_new_listings_by_type.csv · mig_monthly_headlines.csv · mig_named_financings.csv — 167 monthly TMX MiG Reports, Dec 2008-Jun 2026)","lse_gapfill":"Sources/LSE (2026) - London Stock Exchange Market Statistics 2020-2025.md","tmx":"Data/TMX (2026) - TSX & TSXV Listed Companies (Jun 2026).xlsx (as-at 31 May 2026)","tmx_graduates":"Data/tsxv-graduates-on-tsx-may2026.csv","wfe":"Data/WFE (2026) - Exchange Statistics 2010-2026 (Annual, USD, 25 exchanges).xlsx"},"vintages":{"cse":"2025-12-31","tmx":"2026-05-31","wfe_export":"2026-07-08"}}
 ;
 </script>
 <script>
@@ -814,7 +809,7 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
     var ISS=window.ISSUERS, BD=window.BOARDS, CSEd=window.CSE, MET=window.META;
     var XL=window.XLIST||null;
     var BANDLAB=MET.cap_bands.labels;
-    // venue-GROUP of an issuer, by its PRIMARY interlisting venue (first token of `il`).
+    // venue-GROUP of an issuer, by its PRIMARY cross-listing venue (first token of `il`).
     var VGMAP=(XL&&XL.venue_group_map)?XL.venue_group_map:{};
     function venueGroup(il){ if(!il) return null; var t=String(il).split(",")[0].trim();
       if(VGMAP[t]) return VGMAP[t];
@@ -1087,12 +1082,12 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
         var rows=venueRows(meas);
         var el=xvWrap.querySelector("svg")||svg("svg",{}); if(!xvWrap.querySelector("svg")) xvWrap.appendChild(el);
         drawHBar(el, rows, {unit:(meas==="cap"?"cap":"count"), gid:"md-xlven-grad", subjIdx:0,
-          axis:(meas==="cap"?"TSX operating interlisted, by venue group (C$)":"TSX operating interlisted, by venue group (count)")});
+          axis:(meas==="cap"?"TSX operating cross-listed, by venue group (C$)":"TSX operating cross-listed, by venue group (count)")});
         if(xvSub) xvSub.textContent=(meas==="cap"
-          ? "Bar length = total market cap (C$) of the interlisted issuers in each venue group"
-          : "Bar length = number of interlisted issuers whose primary venue sits in each group · sums to 206");
+          ? "Bar length = total market cap (C$) of the cross-listed issuers in each venue group"
+          : "Bar length = number of cross-listed issuers whose primary venue sits in each group · sums to 206");
         function disp(v){ return meas==="cap"?fmtCap(v):v; }
-        xvWrap.setAttribute("aria-label", "TSX operating interlisted issuers by venue group ("+(meas==="cap"?"by market cap":"by count")+"). "+rows.map(function(r){return r.label+" "+disp(r.value);}).join(", ")+".");
+        xvWrap.setAttribute("aria-label", "TSX operating cross-listed issuers by venue group ("+(meas==="cap"?"by market cap":"by count")+"). "+rows.map(function(r){return r.label+" "+disp(r.value);}).join(", ")+".");
       }
       function setVenueMeas(m){ if(xvCount) xvCount.setAttribute("aria-pressed",m==="count"?"true":"false");
         if(xvCap) xvCap.setAttribute("aria-pressed",m==="cap"?"true":"false"); drawVenue(m); }
@@ -1100,7 +1095,7 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
       if(xvCap) xvCap.addEventListener("click",function(){ setVenueMeas("cap"); });
       drawVenue("count"); // normalise the baked static default to the JS-drawn layout
 
-      // interlisting-over-time: flip which baked SVG shows
+      // cross-listing-over-time: flip which baked SVG shows
       var xtCount=document.getElementById("xtCount"), xtShare=document.getElementById("xtShare");
       var xtCountSvg=document.getElementById("xtCountSvg"), xtShareSvg=document.getElementById("xtShareSvg");
       function setTimeMeas(m){ if(xtCount) xtCount.setAttribute("aria-pressed",m==="count"?"true":"false");
@@ -1113,7 +1108,7 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
       // financings cut basis toggle
       var xfAsof=document.getElementById("xfAsof"), xfCur=document.getElementById("xfCur"), xlFin=document.getElementById("xlFin");
       function finCards(basis){ var d=XLx.fin_cut[basis], tot=XLx.fin_cut.total_rows;
-        var lbl=(basis==="asof")?"interlisted at the year-end of the financing year (as-of-date, from the panel)":"still interlisted today (May-2026 snapshot)";
+        var lbl=(basis==="asof")?"cross-listed at the year-end of the financing year (as-of-date, from the panel)":"still cross-listed today (May-2026 snapshot)";
         return '<div class="recon"><div class="rt">'+d.deals.toLocaleString()+'</div><div class="rk">named financings by cross-listed issuers</div>'
           +'<div class="rd">'+d.deals.toLocaleString()+' of the '+tot.toLocaleString()+' Top-10 named deals (2013+) · <b>'+d.share_pct.toFixed(1)+'%</b></div></div>'
           +'<div class="recon"><div class="rt">'+fmtCap(d.total_cm)+'</div><div class="rk">total capital in those deals</div>'
@@ -1436,7 +1431,7 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
     function fmtCB(v){ if(v==null) return "—"; if(v>=1000) return "C$"+(v/1000).toFixed(1)+"B"; return "C$"+Math.round(v)+"M"; }
     var BL={comb:"Combined",TSX:"TSX",TSXV:"TSXV"};
 
-    var hStackWrap=document.getElementById("hStackWrap"), hStackTitle=document.getElementById("hStackTitle");
+    var hStackWrap=document.getElementById("hStackWrap"), hStackTitle=document.getElementById("hStackTitle"), hStackSub=document.getElementById("hStackSub");
     var hBarRead=document.getElementById("hBarRead"), hStatsRow=document.getElementById("hStatsRow");
     var hcompChips=document.querySelectorAll("[data-hcomp]");
 
@@ -1463,8 +1458,9 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
     // ── live filtered-stats band (recomputes on every board / type / measure change) ──
     function renderStats(){
       try{
-        // in sector-stack mode the sector drawer owns the stats band (renderSecStats)
-        if(hst.stackBy==="sector" && (hst.meas==="count"||hst.meas==="cap")) return;
+        // in sector-stack mode the sector drawer owns the stats band (renderSecStats) — for
+        // count, cap AND the fin/ipo count-basis fallback (all render a sector stack).
+        if(hst.stackBy==="sector") return;
         var per={}; HTYPES.forEach(function(t){ per[t]=0; });
         var total=0,minY=null,maxY=null;
         for(var i=0;i<HYN;i++){ var c=yearCounts(hst.board,i),yt=0; HTYPES.forEach(function(t,k){ if(hst.typeSel[t]){ per[t]+=c[k]; yt+=c[k]; } }); if(yt>0){ if(minY==null)minY=HYEARS[i]; maxY=HYEARS[i]; total+=yt; } }
@@ -1499,14 +1495,15 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
       if(hSecLegend) hSecLegend.style.display=on?"":"none";
       if(hSecNote) hSecNote.style.display=on?"":"none";
       // capital sector-stack (A6) is not type-split → freeze the type + composition chips;
-      // count sector-stack (A2) keeps them live (sector counts respect the type filter).
-      var frozen=on&&hst.meas!=="count";
+      // count sector-stack (A2) AND the fin/ipo count-basis fallback keep them live (sector
+      // counts respect the type filter).
+      var frozen=on&&hst.meas==="cap";
       hcompChips.forEach(function(c){ c.disabled=frozen; c.style.opacity=frozen?".4":""; });
       if(hTypeRow){ hTypeRow.querySelectorAll("[data-htype],#hTypeAll").forEach(function(b){ b.disabled=frozen; b.style.opacity=frozen?".4":""; }); }
     }
     // Unified stacked sector-bar drawer. mode "count" (A2, from roster+typeSel) or "cap"
     // (A6, from baked MiG sector-capital). perYear[i] = segment-value array or null.
-    function drawSectorStack(mode){
+    function drawSectorStack(mode, dollarFallback){
       try{
         var isCap=(mode==="cap");
         var labels=isCap?A6_LABELS:A2_LABELS, nSeg=labels.length;
@@ -1553,7 +1550,13 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
         el.appendChild(svg("line",{x1:x0,y1:ybot,x2:xEnd,y2:ybot,stroke:"var(--hair-strong)","stroke-width":1}));
         renderSecLegend(labels);
         var bl=BL[hst.board];
-        hStackTitle.textContent=(isCap?"Capital raised by sector — ":"New listings by sector — ")+bl+(isCap?" · December-YTD (2013+)":", "+(matchPreset()==="all"?"all listings":matchPreset()==="op"?"operating only":matchPreset()==="etp"?"funds / ETPs only":selArr().length+" of 5 types"));
+        var _cl=(matchPreset()==="all"?"all listings":matchPreset()==="op"?"operating only":matchPreset()==="etp"?"funds / ETPs only":selArr().length+" of 5 types");
+        hStackTitle.textContent=isCap?("Capital raised by sector — "+bl+" · December-YTD (2013+)")
+          :dollarFallback?("New listings by sector (count basis) — "+bl+", "+_cl+" · "+escH(ML[hst.meas])+" not sector-split")
+          :("New listings by sector — "+bl+", "+_cl);
+        if(hStackSub) hStackSub.textContent=isCap?"Stacked by sector (MiG capital) · 2013–2025"
+          :dollarFallback?("Stacked by sector (count basis) · "+escH(ML[hst.meas])+" not sector-split · 2008–2025")
+          :"Stacked by sector · 2008–2025";
         hStackWrap.setAttribute("aria-label",(isCap?"Capital raised by sector per year, ":"New listings by sector per year, ")+bl+". "+aria.join("; ")+".");
         renderSecStats(mode, per, labels);
       }catch(e){}
@@ -1583,9 +1586,10 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
       try{
         if(hst.stackBy==="sector"){
           setSectorUI(true);
-          if(hst.meas==="count"){ drawSectorStack("count"); return; }
           if(hst.meas==="cap"){ drawSectorStack("cap"); return; }
-          drawDollar(); return;   // fin/ipo have no reconciled sector split → aggregate fallback (note shown)
+          // count measure → A2 count stack; fin/ipo dollars aren't sector-split at source, so rather
+          // than a silent monochrome aggregate bar we show the count-basis sector stack (note explains).
+          drawSectorStack("count", hst.meas!=="count"); return;
         }
         setSectorUI(false);
         if(hst.meas!=="count"){ drawDollar(); return; }
@@ -1615,6 +1619,7 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
         el.appendChild(svg("line",{x1:x0,y1:ybot,x2:xEnd,y2:ybot,stroke:"var(--hair-strong)","stroke-width":1}));
         var bl=BL[hst.board], mp=matchPreset(), cl=(mp==="all")?"all listings":(mp==="op")?"operating-company listings only":(mp==="etp")?"funds / ETPs only":(selArr().length+" of 5 types");
         hStackTitle.textContent="New listings by year — "+bl+", "+cl;
+        if(hStackSub) hStackSub.textContent="Stacked by listing type · 2008–2025";
         var ariaParts=[]; for(var i=0;i<HYN;i++){ ariaParts.push(HYEARS[i]+": "+totals[i]); }
         hStackWrap.setAttribute("aria-label","New listings per year, "+bl+", "+cl+". "+ariaParts.join("; ")+".");
       }catch(e){}
@@ -1649,6 +1654,7 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
         }
         el.appendChild(svg("line",{x1:x0,y1:ybot,x2:xEnd,y2:ybot,stroke:"var(--hair-strong)","stroke-width":1}));
         hStackTitle.textContent="Annual "+ML[hst.meas]+" — "+BL[hst.board];
+        if(hStackSub) hStackSub.textContent="Annual totals, all listing types · not type-split · 2008–2025";
         var ap=[]; for(var i=0;i<HYN;i++){ if(vals[i]!=null) ap.push(HYEARS[i]+": "+fmtCB(vals[i])); }
         hStackWrap.setAttribute("aria-label","Annual "+ML[hst.meas]+", "+BL[hst.board]+", TMX-reported all listing types. "+ap.join("; ")+".");
       }catch(e){}
@@ -1714,6 +1720,7 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
         hRoTitle.textContent="Company roster — "+year;
         var full=rosterFor(year).length;
         hRoSub.textContent=rows.length+(rows.length===full?"":" of "+full)+" listings · status vs the May-2026 snapshot";
+        var _sn=document.getElementById("hRoSumN"); if(_sn) _sn.textContent=rows.length.toLocaleString();
         if(hRoTable) hRoTable.querySelectorAll("thead th[data-rsort]").forEach(function(th){
           th.setAttribute("aria-sort", th.getAttribute("data-rsort")===k ? (d===1?"ascending":"descending") : "none");
         });
@@ -1853,15 +1860,17 @@ window.META={"assertions_passed":327,"attribution":{"tmx":"© TSX Inc. — TMX L
     }catch(e){} });
   }catch(e){}
 
-  // collapsible issuer table — enhancement only (native <details open> works with JS off).
-  // Mirror aria-expanded on the summary and swap the collapse/expand hint (same pattern as the nav sheet).
-  try{ var issD=document.getElementById("issDetails");
-    if(issD){ var issSummary=issD.querySelector("summary.tblsummary"), issHint=issD.querySelector(".tsum-hint");
-      var setIssExp=function(o){ try{ if(issSummary) issSummary.setAttribute("aria-expanded",o?"true":"false");
-        if(issHint) issHint.textContent=o?"click to collapse":"click to expand"; }catch(e){} };
-      setIssExp(issD.open);
-      issD.addEventListener("toggle",function(){ setIssExp(issD.open); });
-    }
+  // collapsible tables — enhancement only (native <details open> works with JS off).
+  // Mirror aria-expanded on the summary and swap the collapse/expand hint (same pattern as the nav
+  // sheet). Generic across every .tblcollapse: the boards issuer table, the WFE table AND the
+  // history company roster (filter state is JS-held in `hst`, so collapsing never resets it).
+  try{ document.querySelectorAll("details.tblcollapse").forEach(function(dt){
+      var sm=dt.querySelector("summary.tblsummary"), hint=dt.querySelector(".tsum-hint");
+      var setExp=function(o){ try{ if(sm) sm.setAttribute("aria-expanded",o?"true":"false");
+        if(hint) hint.textContent=o?"click to collapse":"click to expand"; }catch(e){} };
+      setExp(dt.open);
+      dt.addEventListener("toggle",function(){ setExp(dt.open); });
+    });
   }catch(e){}
 
   try{ var navD=document.getElementById("navSheet");
