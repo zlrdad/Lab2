@@ -633,6 +633,36 @@ td.c-deal{white-space:nowrap}
      wrapper, not the body — so it is not the page-overflow source.) */
   .rk-figrow{display:flex;flex-wrap:wrap;column-gap:20px;row-gap:16px} .rk-note{flex:1 1 100%;max-width:none} }
 
+/* PAGE-SCOPED — markets-register.html (Listing-Potential Register). New, uniquely-named
+   classes only (reg*/btag/b-*/dimrow/annexhead); they never shadow a shared styles.css
+   name. The census table reuses the suite's own table.issuers + .tablewrap + .chip + .readout. */
+.regfbar{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 4px;align-items:center}
+.reggrouplab{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-right:4px}
+.regsearch{font-family:var(--mono);font-size:12.5px;color:var(--ink);background:var(--surface);border:1px solid var(--hair-strong);border-radius:7px;padding:8px 12px;min-width:200px}
+.regsearch::placeholder{color:var(--dim)}
+.regsearch:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.regcount{font-family:var(--mono);font-size:11.5px;color:var(--dim);letter-spacing:.05em;margin:12px 0 0}
+.regcount b{color:var(--accent-txt)}
+table.issuers.regtable{min-width:1280px;font-size:12.5px}
+.regtable .reg-sub{font-size:11.5px;color:var(--dim);max-width:30ch;white-space:normal}
+.regtable .reg-notes{max-width:38ch}
+.regtable td.c-num{white-space:nowrap}
+.btag{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--hair-strong);border-radius:5px;padding:2px 7px;white-space:nowrap;display:inline-block}
+.b-both{color:var(--accent-txt);border-color:rgba(var(--accent-rgb),.55)}
+.b-unicorn{color:var(--accent-txt);border-color:rgba(var(--accent-rgb),.35)}
+.b-club{color:var(--body)}
+.b-annex{color:var(--dim);border-style:dashed}
+.regtable tr.dimrow td{opacity:.62}
+.regtable tr.annexhead td{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);background:var(--surface);padding:8px 10px}
+.regmeth{margin-top:30px}
+.regmeth details{border:1px solid var(--hair);border-radius:10px;padding:0 18px;margin-top:10px}
+.regmeth summary{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);padding:13px 0;cursor:pointer}
+.regmeth .mb{font-size:13px;color:var(--body);line-height:1.65;padding:2px 0 16px}
+.regmeth .mb b{color:var(--ink)}
+.regmrow{font-size:13.5px;color:var(--body);line-height:1.6;padding:12px 0;border-bottom:1px solid var(--hair)}
+.regmrow:last-child{border-bottom:none}
+.regmrow b{color:var(--ink)}
+
 </style>
 </head>
 <body>
@@ -648,6 +678,7 @@ td.c-deal{white-space:nowrap}
 <a href="markets-history.html">History</a>
 <a href="markets-global.html">Global</a>
 <a href="markets-concentration.html">Concentration</a>
+<a href="markets-register.html">Register</a>
 <a href="markets-method.html">Method</a></nav>
     <button type="button" class="themebtn" id="themeToggle" aria-pressed="false" aria-label="Switch to light theme" title="Toggle light / dark">
       <svg class="ic ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
@@ -667,6 +698,7 @@ td.c-deal{white-space:nowrap}
 <a href="markets-history.html"><span class="sn">History</span></a>
 <a href="markets-global.html"><span class="sn">Global</span></a>
 <a href="markets-concentration.html"><span class="sn">Concentration</span></a>
+<a href="markets-register.html"><span class="sn">Register</span></a>
 <a href="markets-method.html"><span class="sn">Method</span></a></div>
       </nav>
     </details>
